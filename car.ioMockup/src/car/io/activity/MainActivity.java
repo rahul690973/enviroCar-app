@@ -141,14 +141,14 @@ public class MainActivity<AndroidAlarmService> extends
 
 		addTab("Meine Fahrten", ListMeasurementsFragment.class,
 				MyData.createBundle("Meine Fahrten"));
-		addTab("OBD", OBDFrament.class, MyData.createBundle("Overview"));
+		// addTab("OBD", OBDFrament.class, MyData.createBundle("Overview"));
 		addTab("Ueberblick", DashboardFragment.class,
 				MyData.createBundle("Ueberblick"));
 		addTab("Freunde", ListFriends.class, MyData.createBundle("Freunde"));
 		// addTab( "Friends", MyData.class, MyData.createBundle( "Fragment 3")
 		// );
 
-		setSelectedTab(2);
+		setSelectedTab(1);
 
 		// --------------------------
 		// --------------------------
@@ -693,13 +693,13 @@ public class MainActivity<AndroidAlarmService> extends
 	/**
 	 * Create the menu with the entries
 	 */
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, START_MEASUREMENT, 0, "Start");
-		menu.add(0, STOP_MEASUREMENT, 0, "Stop");
-		menu.add(0, START_LIST_VIEW, 0, "List");
-		menu.add(0, SETTINGS, 0, "Settings");
-		return true;
-	}
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// menu.add(0, START_MEASUREMENT, 0, "Start");
+	// menu.add(0, STOP_MEASUREMENT, 0, "Stop");
+	// menu.add(0, START_LIST_VIEW, 0, "List");
+	// menu.add(0, SETTINGS, 0, "Settings");
+	// return true;
+	// }
 
 	/**
 	 * Determine what the menu buttons do
@@ -753,30 +753,30 @@ public class MainActivity<AndroidAlarmService> extends
 	/**
 	 * Activate or deactivate the menu items
 	 */
-	public boolean onPrepareOptionsMenu(Menu menu) {
-
-		MenuItem start = menu.findItem(START_MEASUREMENT);
-		MenuItem stop = menu.findItem(STOP_MEASUREMENT);
-		MenuItem settings = menu.findItem(SETTINGS);
-
-		if (requirementsFulfilled) {
-			if (serviceConnector.isRunning()) {
-				start.setEnabled(false);
-				stop.setEnabled(true);
-				settings.setEnabled(false);
-			} else {
-				stop.setEnabled(false);
-				start.setEnabled(true);
-				settings.setEnabled(true);
-			}
-		} else {
-			start.setEnabled(false);
-			stop.setEnabled(false);
-			settings.setEnabled(false);
-		}
-
-		return true;
-	}
+	// public boolean onPrepareOptionsMenu(Menu menu) {
+	//
+	// MenuItem start = menu.findItem(START_MEASUREMENT);
+	// MenuItem stop = menu.findItem(STOP_MEASUREMENT);
+	// MenuItem settings = menu.findItem(SETTINGS);
+	//
+	// if (requirementsFulfilled) {
+	// if (serviceConnector.isRunning()) {
+	// start.setEnabled(false);
+	// stop.setEnabled(true);
+	// settings.setEnabled(false);
+	// } else {
+	// stop.setEnabled(false);
+	// start.setEnabled(true);
+	// settings.setEnabled(true);
+	// }
+	// } else {
+	// start.setEnabled(false);
+	// stop.setEnabled(false);
+	// settings.setEnabled(false);
+	// }
+	//
+	// return true;
+	// }
 
 	/**
 	 * Handles the waiting-list
