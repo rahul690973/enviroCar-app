@@ -216,7 +216,7 @@ public class DbAdapterRemote implements DbAdapter {
 
 	@Override
 	public int getNumberOfStoredTracks() {
-		Cursor count = mDb.rawQuery("SELECT COUNT(*) FROM tracks", null);
+		Cursor count = mDb.rawQuery("SELECT COUNT(_id) FROM tracks", null);
 		count.moveToFirst();
 		int ct = count.getInt(0);
 		count.close();
@@ -227,6 +227,15 @@ public class DbAdapterRemote implements DbAdapter {
 	public boolean isOpen(){
 		return mDb.isOpen();
 	}
+	
+	public boolean trackExistsInDatabase(String id){
+		Cursor count = mDb.rawQuery("SELECT COUNT(_id) FROM tracks WHERE _id =\""+id+"\"", null);
+		count.moveToFirst();
+		int ct = count.getInt(0);
+		count.close();
+		return ( ct==1 ? true: false);
+	}
+
 
 	@Override
 	public long insertTrack(Track track) {
