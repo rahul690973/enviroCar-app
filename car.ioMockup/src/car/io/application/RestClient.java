@@ -14,7 +14,7 @@ public class RestClient {
 	private static AsyncHttpClient client = new AsyncHttpClient();
 	
 	public static void downloadTracks(JsonHttpResponseHandler handler){
-		client.get("http://gis-ts.uni-muenster.de/tracks.json", handler);
+		client.get(BASE_URL+"tracks", handler);
 	}
 	
 	public static void downloadTrack(String url, ArrayList<Track> tracks, JsonHttpResponseHandler handler){
