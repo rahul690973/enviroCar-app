@@ -2,4 +2,5 @@
 <lint>
     <issue id="MissingRegistered" severity="ignore" />
     <issue id="NewApi" severity="ignore" />
+    <issue id="WrongCall" severity="ignore" />
 </lint>
