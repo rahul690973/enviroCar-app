@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import car.io.commands.CommonCommand;
+import car.io.commands.ELM327Init;
 import car.io.commands.CommonCommand.CommonCommandState;
 import car.io.importedCommands.EchoOff;
 import car.io.importedCommands.LineFeedOff;
@@ -113,6 +114,9 @@ public class BackgroundService extends Service {
 				.createRfcommSocketToServiceRecord(MY_UUID);
 
 		bluetoothSocket.connect();
+		
+		//test for the w4/w3 adapters
+		addCommandToWaitingList(new ELM327Init());
 		
 		addCommandToWaitingList(new ObdReset());
 		addCommandToWaitingList(new EchoOff());
