@@ -1,5 +1,6 @@
 /* 
  * enviroCar 2013
+
  * Copyright (C) 2013  
  * Martin Dueren, Jakob Moellers, Gerald Pape, Christopher Stephan
  *
@@ -80,10 +81,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -123,9 +127,14 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	static final int START_STOP_MEASUREMENT = 3;
 	static final int SETTINGS = 4;
 	static final int LOGBOOK = 5;
+	static final int LANGUAGE=5;
 	static final int HELP = 6;
 	static final int SEND_LOG = 7;
-	
+	static final int SUBMENU_ABOUT=0;
+	static final int SUBMENU_HELP=1;
+	static final int SUBMENU_REPORT=2;
+	static final int SUBMENU_LOGBOOK=3;
+	static final int MENU_ID=4;
 	
 	static final String DASHBOARD_TAG = "DASHBOARD";
 	static final String LOGIN_TAG = "LOGIN";
@@ -164,15 +173,17 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		
 	private void prepareNavDrawerItems(){
 		if(this.navDrawerItems == null){
-			navDrawerItems = new NavMenuItem[8];
+			navDrawerItems = new NavMenuItem[6];
 			navDrawerItems[LOGIN] = new NavMenuItem(LOGIN, getResources().getString(R.string.menu_login),R.drawable.device_access_accounts);
-			navDrawerItems[LOGBOOK] = new NavMenuItem(LOGBOOK, getResources().getString(R.string.menu_logbook), R.drawable.logbook);
+			//navDrawerItems[LOGBOOK] = new NavMenuItem(LOGBOOK, getResources().getString(R.string.menu_logbook), R.drawable.logbook);
 			navDrawerItems[SETTINGS] = new NavMenuItem(SETTINGS, getResources().getString(R.string.menu_settings),R.drawable.action_settings);
 			navDrawerItems[START_STOP_MEASUREMENT] = new NavMenuItem(START_STOP_MEASUREMENT, getResources().getString(R.string.menu_start),R.drawable.av_play);
 			navDrawerItems[DASHBOARD] = new NavMenuItem(DASHBOARD, getResources().getString(R.string.dashboard), R.drawable.dashboard);
 			navDrawerItems[MY_TRACKS] = new NavMenuItem(MY_TRACKS, getResources().getString(R.string.my_tracks),R.drawable.device_access_storage);
-			navDrawerItems[HELP] = new NavMenuItem(HELP, getResources().getString(R.string.menu_help), R.drawable.action_help);
-			navDrawerItems[SEND_LOG] = new NavMenuItem(SEND_LOG, getResources().getString(R.string.menu_send_log), R.drawable.action_report);
+			navDrawerItems[LANGUAGE] = new NavMenuItem(LANGUAGE, getResources().getString(R.string.language),R.drawable.ic_action_labels);
+			
+			//navDrawerItems[HELP] = new NavMenuItem(HELP, getResources().getString(R.string.menu_help), R.drawable.action_help);
+			//navDrawerItems[SEND_LOG] = new NavMenuItem(SEND_LOG, getResources().getString(R.string.menu_send_log), R.drawable.action_report);
 		}
 		
 		if (UserManager.instance().isLoggedIn()) {
@@ -821,6 +832,8 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	 * Determine what the menu buttons do
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		
 		switch (item.getItemId()) {
 
 		case android.R.id.home:
@@ -830,7 +843,34 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 				drawer.openDrawer(drawerList);
 			}
 			return true;
+			
+		case SUBMENU_HELP:
+			if(isFragmentVisible(HELP_TAG)){
+            	break;
+            }
+			HelpFragment helpFragment = new HelpFragment();
+            manager.beginTransaction().replace(R.id.content_frame, helpFragment, HELP_TAG).addToBackStack(null).commit();
+            return true;
+            
+		case SUBMENU_REPORT:
+			if(isFragmentVisible(SEND_LOG_TAG)){
+            	break;
+            }
+			SendLogFileFragment logFragment = new SendLogFileFragment();
+			manager.beginTransaction().replace(R.id.content_frame, logFragment, SEND_LOG_TAG).addToBackStack(null).commit();
+			return true;
+			
+		case SUBMENU_LOGBOOK:
+			if(isFragmentVisible(LOGBOOK_TAG)){
+            	break;
+            }
+			LogbookFragment logbookFragment = new LogbookFragment();
+            manager.beginTransaction().replace(R.id.content_frame, logbookFragment, LOGBOOK_TAG).addToBackStack(null).commit();
+            return true;
+			
 		}
+		
+		
 		return false;
 	}
 	
@@ -845,4 +885,29 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		}
 	}
 	
-}
+	
+	 @Override
+	    public boolean onCreateOptionsMenu(Menu menu) {
+		 
+		 //SubMenu overflowMenu = menu.addSubMenu("Action Item");
+		 SubMenu overflowMenu=menu.addSubMenu(0, MENU_ID, 300, "Action Item");
+		 overflowMenu.add(0,SUBMENU_ABOUT,14,"About");
+		 overflowMenu.add(0,SUBMENU_HELP,14,"Help");
+		 overflowMenu.add(0,SUBMENU_REPORT,14,"Send Report");
+		 overflowMenu.add(0,SUBMENU_LOGBOOK,14,"LogBook");
+	        
+	        
+	        
+
+	        MenuItem subMenu1Item = overflowMenu.getItem();
+	        subMenu1Item.setIcon(R.drawable.overflow_menu_trans);
+	        
+	        //subMenu1Item.getActionView().setBackgroundColor(Color.RED);
+	        subMenu1Item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		 
+		 return super.onCreateOptionsMenu(menu);
+	 }
+	 }
+	
+	
+

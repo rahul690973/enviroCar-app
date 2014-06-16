@@ -30,6 +30,8 @@ import org.envirocar.app.application.UserManager;
 import org.envirocar.app.util.Util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -41,6 +43,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
@@ -68,6 +72,13 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	public static final String SAMPLING_RATE = "ec_sampling_rate";
 	
 	private Preference about;
+	Set<BluetoothDevice> availablePairedDevices;
+	BluetoothAdapter bluetoothAdapter;
+	ListPreference bluetoothDeviceList;
+	ArrayList<CharSequence> possibleDevices;
+	ArrayList<CharSequence> entryValues;
+	OnPreferenceClickListener p;
+	
 	
 	/**
 	 * Helper method that cares about the bluetooth list
@@ -78,34 +89,88 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		// Init Lists
 
-		ArrayList<CharSequence> possibleDevices = new ArrayList<CharSequence>();
-		ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
+		 possibleDevices = new ArrayList<CharSequence>();
+		 entryValues = new ArrayList<CharSequence>();
 
 		// Get the bluetooth preference if possible
 
-		final ListPreference bluetoothDeviceList = (ListPreference) getPreferenceScreen()
+		 bluetoothDeviceList = (ListPreference) getPreferenceScreen()
 				.findPreference(BLUETOOTH_KEY);
 
+		
+		
 		// Get the default adapter
 
-		final BluetoothAdapter bluetoothAdapter = BluetoothAdapter
+		 bluetoothAdapter = BluetoothAdapter
 				.getDefaultAdapter();
+		
+		
+//		bluetoothDeviceList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+//			@Override
+//            public boolean onPreferenceClick(Preference preference) {
+//                
+//            	
+//            	if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+//            		
+//            		bluetoothDeviceList.getDialog().dismiss();
+//            		 Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//                     startActivityForResult(turnOn, 0);
+//          		
+//            	}
+//            	
+//            	return true;
+//            }
+//        });
+		
+		
+		 p=new OnPreferenceClickListener(){
+
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				
+			
+					if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+					
+            		bluetoothDeviceList.getDialog().dismiss();
+            		 Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                     startActivityForResult(turnOn, 0);
+          		
+            	}
+					
+					else listOfAvailableDevices();
+					
+					
+					
+						
+				return true;
+			}
+			
+			
+			
+			
+		};
+		
+		bluetoothDeviceList.setOnPreferenceClickListener(p);
+		
+	
 
 		// No Bluetooth available...
 
 		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-			bluetoothDeviceList.setEnabled(false);
+			//bluetoothDeviceList.setEnabled(false);
 			bluetoothDeviceList.setEntries(possibleDevices
 					.toArray(new CharSequence[0]));
 			bluetoothDeviceList.setEntryValues(entryValues
 					.toArray(new CharSequence[0]));
 			
 			
-			bluetoothDeviceList.setSummary(R.string.pref_bluetooth_disabled);
+			//bluetoothDeviceList.setSummary(R.string.pref_bluetooth_disabled);
 
 			return;
 		}
 
+		
+		
 		// Prepare getting the devices
 
 		final Activity thisSettingsActivity = this;
@@ -114,20 +179,20 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		// Listen for clicks on the list
 
-		bluetoothDeviceList
-				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-					public boolean onPreferenceClick(Preference preference) {
-
-						if (bluetoothAdapter == null
-								|| !bluetoothAdapter.isEnabled()) {
-							Toast.makeText(thisSettingsActivity,
-									"No Bluetooth support. Is Bluetooth on?",
-									Toast.LENGTH_SHORT).show();
-							return false;
-						}
-						return true;
-					}
-				});
+//		bluetoothDeviceList
+//				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+//					public boolean onPreferenceClick(Preference preference) {
+//
+//						if (bluetoothAdapter == null
+//								|| !bluetoothAdapter.isEnabled()) {
+//							Toast.makeText(thisSettingsActivity,
+//									"No Bluetooth support. Is Bluetooth on?",
+//									Toast.LENGTH_SHORT).show();
+//							return false;
+//						}
+//						return true;
+//					}
+//				});
 		//change summary of preference accordingly
 		bluetoothDeviceList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
@@ -140,29 +205,48 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			}
 		});
 
-		// Get all paired devices...
-
-		Set<BluetoothDevice> availablePairedDevices = bluetoothAdapter
-				.getBondedDevices();
-
-		// ...and add them to the list of available paired devices
-
-		if (availablePairedDevices.size() > 0) {
-			for (BluetoothDevice device : availablePairedDevices) {
-				possibleDevices.add(device.getName() + "\n"+ device.getAddress());
-				if(device.getAddress().equals(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(BLUETOOTH_KEY, ""))){
-					bluetoothDeviceList.setSummary(device.getName() + " " + device.getAddress());
-				}
-				entryValues.add(device.getAddress());
-			}
-		}
-
-		bluetoothDeviceList.setEntries(possibleDevices
-				.toArray(new CharSequence[0]));
-		bluetoothDeviceList.setEntryValues(entryValues
-				.toArray(new CharSequence[0]));
+		
+		
+		listOfAvailableDevices();
+		
+		
 
 	}
+	
+	
+	
+	private void listOfAvailableDevices(){
+		
+		
+		// Get all paired devices...
+
+				 availablePairedDevices = bluetoothAdapter
+						.getBondedDevices();
+
+				// ...and add them to the list of available paired devices
+				 
+				possibleDevices =new ArrayList<CharSequence>();
+				entryValues=new ArrayList<CharSequence>();
+
+				if (availablePairedDevices.size() > 0) {
+					for (BluetoothDevice device : availablePairedDevices) {
+						possibleDevices.add(device.getName() + "\n"+ device.getAddress());
+						if(device.getAddress().equals(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString(BLUETOOTH_KEY, ""))){
+							bluetoothDeviceList.setSummary(device.getName() + " " + device.getAddress());
+						}
+						entryValues.add(device.getAddress());
+					}
+				}
+
+				bluetoothDeviceList.setEntries(possibleDevices
+						.toArray(new CharSequence[0]));
+				bluetoothDeviceList.setEntryValues(entryValues
+						.toArray(new CharSequence[0]));
+		
+		
+	}
+	
+	
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -214,4 +298,33 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		}
 		return new String[0];
 	}
-}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	    System.out.println(resultCode);
+	    if (resultCode == 0) {
+	        //Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_LONG).show();
+	    } else {
+	     
+	    	listOfAvailableDevices();
+	    	//p.onPreferenceClick(bluetoothDeviceList);
+	    	
+	    	PreferenceScreen preferenceScreen  = (PreferenceScreen) findPreference("pref_screen_key");
+	        final ListAdapter listAdapter = preferenceScreen.getRootAdapter();
+	             ListPreference editPreference = (ListPreference)   findPreference("bluetooth_list");
+
+	        final int itemsCount = listAdapter.getCount();
+	        int itemNumber;
+	        for (itemNumber = 0; itemNumber < itemsCount; ++itemNumber) {
+	            if (listAdapter.getItem(itemNumber).equals(editPreference)) {
+	                preferenceScreen.onItemClick(null, null, itemNumber, 0);
+	                break;
+	            }
+	        }
+	         }
+	     }
+	    	
+	    	
+	    
+	}
+	
+

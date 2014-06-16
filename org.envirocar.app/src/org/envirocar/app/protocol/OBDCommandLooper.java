@@ -46,6 +46,7 @@ import org.envirocar.app.protocol.sequential.OBDLinkMXConnector;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.util.Log;
 
 /**
  * this is the main class for interacting with a OBD-II adapter.
@@ -289,6 +290,7 @@ public class OBDCommandLooper extends HandlerThread {
 		
 		long time = 0;
 		for (CommonCommand cmd : cmds) {
+			
 			if (cmd.getCommandState() == CommonCommandState.FINISHED) {
 				commandListener.receiveUpdate(cmd);
 				time = cmd.getResultTime();

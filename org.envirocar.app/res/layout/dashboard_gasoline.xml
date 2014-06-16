@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:enviroCar="http://envirocar.org"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:id="@+id/speed_view"
+            
+            
+            >
+            
+           <TextView 
+                android:id="@+id/speed" 
+                android:layout_width="fill_parent" 
+                android:layout_height="wrap_content" 
+                android:drawableRight="@drawable/help_icon_trans" 
+                android:text="@string/currentSpeed"
+                android:textColor="#6B0000"
+                android:textSize="18sp"
+                android:gravity="top"
+                android:clickable="true"/> 
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="-33dp">
+                
+                <org.envirocar.app.views.LayeredImageRotateView
+                    android:id="@+id/speedometerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    
+                    enviroCar:maximumDegree="170.0"
+                    enviroCar:maximumScaleValue="250.0"
+                    enviroCar:minimumDegree="10.0"
+                    enviroCar:minimumScaleValue="0.0"
+                    enviroCar:rotatableImageViewid="@+id/arrowImage" >
+
+                    <org.envirocar.app.views.HalfViewWidthImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/speed"
+                        android:src="@drawable/rahul_speed_trans"
+                        enviroCar:widthRelatedPredecessingView="@+id/vehicle_view" />
+
+                    <org.envirocar.app.views.HalfViewWidthImageView
+                        android:id="@+id/arrowImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/halfViewWidthImageView1"
+                        android:contentDescription="@string/speed"
+                        android:src="@drawable/phenometer_speed_arrow"
+                        android:layout_marginTop="23dp"
+                        android:layout_marginLeft="-4dp"
+                         />
+
+                    <org.envirocar.app.views.SizeRelatedTextView
+                        android:id="@+id/textViewSpeedDashboard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/arrowImage"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/speed_initial_value"
+                        android:textColor="#8bbb3f"
+                        android:textSize="18sp"
+                      	enviroCar:sizeRelatedPredecessingView="@+id/arrowImage"  
+                                       
+                        enviroCar:targetTextString="01234567890" />
+                </org.envirocar.app.views.LayeredImageRotateView>
+
+            </LinearLayout>
+            
+            
+		
+        </LinearLayout>
+    

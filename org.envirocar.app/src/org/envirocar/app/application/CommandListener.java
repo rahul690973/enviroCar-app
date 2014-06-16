@@ -34,6 +34,7 @@ import org.envirocar.app.commands.RPM;
 import org.envirocar.app.commands.ShortTermTrimBank1;
 import org.envirocar.app.commands.Speed;
 import org.envirocar.app.commands.TPS;
+import org.envirocar.app.event.EngineLoadEvent;
 import org.envirocar.app.event.EventBus;
 import org.envirocar.app.event.GpsDOP;
 import org.envirocar.app.event.GpsDOPEvent;
@@ -57,8 +58,11 @@ import org.envirocar.app.storage.TrackAlreadyFinishedException;
 import org.envirocar.app.storage.TrackMetadata;
 import org.envirocar.app.util.Util;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Standalone listener class for OBDII commands. It provides all
@@ -67,7 +71,7 @@ import android.location.Location;
  * @author matthes rieke
  *
  */
-public class CommandListener implements Listener, LocationEventListener, MeasurementListener {
+public class CommandListener implements Listener, LocationEventListener, MeasurementListener  {
 	
 	private static final Logger logger = Logger.getLogger(CommandListener.class);
 
@@ -151,6 +155,8 @@ public class CommandListener implements Listener, LocationEventListener, Measure
 				this.collector.newSpeed(speedMeasurement);
 				EventBus.getInstance().fireEvent(new SpeedEvent(speedMeasurement));
 //				logger.info("Processed Speed Response: "+speedMeasurement +" time: "+command.getResultTime());
+				//Log.d("speedvalue",String.valueOf(speedMeasurement));
+				
 			} catch (NumberFormatException e) {
 				logger.warn("speed parse exception", e);
 			}
@@ -168,6 +174,7 @@ public class CommandListener implements Listener, LocationEventListener, Measure
 				this.collector.newRPM(rpmMeasurement);
 				EventBus.getInstance().fireEvent(new RPMEvent(rpmMeasurement));
 //				logger.info("Processed RPM Response: "+rpmMeasurement +" time: "+command.getResultTime());
+				//Log.d("rpmvalue",String.valueOf(rpmMeasurement));
 			} catch (NumberFormatException e) {
 				logger.warn("rpm parse exception", e);
 			}
@@ -210,6 +217,9 @@ public class CommandListener implements Listener, LocationEventListener, Measure
 		else if (command instanceof MAF) {
 			float mafMeasurement = (Float) numberCommand.getNumberResult();
 			this.collector.newMAF(mafMeasurement);
+			//Log.d("maf value",String.valueOf(mafMeasurement));
+			
+			
 //			logger.info("Processed MAF Response: "+mafMeasurement +" time: "+command.getResultTime());
 		}
 		
@@ -223,6 +233,9 @@ public class CommandListener implements Listener, LocationEventListener, Measure
 		else if (command instanceof EngineLoad) {
 			double load = (Float) numberCommand.getNumberResult();
 			this.collector.newEngineLoad(load);
+			Log.d("rahulraja",String.valueOf(load));
+			//Log.d("engine load",String.valueOf(load));
+			EventBus.getInstance().fireEvent(new EngineLoadEvent(load));
 //			logger.info("Processed EngineLoad Response: "+load +" time: "+command.getResultTime());
 		}
 		

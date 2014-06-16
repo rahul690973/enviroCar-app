@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/envirocar_background"
+    >
+
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="fill_parent"
+        android:layout_height="36dp"
+       	android:gravity="center"
+        android:textSize="22sp"
+        android:background="@drawable/dialog_selectors"
+        android:text="Dialog Title" 
+        
+      />
+    <TextView
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/heading"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:text="1. What does this value indicate?"/>
+    
+    <TextView
+        android:id="@+id/indicator_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/indicator"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:text="1. What does this value indicate?mnksfndkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"/>
+    
+        
+   <Button
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/indicator_text"   
+        android:layout_marginTop="20dp"  
+        android:gravity="center" 
+                
+        android:text="@string/action_sign_in_short" />
+
+</RelativeLayout>

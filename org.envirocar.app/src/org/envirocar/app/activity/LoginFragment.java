@@ -52,6 +52,8 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -148,6 +150,10 @@ public class LoginFragment extends SherlockFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu,
 			com.actionbarsherlock.view.MenuInflater inflater) {
+		
+
+		 
+		
 		inflater.inflate(R.menu.menu_login,
 				(com.actionbarsherlock.view.Menu) menu);
 		super.onCreateOptionsMenu(menu, inflater);

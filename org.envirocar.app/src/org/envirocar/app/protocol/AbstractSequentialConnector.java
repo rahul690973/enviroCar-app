@@ -63,6 +63,7 @@ import org.envirocar.app.protocol.exception.ConnectionLostException;
 import org.envirocar.app.protocol.exception.UnmatchedCommandResponseException;
 
 import android.util.Base64;
+import android.util.Log;
 
 /**
  * This class acts as the basis for adapters which work
@@ -94,6 +95,7 @@ public abstract class AbstractSequentialConnector implements OBDConnector {
 	private int cycle = 0;
 	private String preferredLambdaProbe;
 	private ExecutorService initializationExecutor = Executors.newSingleThreadExecutor();
+	String s="";
 	
 	static {
 //		whitelistedCommandNames.add(new FuelSystemStatus().getCommandName());
@@ -224,6 +226,7 @@ public abstract class AbstractSequentialConnector implements OBDConnector {
 			sendCommand(cmd);	
 		} catch (RuntimeException e) {
 			logger.warn("Error while sending command '" + cmd.toString() + "': "+e.getMessage(), e);
+			s+=cmd.getCommandName();
 			cmd.setCommandState(CommonCommandState.EXECUTION_ERROR);
 			return;
 		}
@@ -237,6 +240,7 @@ public abstract class AbstractSequentialConnector implements OBDConnector {
 			readResult(cmd);	
 		} catch (RuntimeException e) {
 			logger.warn("Error while sending command '" + cmd.toString() + "': "+e.getMessage(), e);
+			s+=cmd.getCommandName();
 			cmd.setCommandState(CommonCommandState.EXECUTION_ERROR);
 		}
 	}
@@ -412,6 +416,8 @@ public abstract class AbstractSequentialConnector implements OBDConnector {
 		List<CommonCommand> list = getRequestCommands();
 		
 		for (CommonCommand cmd : list) {
+			Log.d("commandrahul",cmd.getCommandName());
+			Log.d("commandnext",String.valueOf(cmd.getCommandState()));
 			if (blacklistedCommandNames.contains(cmd.getCommandName())) {
 				/*
 				 * we have received enough failed responses for this command
@@ -460,7 +466,7 @@ public abstract class AbstractSequentialConnector implements OBDConnector {
 	 */
 	private void executeCommands(List<CommonCommand> cmds) throws AdapterFailedException, IOException, UnmatchedCommandResponseException, ConnectionLostException {
 		for (CommonCommand c : cmds) {
-			executeCommand(c);
+				executeCommand(c);
 		}
 	}
 
@@ -474,9 +480,11 @@ public abstract class AbstractSequentialConnector implements OBDConnector {
 	 */
 	private void executeCommand(CommonCommand cmd) throws AdapterFailedException, IOException, UnmatchedCommandResponseException, ConnectionLostException {
 		try {
+			
 			if (cmd.getCommandState().equals(CommonCommandState.NEW)) {
 
 				// Run the job
+				
 				cmd.setCommandState(CommonCommandState.RUNNING);
 				runCommand(cmd);
 			}
@@ -516,7 +524,8 @@ public abstract class AbstractSequentialConnector implements OBDConnector {
 				break;
 			case EXECUTION_ERROR:
 				String raw = cmd.getRawData() == null ? "null" : new String(cmd.getRawData());
-				logger.debug("Execution Error for " +cmd.getCommandName() +": "+raw);
+				logger.debug("Executions Error for " +cmd.getCommandName() +": "+raw);
+				logger.debug("rahulerror"+s);
 				this.onBlacklistCandidate(cmd);
 				break;
 				

@@ -18,15 +18,22 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  * 
  */
-package org.envirocar.app.event;
+package org.envirocar.app.dao;
 
-import java.lang.annotation.Retention;
+public class DAOException extends Exception {
 
-import java.lang.annotation.RetentionPolicy;
+	public DAOException(Exception e) {
+		super(e);
+	}
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface SupportedEventClass {
 
-	Class<?> supportedClass();
+	public DAOException(String string) {
+		super(string);
+	}
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 }

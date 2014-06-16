@@ -18,15 +18,21 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  * 
  */
-package org.envirocar.app.event;
+package org.envirocar.app.storage;
 
-import java.lang.annotation.Retention;
+public class TrackWithoutMeasurementsException extends Exception {
 
-import java.lang.annotation.RetentionPolicy;
+	public TrackWithoutMeasurementsException(Track track) {
+		super(String.format("The Track with id '%d' does not have measurements in the database!", track.getId()));
+	}
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface SupportedEventClass {
+	public TrackWithoutMeasurementsException(String string) {
+		super(string);
+	}
 
-	Class<?> supportedClass();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 }
