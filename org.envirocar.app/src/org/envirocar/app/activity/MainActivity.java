@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.envirocar.app.R;
 import org.envirocar.app.activity.StartStopButtonUtil.OnTrackModeChangeListener;
+import org.envirocar.app.activity.preference.UnitSelectionPreference;
 import org.envirocar.app.application.CarManager;
 import org.envirocar.app.application.ECApplication;
 import org.envirocar.app.application.NavMenuItem;
@@ -50,10 +51,12 @@ import org.envirocar.app.util.VersionRange.Version;
 import org.envirocar.app.views.TypefaceEC;
 import org.envirocar.app.views.Utils;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -72,6 +75,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -126,7 +130,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	static final int MY_TRACKS = 2;
 	static final int START_STOP_MEASUREMENT = 3;
 	static final int SETTINGS = 4;
-	static final int LOGBOOK = 5;
+//	static final int LOGBOOK = 5;
 	static final int LANGUAGE=5;
 	static final int HELP = 6;
 	static final int SEND_LOG = 7;
@@ -629,19 +633,56 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
         default:
             break;
             
-		case LOGBOOK:
+//		case LOGBOOK:
+//        	
+//        	if(isFragmentVisible(LOGBOOK_TAG)){
+//            	break;
+//            }
+//			LogbookFragment logbookFragment = new LogbookFragment();
+//            manager.beginTransaction().replace(R.id.content_frame, logbookFragment, LOGBOOK_TAG).addToBackStack(null).commit();
+//			break;
+            
+        case LANGUAGE:
+			
         	
-        	if(isFragmentVisible(LOGBOOK_TAG)){
-            	break;
-            }
-			LogbookFragment logbookFragment = new LogbookFragment();
-            manager.beginTransaction().replace(R.id.content_frame, logbookFragment, LOGBOOK_TAG).addToBackStack(null).commit();
-			break;
+        	
+        	UnitSelectionPreference up=new UnitSelectionPreference(MainActivity.this,null);
+        	
+        	
+        
+        	
+//			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+//			LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+//			 
+//	    	View view=inflater.inflate(R.layout.custom_title, null);
+//	    	TextView head=(TextView)view.findViewById(R.id.heading);
+//	    	head.setText("Choose the Units");
+//	    	View alertView = inflater.inflate(R.layout.units, null);
+//	    	
+//	    	
+//	    	
+//	    	alert.setCustomTitle(view);
+//	    	alert.setView(alertView);
+//	    	
+//	    	alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//	            public void onClick(DialogInterface dialog, int id) {
+//	                 //do things
+//	            }
+//	        });
+//	    	
+//	    	alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//	            public void onClick(DialogInterface dialog, int id) {
+//	                 //do things
+//	            }
+//	        });
+//	    	
+//	    	alert.show();   
         }
         drawer.closeDrawer(drawerList);
 
     }
 
+   
 
     	
 	private StartStopButtonUtil createStartStopUtil() {
@@ -867,6 +908,10 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 			LogbookFragment logbookFragment = new LogbookFragment();
             manager.beginTransaction().replace(R.id.content_frame, logbookFragment, LOGBOOK_TAG).addToBackStack(null).commit();
             return true;
+            
+            
+		
+			
 			
 		}
 		

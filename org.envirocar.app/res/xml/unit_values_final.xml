@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<units  xmlns:android="http://schemas.android.com/apk/res/android">
+
+<length>
+ 
+   
+        <lengthname key="kilometre(km)">1</lengthname>
+        <lengthname key="metre(m)">1000</lengthname>
+        <lengthname key="yards(yd)">1093.61</lengthname>
+        <lengthname key="miles(mi)">0.621</lengthname>
+      
+ 
+</length>
+
+<time>
+ 		 <timename key="hour(h)">1</timename>
+ 		 <timename key="second(s)">3600</timename>
+ 		 <timename key="minutes(m)">60</timename>
+     
+ 
+ 
+</time>
+
+</units>

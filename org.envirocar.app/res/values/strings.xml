@@ -3,6 +3,44 @@
 
     <string name="app_name">enviroCar</string>
     
+    <string name="speed_first">kilometre(km)</string>
+    <string name="speed_second">hour(h)</string>
+    <string name="co2_first">kilogram(kg)</string>
+    <string name="co2_second">hour(h)</string>
+    <string name="fuel_first">litre(l)</string>
+    <string name="fuel_second">hour(h)</string>
+    
+    <string-array name="weight_array">
+        <item>kilogram</item>
+        <item>gram</item>
+        <item>pounds</item>
+        <item>ounce</item>
+        
+    </string-array>
+    
+    <string-array name="volume_array">
+        <item>litre</item>
+        <item>millilitre</item>
+        <item>gallon</item>
+        <item>pounds</item>
+        <item>ounce</item>
+    </string-array>
+    
+    <string-array name="time_array">
+        <item>hour</item>
+        <item>second</item>
+        <item>minute</item>
+        
+    </string-array>
+    
+    
+    
+    
+    <string name="speed_unit">Select unit for speed</string>
+    <string name="co2_unit">Select unit for CO\u2082 emission</string>
+    <string name="fuel_unit">Select unit for fuel consumption</string>
+    <string name="divider_text">/</string>
+    
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help</string>
     <string name="menu_about">About</string>

@@ -57,6 +57,7 @@ import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Base64InputStream;
 import android.util.Base64OutputStream;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;

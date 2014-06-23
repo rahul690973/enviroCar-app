@@ -32,9 +32,13 @@ import java.text.DecimalFormat;
 
 
 
+import java.util.Map;
 
 import org.envirocar.app.R;
+import org.envirocar.app.activity.preference.CarSelectionPreference;
+import org.envirocar.app.activity.preference.UnitSelectionPreference;
 import org.envirocar.app.application.CarManager;
+import org.envirocar.app.application.UnitsParser;
 import org.envirocar.app.application.service.AbstractBackgroundServiceStateReceiver;
 import org.envirocar.app.application.service.BackgroundServiceImpl;
 import org.envirocar.app.application.service.AbstractBackgroundServiceStateReceiver.ServiceState;
@@ -56,6 +60,7 @@ import org.envirocar.app.event.SpeedEventListener;
 import org.envirocar.app.logging.Logger;
 import org.envirocar.app.model.Car;
 import org.envirocar.app.model.Car.FuelType;
+import org.envirocar.app.model.UnitSelection;
 import org.envirocar.app.views.LayeredImageRotateView;
 import org.envirocar.app.views.TypefaceEC;
 
@@ -110,6 +115,7 @@ public class DashboardFragment extends SherlockFragment {
 	private static final String ENGINE_LOAD = "engineLoad";
 	private static final String FUEL_CONSUMPTION = "fuelConsumption";
 	private static int CAR_PREFERANCE_CHANGED=0;
+	private static int UNITS_PREFERENCE_CHANGED=1;
 	
 	
 	private static final String ENGINE_LOAD_INFO="engine load is how muchdemand is placed on the engine for power such as playing the music, rolling down the windows and running the A/C system and using the wipers while starting the vehicle for example";
@@ -120,7 +126,13 @@ public class DashboardFragment extends SherlockFragment {
 	private static final String CO2_SAFE_VALUE="The safe value is around 10kg/h";
 	private static final String CO2_INCREASE="Effect of increase in co2 levels";
 	
+	private static  final String FUEL_CONSUMPTION_INFO="Fuel consumption is the amount of fuel used per unit distance; for example, litres per 100 kilometers (L/100 km). In this case, the lower the value, the more economic a vehicle is (the less fuel it needs to travel a certain distance). Fuel consumption is a reciprocal of fuel economy.";
+	private static  final String FUEL_CONSUMPTION_SAFE_VALUE="There is no safe value, but the lower the fuel consumption value is, the more better is performance of your car";
 	
+	
+	String lengthUnit = null,timeUnit = null;
+	String shortLengthUnit=null,shortTimeUnit=null;
+	float conversion_length=0.0f,conversion_time=0.0f;
 
 	// UI Items
 
@@ -222,9 +234,17 @@ public class DashboardFragment extends SherlockFragment {
 
 		dashboardView = getView();
 
-		preferences = PreferenceManager
-				.getDefaultSharedPreferences(getActivity()
-						.getApplicationContext());
+		preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		
+		if(preferences.getString(SettingsActivity.UNITS, null) == null){
+			
+			UnitSelection us=new UnitSelection(getString(R.string.speed_first),getString(R.string.speed_second),
+					   getString(R.string.co2_first),getString(R.string.co2_second),
+					   getString(R.string.fuel_first),getString(R.string.fuel_second));
+			
+		    UnitSelectionPreference.persistUnits(us,getActivity());
+			
+		}
 		
 		
 
@@ -270,6 +290,13 @@ public class DashboardFragment extends SherlockFragment {
 				} else if (key.equals(SettingsActivity.BLUETOOTH_KEY)) {
 					updateStatusElements();
 				}
+				
+				else if (key.equals(SettingsActivity.UNITS)){
+					
+					UNITS_PREFERENCE_CHANGED=1;
+				}
+				
+				  
 			}
 		};
 
@@ -820,13 +847,47 @@ public class DashboardFragment extends SherlockFragment {
 	}
 
 	protected void updateSpeedValue() {
+		
+		
+		
+		if(UNITS_PREFERENCE_CHANGED==1){
+			
+			UnitSelection units = new UnitSelection();
+			units = UnitSelectionPreference.instantiateUnits(preferences.getString(SettingsActivity.UNITS, null));
+			Map<String,String> values_maps[]=UnitsParser.getHashMapResource(getActivity(), R.xml.unit_values_final);
+				 
+			conversion_length=Float.parseFloat(values_maps[0].get(lengthUnit));
+			conversion_time=Float.parseFloat(values_maps[1].get(timeUnit));
+			
+			shortLengthUnit=extractSmallUnit(lengthUnit);
+			shortTimeUnit=extractSmallUnit(timeUnit);
+			
+			
+			UNITS_PREFERENCE_CHANGED=0;
+		
+		}
+		
+		
+		
+		
 		if (!preferences.getBoolean(SettingsActivity.IMPERIAL_UNIT, false)) {
-			speedTextView.setText(speed + " km/h");
+			
+			int integerSpeed=(int) (speed*(conversion_length/conversion_time));
+			speedTextView.setText(integerSpeed + shortLengthUnit+"/"+shortTimeUnit);
 			speedRotatableView.submitScaleValue(speed);
 		} else {
 			speedTextView.setText(speed / 1.6f + " mph");
 			speedRotatableView.submitScaleValue(speed / 1.6f);
 		}
 	}
+	
+	
+	protected String extractSmallUnit(String s){
+		
+		return(s.substring(s.indexOf("(")+1,s.indexOf(")")));
+		
+	}
+	
+	
 
 }

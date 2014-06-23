@@ -71,6 +71,11 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	public static final String PERSISTENT_SEEN_ANNOUNCEMENTS = "persistent_seen_announcements";
 	public static final String SAMPLING_RATE = "ec_sampling_rate";
 	
+	public static final String UNITS = "pref_selected_units";
+	public static final String UNITS_HASH_CODE = "pref_selected_units_hash_code";
+	
+	
+	
 	private Preference about;
 	Set<BluetoothDevice> availablePairedDevices;
 	BluetoothAdapter bluetoothAdapter;

@@ -46,7 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/speed"
-                        android:src="@drawable/rahul_speed_trans"
+                        android:src="@drawable/new_phenometer_speed"
                         enviroCar:widthRelatedPredecessingView="@+id/vehicle_view" />
 
                     <org.envirocar.app.views.HalfViewWidthImageView

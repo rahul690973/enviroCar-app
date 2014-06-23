@@ -55,7 +55,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/speed"
-                        android:src="@drawable/rahul_speed_trans"
+                        android:src="@drawable/new_phenometer_speed"
                         enviroCar:widthRelatedPredecessingView="@+id/vehicle_view" />
 
                     <org.envirocar.app.views.HalfViewWidthImageView
@@ -94,6 +94,7 @@
                 android:text="@string/engine_load"
                 android:textColor="#6B0000"
                 android:textSize="18sp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="2dp"
                 android:clickable="true"/> 
                 
@@ -127,6 +128,7 @@
                 android:text="@string/Co2emission"
                 android:textColor="#6B0000"
                 android:textSize="18sp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="2dp"
                 android:clickable="true"/> 
             
@@ -155,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/Co2emission"
-                    android:src="@drawable/rahul_co2_trans"
+                    android:src="@drawable/new_phenometer_co2"
                    
                     enviroCar:widthRelatedPredecessingView="@+id/vehicle_view" />
 
