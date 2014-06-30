@@ -58,6 +58,32 @@
                         android:layout_marginTop="23dp"
                         android:layout_marginLeft="-4dp"
                          />
+                    
+                     <TextView
+                        android:id="@+id/fuelInitial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/arrowImage"
+                        android:layout_marginTop="70dp"
+                        android:textColor="#8bbb3f" 
+                        
+                        />
+
+                    <TextView
+                        android:id="@+id/fuelMid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="37dp" 
+                        android:textColor="#8bbb3f"/>
+
+                    <TextView
+                        android:id="@+id/fuelEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/arrowImage"
+                        android:layout_marginTop="70dp" 
+                        android:textColor="#8bbb3f"/>
 
                     <org.envirocar.app.views.SizeRelatedTextView
                         android:id="@+id/textViewConsumptionDashboard"
@@ -67,9 +93,7 @@
                         android:layout_centerHorizontal="true"
                         android:text="@string/consumption_initial_value"
                         android:textColor="#8bbb3f"
-                        android:textSize="18sp"
-                      	enviroCar:sizeRelatedPredecessingView="@+id/arrowImage"  
-                                       
+                        enviroCar:sizeRelatedPredecessingView="@+id/arrowImage"  
                         enviroCar:targetTextString="01234567890" />
                 </org.envirocar.app.views.LayeredImageRotateView>
 

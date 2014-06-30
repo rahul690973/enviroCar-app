@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<units  xmlns:android="http://schemas.android.com/apk/res/android">
+
+<speed>
+ 
+   
+        <speedname key="kilometer/stunde(km/st)">1</speedname>
+        <speedname key="meter/zweite(m/zw)">0.278</speedname>
+        <speedname key="yards/zweite(y/zw)">0.304</speedname>
+        <speedname key="meilen/stunde(mi/st)">0.621</speedname>
+      
+ 
+</speed>
+
+<co2>
+ 		 <co2name key="kilogramm/stunde(kg/st)">1</co2name>
+ 		 <co2name key="gramm/zweite(g/zw)">0.278</co2name>
+ 		 <co2name key="pfund/stunde(pf/st)">2.204</co2name>
+ 		 <co2name key="unze/protokoll(un/pk)">0.587</co2name>
+ 
+     
+ 
+ 
+</co2>
+
+<fuel>
+    	
+     	 <fuelname key="liter/stunde(l/st)">1</fuelname>
+ 		 <fuelname key="milliliter/zweite(m/zw)">0.228</fuelname>
+ 		 <fuelname key="gallone/stunde(ga/st)">0.264</fuelname>
+ 		 
+    
+    
+</fuel>
+
+
+
+</units>

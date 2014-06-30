@@ -1,0 +1,32 @@
+   	
+<resources>
+   	<string name="speed_default_unit">kilometre/hour(km/h)</string>
+    <string name="co2_default_unit">kilogram/hour(kg/h)</string>
+    <string name="fuel_default_unit">litre/hour(l/h)</string>
+    
+   
+    
+   
+    
+    
+    <string name="speed_initial">0</string>
+    <string name="speed_mid">100</string>
+    <string name="speed_end">200</string>
+    
+    <string name="co2_initial">0</string>
+    <string name="co2_mid">50</string>
+    <string name="co2_end">100</string>
+    
+      
+    <string name="fuel_initial">0</string>
+    <string name="fuel_mid">25</string>
+    <string name="fuel_end">50</string>
+    
+    
+    
+    <string name="speed_unit">Select unit for speed</string>
+    <string name="co2_unit">Select unit for CO\u2082 emission</string>
+    <string name="fuel_unit">Select unit for fuel consumption</string>
+    <string name="divider_text">/</string>
+    
+ </resources>

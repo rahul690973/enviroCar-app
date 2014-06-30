@@ -3,43 +3,7 @@
 
     <string name="app_name">enviroCar</string>
     
-    <string name="speed_first">kilometre(km)</string>
-    <string name="speed_second">hour(h)</string>
-    <string name="co2_first">kilogram(kg)</string>
-    <string name="co2_second">hour(h)</string>
-    <string name="fuel_first">litre(l)</string>
-    <string name="fuel_second">hour(h)</string>
-    
-    <string-array name="weight_array">
-        <item>kilogram</item>
-        <item>gram</item>
-        <item>pounds</item>
-        <item>ounce</item>
-        
-    </string-array>
-    
-    <string-array name="volume_array">
-        <item>litre</item>
-        <item>millilitre</item>
-        <item>gallon</item>
-        <item>pounds</item>
-        <item>ounce</item>
-    </string-array>
-    
-    <string-array name="time_array">
-        <item>hour</item>
-        <item>second</item>
-        <item>minute</item>
-        
-    </string-array>
-    
-    
-    
-    
-    <string name="speed_unit">Select unit for speed</string>
-    <string name="co2_unit">Select unit for CO\u2082 emission</string>
-    <string name="fuel_unit">Select unit for fuel consumption</string>
-    <string name="divider_text">/</string>
+ 
     
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help</string>
@@ -324,5 +288,81 @@ If you discover and problems, please send us an error log (-> report problem). T
 	<string name="currency">Currency</string>
 	<string name="logbook_information">Information about the Date, User, Car and Fueltype will be obtained automatically</string>
 	<string name="comment">Additional comments</string>
+	
+	
+	
+	
+   <string name="about_text">
+       What does this value indicate?
+   </string>
+   <string name="safe_range_text">
+       What is the safe range for this value?
+   </string>
+   <string name="safe_range_above_text">
+       What happens if the value increases above the safe range?
+   </string>	
+   
+   <string name="about_speed">
+       The actual speed of the car. For diesel based cars, fuel consumption values are not yet supported
+       so speed is diasplayed.
+   </string>
+   <string name="speed_safe_range">
+       The speedometer on the dashboard indicates the safe range of speed value in green and yellow portions.
+       On highways with very sparse traffic, high speed can be fine but driving in the city with high speed 
+       could be very fatal
+   </string>	
+   <string name="speed_above_normal">
+       A speed of 100km/h should be considered as the upper limit even when driving on the sparsely populated
+       areas. In city roads, the average speed should be 50-60km/h depending on the traffic conditions.
+   </string>
+   
+   
+   <string name="about_engine_load">
+       engine load is how muchdemand is placed on the engine for power such as playing the music, rolling down 
+       the windows and running the A/C system and using the wipers while starting the vehicle for example
+   </string>
+   <string name="engine_load_safe_range">
+       Engine load should not go beyond 45%
+   </string>
+   <string name="engine_load_above_normal">
+        The load on your engine will increase. The engine could blast
+   </string>
+   
+   
+   <string name="about_co2_emission">
+       
+       It shows the amount of co2 gas emitted by the car in an hour. The CO2 emissions of a car are directly 
+       proportional to the quantity of fuel consumed by an engine.Co2 gas is the major contributor towards
+       global warming leading to increase in an overall environment temperature.
+   </string>
+    <string name="co2_emission_safe_range">
+       For medium weight cars, average CO2 emission value is around 10-15 kg/hour. While for heavy weight 
+       vehicles, it comes to be around 25-35 kg/hour
+   </string>
+   <string name="co2_emission_above_normal">
+       The pollutants including co2 gas emitted from a car should be as much less as possible. Co2 above
+       normal values very adversely affects the environment and creates respiratoty problems for the people.
+   </string>
+   
+   <string name="about_fuel_consumption">
+       
+       It indicates the total volume of fuel burnt in an hour. It is a measure of how efficient your car is. For 
+       new and properly maintained and light weight  vehicles, it is low. It is high for old vehicles or heavy 
+       weight ones like trucks .
+   </string>
+	<string name="fuel_consumption_safe_range">
+       
+       For bikes, it is 40-50
+   </string>
+  <string name="fuel_consumption_above_normal">
+       
+      Wenn Kraftstoffverbrauch geht über den normalen Werten, wird es zu einer Erhöhung der Menge der CO2-Emissionen führen und damit die Umwelt zu belasten sehr. So regelmäßig Wartung des Fahrzeugs ist ein Workaround für sie.
+   </string>
+	
+	
+	
+	
+	
+	
 	
 </resources>

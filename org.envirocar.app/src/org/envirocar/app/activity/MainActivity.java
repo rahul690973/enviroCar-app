@@ -24,6 +24,7 @@ package org.envirocar.app.activity;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.envirocar.app.R;
@@ -64,12 +65,15 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.ListPreference;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -83,6 +87,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -214,6 +219,10 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		
+		
+		
+		
+		
 		alwaysUpload = preferences.getBoolean(SettingsActivity.ALWAYS_UPLOAD, false);
         uploadOnlyInWlan = preferences.getBoolean(SettingsActivity.WIFI_UPLOAD, true);
 
@@ -340,6 +349,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		registerReceiver(errorInformationReceiver, new IntentFilter(TroubleshootingFragment.INTENT));
 		
 		resolvePersistentSeenAnnouncements();
+		loadLanguage(preferences,getBaseContext());
 		
 		
 	}
@@ -356,6 +366,26 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 			}
 		}
 	}
+	
+	
+ public  static void loadLanguage(SharedPreferences preferences,Context base){
+	 
+	 String languageToLoad=null;
+		//Toast.makeText(this, preferences.getString(SettingsActivity.LANGUAGE_KEY, null), Toast.LENGTH_LONG).show();
+		if ((languageToLoad=preferences.getString(SettingsActivity.LANGUAGE_KEY, null)) != null) {
+			
+			
+			Locale locale = new Locale(languageToLoad);  
+			Locale.setDefault(locale); 
+			Configuration config = new Configuration(); 
+			config.locale = locale; 
+			base.getResources().updateConfiguration(config,  
+			base.getResources().getDisplayMetrics());
+		
+		}
+		
+	 
+ }
 	
 	private void bindToBackgroundService() {
 		if (!bindService(new Intent(this, BackgroundServiceImpl.class),
@@ -465,6 +495,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		}
 	}
 
+	
 
 	private class NavAdapter extends BaseAdapter {
 		
@@ -586,14 +617,21 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
         // Start or stop the measurement process
             
 		case START_STOP_MEASUREMENT:
-			if (!navDrawerItems[position].isEnabled()) return;
+			//if (!navDrawerItems[position].isEnabled()) return;
 			
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 
 			String remoteDevice = preferences.getString(org.envirocar.app.activity.SettingsActivity.BLUETOOTH_KEY,null);
 
 			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-			if (adapter != null && adapter.isEnabled() && remoteDevice != null) {
+			
+			if(adapter == null || !adapter.isEnabled()){
+				
+				Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(turnOn, 0);
+			}
+			
+			else if (adapter != null && adapter.isEnabled() && remoteDevice != null) {
 				if(CarManager.instance().getCar() == null){
 					Intent settingsIntent = new Intent(this, SettingsActivity.class);
 					startActivity(settingsIntent);
@@ -936,10 +974,10 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		 
 		 //SubMenu overflowMenu = menu.addSubMenu("Action Item");
 		 SubMenu overflowMenu=menu.addSubMenu(0, MENU_ID, 300, "Action Item");
-		 overflowMenu.add(0,SUBMENU_ABOUT,14,"About");
-		 overflowMenu.add(0,SUBMENU_HELP,14,"Help");
-		 overflowMenu.add(0,SUBMENU_REPORT,14,"Send Report");
-		 overflowMenu.add(0,SUBMENU_LOGBOOK,14,"LogBook");
+		 
+		 overflowMenu.add(0,SUBMENU_HELP,14,getString(R.string.menu_help));
+		 overflowMenu.add(0,SUBMENU_REPORT,14,getString(R.string.menu_send_log));
+		 overflowMenu.add(0,SUBMENU_LOGBOOK,14,getString(R.string.menu_logbook));
 	        
 	        
 	        
@@ -952,6 +990,11 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		 
 		 return super.onCreateOptionsMenu(menu);
 	 }
+	 
+	 
+		     
+	 
+	 
 	 }
 	
 	

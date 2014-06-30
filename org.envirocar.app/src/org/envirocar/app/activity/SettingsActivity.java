@@ -23,6 +23,7 @@ package org.envirocar.app.activity;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Set;
 
 import org.envirocar.app.R;
@@ -30,12 +31,19 @@ import org.envirocar.app.application.UserManager;
 import org.envirocar.app.util.Util;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -70,6 +78,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	public static final String CAR_HASH_CODE = "pref_selected_car_hash_code";
 	public static final String PERSISTENT_SEEN_ANNOUNCEMENTS = "persistent_seen_announcements";
 	public static final String SAMPLING_RATE = "ec_sampling_rate";
+	public static final String LANGUAGE_KEY = "select_language";
+	
 	
 	public static final String UNITS = "pref_selected_units";
 	public static final String UNITS_HASH_CODE = "pref_selected_units_hash_code";
@@ -79,7 +89,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	private Preference about;
 	Set<BluetoothDevice> availablePairedDevices;
 	BluetoothAdapter bluetoothAdapter;
-	ListPreference bluetoothDeviceList;
+	ListPreference bluetoothDeviceList,languageList;
 	ArrayList<CharSequence> possibleDevices;
 	ArrayList<CharSequence> entryValues;
 	OnPreferenceClickListener p;
@@ -101,7 +111,44 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		 bluetoothDeviceList = (ListPreference) getPreferenceScreen()
 				.findPreference(BLUETOOTH_KEY);
-
+		 
+		 languageList = (ListPreference) getPreferenceScreen()
+					.findPreference(LANGUAGE_KEY);
+		 
+		
+		 languageList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				
+				
+				languageList.setValue(newValue.toString());
+				preference.setSummary(languageList.getEntry());
+				
+				
+				
+				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(LANGUAGE_KEY, (String) languageList.getValue()).commit();
+				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(SettingsActivity.UNITS,null).commit();
+			    
+				
+				Locale locale = new Locale("de");  
+				Locale.setDefault(locale); 
+				Configuration config = new Configuration(); 
+				config.locale = locale; 
+				getBaseContext().getResources().updateConfiguration(config,  
+						getBaseContext().getResources().getDisplayMetrics());
+											
+				Intent mStartActivity = new Intent(getApplicationContext(), MainActivity.class);
+				int mPendingIntentId = 123456;
+				PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+				AlarmManager mgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+				mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+				System.exit(0);
+							
+				return false;
+			}
+		});
+		
 		
 		
 		// Get the default adapter
@@ -136,7 +183,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			
 					if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
 					
-            		bluetoothDeviceList.getDialog().dismiss();
+            		 bluetoothDeviceList.getDialog().dismiss();
             		 Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                      startActivityForResult(turnOn, 0);
           		
@@ -144,9 +191,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 					
 					else listOfAvailableDevices();
 					
-					
-					
-						
+								
 				return true;
 			}
 			
@@ -161,18 +206,18 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		// No Bluetooth available...
 
-		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-			//bluetoothDeviceList.setEnabled(false);
-			bluetoothDeviceList.setEntries(possibleDevices
-					.toArray(new CharSequence[0]));
-			bluetoothDeviceList.setEntryValues(entryValues
-					.toArray(new CharSequence[0]));
-			
-			
-			//bluetoothDeviceList.setSummary(R.string.pref_bluetooth_disabled);
-
-			return;
-		}
+//		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+//			//bluetoothDeviceList.setEnabled(false);
+//			bluetoothDeviceList.setEntries(possibleDevices
+//					.toArray(new CharSequence[0]));
+//			bluetoothDeviceList.setEntryValues(entryValues
+//					.toArray(new CharSequence[0]));
+//			
+//			
+//			//bluetoothDeviceList.setSummary(R.string.pref_bluetooth_disabled);
+//
+//			return;
+//		}
 
 		
 		
@@ -203,6 +248,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				
 				bluetoothDeviceList.setValue(newValue.toString());
 				preference.setSummary(bluetoothDeviceList.getEntry());
 				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(BLUETOOTH_NAME, (String) bluetoothDeviceList.getEntry()).commit();
@@ -210,7 +256,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			}
 		});
 
-		
 		
 		listOfAvailableDevices();
 		
@@ -305,9 +350,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-	    System.out.println(resultCode);
+	   
 	    if (resultCode == 0) {
-	        //Toast.makeText(getBaseContext(), "hi", Toast.LENGTH_LONG).show();
+	       
 	    } else {
 	     
 	    	listOfAvailableDevices();

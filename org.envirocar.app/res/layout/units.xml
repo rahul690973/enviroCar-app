@@ -1,131 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-     >
-     
- <LinearLayout 
-     android:layout_width="fill_parent"
-     android:layout_height="fill_parent"
-     android:layout_marginLeft="12dp"
-     android:orientation="vertical">
-     
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/speed_unit"
-    android:textSize="17sp"
-    android:layout_marginTop="25dp"
-    android:id="@+id/speed_unit"/>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
     
- 	<TableLayout
- 	    android:layout_width="match_parent"
- 	    android:layout_height="wrap_content">
- 	    
- 	    <TableRow
- 	        android:layout_marginTop="10dp">
+<RelativeLayout 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 
- 	        <Spinner 
- 	            android:id="@+id/spinner_speed1"
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	          	/>
- 	        <TextView 
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	            android:text="@string/divider_text"
- 	            android:textSize="37sp"
- 	            android:layout_marginTop="10dp"
- 	            android:layout_marginLeft="12dp"
- 	           
- 	            />
- 	         <Spinner 
- 	            android:id="@+id/spinner_speed2"
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	            android:layout_marginLeft="7dp"
- 	           />
- 	        
- 	    </TableRow>
- 	    
- 	    <TextView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="@string/co2_unit"
-		    android:textSize="17sp"
-		    android:layout_marginTop="25dp"
-		    android:id="@+id/co2_unit"/>
- 	    
- 	    <TableRow
- 	        android:layout_marginTop="10dp">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="12dp"
+        android:orientation="vertical" >
 
- 	        <Spinner 
- 	            android:id="@+id/spinner_co21"
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	            android:entries="@array/weight_array"
- 	            />
- 	        
- 	        <TextView 
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	            android:text="@string/divider_text"
- 	            android:textSize="35sp"
- 	            android:layout_marginLeft="10dp"
- 	            android:layout_marginTop="10dp"
- 	            
- 	            />
- 	         <Spinner 
- 	            android:id="@+id/spinner_co22"
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"         
- 	            android:layout_marginLeft="7dp"
- 	            android:entries="@array/time_array"
- 	            />
- 	        
- 	    </TableRow>
- 	    
- 	     <TextView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="@string/fuel_unit"
-		    android:textSize="17sp"
-		    android:layout_marginTop="25dp"
-		    android:id="@+id/fuel_unit"/>
- 	     
- 	     <TableRow
- 	         android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/speed_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/speed_unit"
+            android:textSize="17sp" />
 
- 	        <Spinner 
- 	            android:id="@+id/spinner_fuel1"
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	            android:entries="@array/volume_array"
- 	          	/>
- 	        
- 	        <TextView 
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	            android:text="@string/divider_text"
- 	            android:textSize="37sp"
- 	            android:layout_marginLeft="12dp"
- 	            android:layout_marginTop="10dp"
- 	           
- 	            />
- 	         <Spinner 
- 	            android:id="@+id/spinner_fuel2"
- 	            android:layout_width="wrap_content"
- 	            android:layout_height="wrap_content"
- 	            android:layout_marginLeft="7dp"
- 	            android:entries="@array/time_array"
- 	           />
- 	        
- 	    </TableRow>
-     
-     
-     
-   </TableLayout>
+        <Spinner
+            android:id="@+id/spinner_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".80" />
 
-</LinearLayout> 
+        <TextView
+            android:id="@+id/co2_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/co2_unit"
+            android:textSize="17sp" />
+
+        <Spinner
+            android:id="@+id/spinner_co2"
+            android:layout_width="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="0.80" />
+
+        <TextView
+            android:id="@+id/fuel_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/fuel_unit"
+            android:textSize="17sp" />
+
+        <Spinner
+            android:id="@+id/spinner_fuel"
+            android:layout_width="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="0.80" />
+
+        
+    </LinearLayout>
 
 </RelativeLayout>
+</ScrollView>

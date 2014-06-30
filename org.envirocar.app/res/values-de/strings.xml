@@ -270,4 +270,76 @@ Bei festgestellten Problemen möchten wir Sie bitten, uns ein Fehlerprotokoll zu
 	<string name="currency">Währung</string>
 	<string name="logbook_information">Informationen zu Zeit, Nutzer, Auto und Kraftstoff werden automatisch ermittelt</string>
 	<string name="comment">Zusätzliche Anmerkungen</string>
+	
+	
+	 <string name="about_text">
+       Was bedeutet dieser Wert an?
+   	</string>
+   	<string name="safe_range_text">
+       Was ist der sichere Bereich für diesen Wert?
+   	</string>
+   	<string name="safe_range_above_text">
+      Was passiert, wenn der Wert über den sicheren Bereich erhöht?
+   	</string>
+	
+	
+	<string name="about_speed">
+       Die tatsächliche Geschwindigkeit des Fahrzeugs. Für Diesel-Autos auf der Basis, Verbrauchswerte sind noch nicht so unterstützt Geschwindigkeitsalgorithmus wird angezeigt.
+   </string>
+   <string name="speed_safe_range">
+       Der Geschwindigkeitsmesser auf dem Armaturenbrett zeigt den sicheren Bereich des Drehzahlwert in grün und gelb portions.On Autobahnen mit sehr spärlichen Verkehr mit hoher Geschwindigkeit kann in Ordnung sein, aber das Fahren in der Stadt mit hoher Geschwindigkeit könnte sehr tödlich sein
+   </string>	
+   <string name="speed_above_normal">
+      Eine Geschwindigkeit von 100 km / h sollte als Obergrenze auch beim Fahren auf den dünn besiedelten Gebieten berücksichtigt werden. Im Stadtstraßen , sollten die Durchschnittsgeschwindigkeit 50-60 km / h je nach Verkehrsbedingungen.
+   </string>
+   
+   
+   <string name="about_engine_load">
+       Motorlast, wie viel Nachfrage auf dem Motor für Power wie das Spielen der Musik, rollten die Fenster und den Betrieb der A / C-System und unter Verwendung der Scheibenwischer beim Starten des Fahrzeugs beispielsweise platziert
+   </string>
+   <string name="engine_load_safe_range">
+       Motorlast sollte nicht über 45% gehen
+   </string>
+   <string name="engine_load_above_normal">
+        Die Last auf den Motor wird zunehmen. Der Motor sprengen könnte
+   </string>
+   
+   
+   <string name="about_co2_emission">
+       
+      Es zeigt die Menge der CO2-Gas mit dem Auto in einer Stunde emittiert. Die CO2-Emissionen eines Autos sind direkt proportional zu der Menge an Kraftstoff durch eine engine.Co2 Gas verbraucht wird, ist der Hauptverursacher der globalen Erwärmung, die zu einem Gesamtumgebungstemperatur zu erhöhen.
+   </string>
+    <string name="co2_emission_safe_range">
+      Für mittelschwere Autos liegt der durchschnittliche CO2-Emissionswert um 10 bis 15 kg / Stunde. Während für schwere Fahrzeuge auf rund 25 bis 35 kg / Stunde kommt es
+   </string>
+   <string name="co2_emission_above_normal">
+       Die Schadstoffe, einschließlich CO2-Gas aus einem Auto emittiert als viel weniger wie möglich sein. CO2-Werte über dem normalen sehr nachteilig auf die Umwelt und schafft Atemprobleme für die Menschen.
+       
+   </string>
+   
+   <string name="about_fuel_consumption">
+       
+      Es gibt die Gesamtkraftstoffmenge in einer Stunde gebrannt. Es ist ein Maß dafür, wie effizient das Auto ist. Für neue und ordnungsgemäß gewartete und leicht Fahrzeugen ist es gering. Es ist hoch für alte Fahrzeuge oder Schwergewicht diejenigen wie Lastwagen.
+   </string>
+	<string name="fuel_consumption_safe_range">
+       
+      Für Fahrräder ist es 40-50
+   </string>
+  <string name="fuel_consumption_above_normal">
+       
+      Wenn Kraftstoffverbrauch geht über den normalen Werten, wird es zu einer Erhöhung der Menge der CO2-Emissionen führen 
+      und damit die Umwelt zu belasten sehr. So regelmäßig Wartung des Fahrzeugs ist ein Workaround für sie.
+   </string>
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
 </resources>

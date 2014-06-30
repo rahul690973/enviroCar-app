@@ -2,24 +2,38 @@
 
 <units  xmlns:android="http://schemas.android.com/apk/res/android">
 
-<length>
+<speed>
  
    
-        <lengthname key="kilometre(km)">1</lengthname>
-        <lengthname key="metre(m)">1000</lengthname>
-        <lengthname key="yards(yd)">1093.61</lengthname>
-        <lengthname key="miles(mi)">0.621</lengthname>
+        <speedname key="kilometre/hour(km/h)">1</speedname>
+        <speedname key="metre/second(m/sec)">0.278</speedname>
+        <speedname key="yards/second(y/s)">0.304</speedname>
+        <speedname key="miles/hour(mi/h)">0.621</speedname>
       
  
-</length>
+</speed>
 
-<time>
- 		 <timename key="hour(h)">1</timename>
- 		 <timename key="second(s)">3600</timename>
- 		 <timename key="minutes(m)">60</timename>
+<co2>
+ 		 <co2name key="kilogram/hour(kg/h)">1</co2name>
+ 		 <co2name key="gram/second(g/s)">0.278</co2name>
+ 		 <co2name key="pounds/hour(lb/h)">2.204</co2name>
+ 		 <co2name key="ounce/minutes(g/m)">0.587</co2name>
+ 
      
  
  
-</time>
+</co2>
+
+<fuel>
+    	
+     	 <fuelname key="litre/hour(l/h)">1</fuelname>
+ 		 <fuelname key="millilitre/second(l/m)">0.228</fuelname>
+ 		 <fuelname key="gallon/hour(ga/h)">0.264</fuelname>
+ 		 
+    
+    
+</fuel>
+
+
 
 </units>

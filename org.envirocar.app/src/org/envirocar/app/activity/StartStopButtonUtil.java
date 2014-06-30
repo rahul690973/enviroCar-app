@@ -132,6 +132,7 @@ public class StartStopButtonUtil {
 		if (title != null) {
 			button.setTitle(title);
 		}
+		
 	}
 
 	/**

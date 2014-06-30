@@ -25,7 +25,7 @@
         android:textStyle="bold"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="20dp"
-        android:text="1. What does this value indicate?"
+        android:text="@string/about_text"
         android:textSize="17sp"
         />
     
@@ -47,7 +47,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:textSize="17sp"
-        android:text="2. What is the safe range for this value?"/>
+        android:text="@string/safe_range_text"/>
     <TextView
         android:id="@+id/safe_range_text"
         android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:textSize="17sp"
-        android:text="3.What happens if the value increase above the safe range?"/>
+        android:text="@string/safe_range_above_text"/>
     <TextView
         android:id="@+id/increase_value_text"
         android:layout_width="wrap_content"

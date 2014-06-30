@@ -22,16 +22,7 @@
 package org.envirocar.app.activity;
 
 import java.text.DecimalFormat;
-
-
-
-
-
-
-
-
-
-
+import java.util.Locale;
 import java.util.Map;
 
 import org.envirocar.app.R;
@@ -62,6 +53,7 @@ import org.envirocar.app.model.Car;
 import org.envirocar.app.model.Car.FuelType;
 import org.envirocar.app.model.UnitSelection;
 import org.envirocar.app.views.LayeredImageRotateView;
+import org.envirocar.app.views.SizeRelatedTextView;
 import org.envirocar.app.views.TypefaceEC;
 
 import android.app.AlertDialog;
@@ -75,6 +67,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -114,25 +107,17 @@ public class DashboardFragment extends SherlockFragment {
 	private static final String CO2 = "co2";
 	private static final String ENGINE_LOAD = "engineLoad";
 	private static final String FUEL_CONSUMPTION = "fuelConsumption";
-	private static int CAR_PREFERANCE_CHANGED=0;
-	private static int UNITS_PREFERENCE_CHANGED=1;
+	private static int CAR_PREFERANCE_CHANGED = 0;
+	private static int UNITS_PREFERENCE_CHANGED = 1;
+
 	
-	
-	private static final String ENGINE_LOAD_INFO="engine load is how muchdemand is placed on the engine for power such as playing the music, rolling down the windows and running the A/C system and using the wipers while starting the vehicle for example";
-	private static final String ENGINE_LOAD_SAFE_VALUE=" Engine load should not go beyond 45%";
-	private static final String ENGINE_LOAD_INCREASE="The load on your engine will increase. The engine could blast";
-	
-	private static  final String CO2_EMISSION_INFO="Carbon dioxide (CO2) emissions are the common type of gas emitted from the burning of fossil fuels. The higher the carbon content in the fossil fuel or the more inefficient the burning process is, generally the more CO2 that is produced.";
-	private static final String CO2_SAFE_VALUE="The safe value is around 10kg/h";
-	private static final String CO2_INCREASE="Effect of increase in co2 levels";
-	
-	private static  final String FUEL_CONSUMPTION_INFO="Fuel consumption is the amount of fuel used per unit distance; for example, litres per 100 kilometers (L/100 km). In this case, the lower the value, the more economic a vehicle is (the less fuel it needs to travel a certain distance). Fuel consumption is a reciprocal of fuel economy.";
-	private static  final String FUEL_CONSUMPTION_SAFE_VALUE="There is no safe value, but the lower the fuel consumption value is, the more better is performance of your car";
-	
-	
-	String lengthUnit = null,timeUnit = null;
-	String shortLengthUnit=null,shortTimeUnit=null;
-	float conversion_length=0.0f,conversion_time=0.0f;
+	String speedUnit = null;
+	String shortSpeedUnit = null;
+	String co2Unit=null,shortCo2Unit=null,shortFuelUnit=null;
+
+	private float conversion_factor_speed;
+	private float conversion_factor_co2;
+	private float conversion_factor_fuel;
 
 	// UI Items
 
@@ -140,13 +125,17 @@ public class DashboardFragment extends SherlockFragment {
 	TextView co2TextView;
 	TextView engineLoadTextView;
 	TextView fuelConsumptionTextView;
-	
+
 	TextView fuelConsumptionInfoView;
 	TextView speedInfoView;
-	
-	
+
 	ProgressBar engineLoadProgressView;
 	View dashboardView;
+	
+	TextView speedInitialView,speedMidView,speedEndView;
+	TextView co2InitialView,co2MidView,co2EndView;
+	TextView fuelInitialView,fuelMidView,fuelEndView;
+	
 
 	private LocationEventListener locationListener;
 	private SpeedEventListener speedListener;
@@ -162,6 +151,8 @@ public class DashboardFragment extends SherlockFragment {
 	private double co2;
 	private double engineLoad;
 	private double fuelConsumption;
+	UnitSelection units;
+	
 
 	private BroadcastReceiver receiver;
 	protected ServiceState serviceState = ServiceState.SERVICE_STOPPED;
@@ -182,22 +173,18 @@ public class DashboardFragment extends SherlockFragment {
 	private Drawable btStopped;
 	private Drawable btPending;
 	private Drawable btActive;
+	private Drawable adapterSelected;
 	private ImageView connectionStateImage;
-	
+
 	AlertDialog.Builder alert;
-	
-	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		logger.info("onCreateView. hash=" + System.identityHashCode(this));
-	
-			return inflater.inflate(R.layout.dashboard_new, container, false);
-			
-			
-			
-			
+		
+		return inflater.inflate(R.layout.dashboard_new, container, false);
+
 	}
 
 	/**
@@ -223,34 +210,44 @@ public class DashboardFragment extends SherlockFragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		
 		loadCommonDrawables();
 
 		readSavedState(savedInstanceState);
-		
+        
+	    units = new UnitSelection();
 		loadForGasolineOrDiesel();
 
 		logger.info("onViewCreated. hash=" + System.identityHashCode(this));
 
 		dashboardView = getView();
-
-		preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		
-		if(preferences.getString(SettingsActivity.UNITS, null) == null){
+		// Setup UI elements
+
+		setUpUIElements();
+
+		preferences = PreferenceManager
+				.getDefaultSharedPreferences(getActivity()
+						.getApplicationContext());
+		
+		MainActivity.loadLanguage(preferences,getActivity().getBaseContext());
+
+		if (preferences.getString(SettingsActivity.UNITS, null) == null) {
+
+			UnitSelection us = new UnitSelection(
+					getString(R.string.speed_default_unit),
+					getString(R.string.co2_default_unit),
+					getString(R.string.fuel_default_unit));
+					
+
+			UnitSelectionPreference.persistUnits(us, getActivity());
 			
-			UnitSelection us=new UnitSelection(getString(R.string.speed_first),getString(R.string.speed_second),
-					   getString(R.string.co2_first),getString(R.string.co2_second),
-					   getString(R.string.fuel_first),getString(R.string.fuel_second));
-			
-		    UnitSelectionPreference.persistUnits(us,getActivity());
-			
+
 		}
 		
-		
-
-		// Setup UI elements
-		
-		setUpUIElements();
+		units = UnitSelectionPreference.instantiateUnits(preferences.getString(
+				SettingsActivity.UNITS, null));
+		setUnitsOnTextViews();
+		setRangeInRotableViews();
 		
 
 		/*
@@ -282,171 +279,293 @@ public class DashboardFragment extends SherlockFragment {
 					SharedPreferences sharedPreferences, String key) {
 				if (key.equals(SettingsActivity.CAR)
 						|| key.equals(SettingsActivity.CAR_HASH_CODE)) {
-						
-					
-					CAR_PREFERANCE_CHANGED=1;
+
+					CAR_PREFERANCE_CHANGED = 1;
+					units = UnitSelectionPreference.instantiateUnits(preferences.getString(
+							SettingsActivity.UNITS, null));
+					loadForGasolineOrDiesel();
+					setUpUIElements();
 					updateCarStatus();
+					if(units!=null){
+						
+						setUnitsOnTextViews();
+						setRangeInRotableViews();
+					}
 					
+
 				} else if (key.equals(SettingsActivity.BLUETOOTH_KEY)) {
 					updateStatusElements();
 				}
-				
-				else if (key.equals(SettingsActivity.UNITS)){
+
+				else if (key.equals(SettingsActivity.UNITS)) {
 					
-					UNITS_PREFERENCE_CHANGED=1;
+					units = UnitSelectionPreference.instantiateUnits(preferences.getString(
+							SettingsActivity.UNITS, null));
+					if(units!=null){
+						
+						setUnitsOnTextViews();
+						setRangeInRotableViews();
+						UNITS_PREFERENCE_CHANGED = 1;
+					
+					}
 				}
-				
-				  
+
 			}
 		};
 
 		preferences
 				.registerOnSharedPreferenceChangeListener(preferenceListener);
-		
-		
-		TextView engineLoadInfoView = (TextView) getView().findViewById(R.id.engine_load);
-		TextView co2InfoView = (TextView) getView().findViewById(R.id.co2_emission);
-		
+
+		TextView engineLoadInfoView = (TextView) getView().findViewById(
+				R.id.engine_load);
+		TextView co2InfoView = (TextView) getView().findViewById(
+				R.id.co2_emission);
+
 		engineLoadInfoView.setOnClickListener(mCorkyListener);
 		co2InfoView.setOnClickListener(mCorkyListener);
-		
-		
-		
-		
-		
-		
-		
 
 		bindToBackgroundService();
 	}
-
 	
-	private void setUpUIElements(){
+	
+	private void setRangeInRotableViews(){
+		
+		
+		float speed_conversion_factor=findConversionfactor(units.getSpeed(),0);
+		float co2_conversion_factor=findConversionfactor(units.getCo2Emission(),1);
+		float fuel_conversion_factor=findConversionfactor(units.getFuelConsumption(),2);
 		
 		Car car = CarManager.instance().getCar();
-		if(car!=null)
-			{
-				if(car.getFuelType()==FuelType.GASOLINE){
-				fuelConsumptionTextView = (TextView) getView().findViewById(
-					R.id.textViewConsumptionDashboard);
-				consumptionRotatableView = (LayeredImageRotateView) getView().findViewById(
-						R.id.consumptionmeterView);
+		
+			
+			if(car!=null && car.getFuelType()==FuelType.GASOLINE){
 				
+		
+				setCorrectRange(getString(R.string.fuel_initial),fuel_conversion_factor,fuelInitialView);
+				setCorrectRange(getString(R.string.fuel_mid),fuel_conversion_factor,fuelMidView);
+				setCorrectRange(getString(R.string.fuel_end),fuel_conversion_factor,fuelEndView);
+			}
+			
+			else if(car==null || car.getFuelType()==FuelType.DIESEL){
+				
+				setCorrectRange(getString(R.string.speed_initial),speed_conversion_factor,speedInitialView);
+				setCorrectRange(getString(R.string.speed_mid),speed_conversion_factor,speedMidView);
+				setCorrectRange(getString(R.string.speed_end),speed_conversion_factor,speedEndView);
+				
+				
+			}
+			
+			setCorrectRange(getString(R.string.co2_initial),co2_conversion_factor,co2InitialView);
+			setCorrectRange(getString(R.string.co2_mid),co2_conversion_factor,co2MidView);
+			setCorrectRange(getString(R.string.co2_end),co2_conversion_factor,co2EndView);
+			
+		
+		
+		
+	}
+	
+	private void setCorrectRange(String value,float conversion_factor,TextView tv){
+		
+		int integerValue=Integer.parseInt(value);
+		int convertedValue=(int) (integerValue*(conversion_factor));
+		tv.setText(String.valueOf(convertedValue));
+		
+	}
+	
+	
+	private float findConversionfactor(String unit,int pos){
+		
+		
+		Map<String, String> values_maps[] = UnitsParser.getHashMapResource(
+				getActivity(), R.xml.unit_values_final);
+		
+		float conversion_factor = Float
+				.parseFloat(values_maps[pos].get(unit));       // o for speed, 1 for co2 and 2 for fuel
+		return conversion_factor;
+		
+	}
+
+	private void setUnitsOnTextViews() {
+
+		
+		
+		//Toast.makeText(getActivity(), units.getCo2Emission(), Toast.LENGTH_LONG).show();
+
+		Car car = CarManager.instance().getCar();
+		
+			if (car!=null && car.getFuelType() == FuelType.GASOLINE) {
+				
+				setValuesDependingOnCar(fuelConsumptionTextView,units.getFuelConsumption());
+				
+			} else if (car==null || car.getFuelType() == FuelType.DIESEL) {
+
+				setValuesDependingOnCar(speedTextView,units.getSpeed());
+
+			}
+			
+			
+			setValuesDependingOnCar(co2TextView,units.getCo2Emission());
+
+		
+
+	}
+	
+	
+	private void setValuesDependingOnCar(TextView tv,String unit){
+		
+		tv.setText(0+" "+extractSmallUnit(unit));
+		
+	}
+
+	private void setUpUIElements() {
+
+		Car car = CarManager.instance().getCar();
+		
+			if (car!=null && car.getFuelType() == FuelType.GASOLINE) {
+				fuelConsumptionTextView = (TextView) getView().findViewById(
+						R.id.textViewConsumptionDashboard);
+				consumptionRotatableView = (LayeredImageRotateView) getView()
+						.findViewById(R.id.consumptionmeterView);
+				
+				fuelInitialView = (TextView) getView()
+						.findViewById(R.id.fuelInitial);
+				fuelMidView = (TextView) getView()
+						.findViewById(R.id.fuelMid);
+				fuelEndView = (TextView) getView()
+						.findViewById(R.id.fuelEnd);
+
 				fuelConsumptionInfoView = (TextView) getView().findViewById(
 						R.id.fuel_consumption);
 				fuelConsumptionInfoView.setOnClickListener(mCorkyListener);
-				}
-				
-				else if(car.getFuelType()==FuelType.DIESEL){
-					
+			}
+
+			else if (car==null || car.getFuelType() == FuelType.DIESEL) {
+
 				speedTextView = (TextView) getView().findViewById(
-							R.id.textViewSpeedDashboard);
-				speedRotatableView = (LayeredImageRotateView) getView().findViewById(
-						R.id.speedometerView);
-				speedInfoView=(TextView) getView().findViewById(
-						R.id.speed);
+						R.id.textViewSpeedDashboard);
+				speedRotatableView = (LayeredImageRotateView) getView()
+						.findViewById(R.id.speedometerView);
+				speedInitialView = (TextView) getView()
+						.findViewById(R.id.speedInitial);
+				speedMidView = (TextView) getView()
+						.findViewById(R.id.speedMid);
+				speedEndView = (TextView) getView()
+						.findViewById(R.id.speedEnd);
+				
+				
+				
+				speedInfoView = (TextView) getView().findViewById(R.id.speed);
 				speedInfoView.setOnClickListener(mCorkyListener);
-					
-				}
-		}
-		co2TextView = (TextView) getView().findViewById(R.id.co2TextView);
-//		speedTextView = (TextView) getView().findViewById(
-//				R.id.textViewSpeedDashboard);
-		engineLoadTextView=(TextView) getView().findViewById(R.id.textViewLoadDashboard);
-		engineLoadProgressView=(ProgressBar) getView().findViewById(R.id.progress_engineLoad);
+
+			}
 		
+		co2TextView = (TextView) getView().findViewById(R.id.co2TextView);
+		engineLoadTextView = (TextView) getView().findViewById(
+				R.id.textViewLoadDashboard);
+		engineLoadProgressView = (ProgressBar) getView().findViewById(
+				R.id.progress_engineLoad);
+
 		co2RotableView = (LayeredImageRotateView) getView().findViewById(
 				R.id.co2meterView);
-//		speedRotatableView = (LayeredImageRotateView) getView().findViewById(
-//				R.id.speedometerView);
 		
+		co2InitialView = (TextView) getView()
+				.findViewById(R.id.co2Initial);
+		co2MidView = (TextView) getView()
+				.findViewById(R.id.co2Mid);
+		co2EndView = (TextView) getView()
+				.findViewById(R.id.co2End);
 		
+
 	}
-	
-	private OnClickListener mCorkyListener = new OnClickListener() { 
-	    
+
+	private OnClickListener mCorkyListener = new OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
-			
-			if(v.getId()==R.id.engine_load)
-				showHelp("Engine Load",ENGINE_LOAD_INFO,ENGINE_LOAD_SAFE_VALUE,ENGINE_LOAD_INCREASE);
-			else if(v.getId()==R.id.co2_emission)
-				showHelp("CO2 Emission",CO2_EMISSION_INFO,CO2_SAFE_VALUE,CO2_INCREASE);
-			else if(v.getId()==R.id.speed)
-				showHelp("Current Speed",ENGINE_LOAD_INFO,ENGINE_LOAD_SAFE_VALUE,ENGINE_LOAD_INCREASE);
-			else if(v.getId()==R.id.fuel_consumption)
-				showHelp("Fuel Consumption",ENGINE_LOAD_INFO,ENGINE_LOAD_SAFE_VALUE,ENGINE_LOAD_INCREASE);
-			
-			
-		} 
+
+			if (v.getId() == R.id.engine_load)
+				showHelp(getString(R.string.engine_load), getString(R.string.about_engine_load),
+						getString(R.string.engine_load_safe_range), getString(R.string.engine_load_above_normal));
+			else if (v.getId() == R.id.co2_emission)
+				showHelp(getString(R.string.Co2emission), getString(R.string.about_co2_emission),
+						getString(R.string.co2_emission_safe_range), getString(R.string.co2_emission_above_normal));
+			else if (v.getId() == R.id.speed)
+				showHelp(getString(R.string.currentSpeed), getString(R.string.about_speed),
+						getString(R.string.speed_safe_range), getString(R.string.speed_above_normal));
+			else if (v.getId() == R.id.fuel_consumption)
+				showHelp(getString(R.string.fuel_consumption), getString(R.string.about_fuel_consumption),
+						getString(R.string.fuel_consumption_safe_range), getString(R.string.fuel_consumption_above_normal));
+
+		}
 	};
-	
-	private void showHelp(String heading, String info,String safe_value,String increase_value){
-		
+
+	private void showHelp(String heading, String info, String safe_value,
+			String increase_value) {
+
 		alert = new AlertDialog.Builder(getActivity());
-		LayoutInflater inflater = (LayoutInflater) getView().getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		 
-    	View view=inflater.inflate(R.layout.custom_title, null);
-    	TextView head=(TextView)view.findViewById(R.id.heading);
-    	head.setText(heading);
-    	View alertView = inflater.inflate(R.layout.alert_dialog_body, null);
-    	TextView indicator_text=(TextView)alertView.findViewById(R.id.indicator_text);
-    	indicator_text.setText(info);
-    	TextView safe_range_text=(TextView)alertView.findViewById(R.id.safe_range_text);
-    	safe_range_text.setText(safe_value);
-    	TextView increase_text=(TextView)alertView.findViewById(R.id.increase_value_text);
-    	increase_text.setText(increase_value);
-    	
-    	
-    	
-    	alert.setCustomTitle(view);
-    	alert.setView(alertView);
-    	
-    	alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                 //do things
-            }
-        });
-    	//alert.setMessage("helo");
-    	alert.show();
-		
+		LayoutInflater inflater = (LayoutInflater) getView().getContext()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		View view = inflater.inflate(R.layout.custom_title, null);
+		TextView head = (TextView) view.findViewById(R.id.heading);
+		head.setText(heading);
+		View alertView = inflater.inflate(R.layout.alert_dialog_body, null);
+		TextView indicator_text = (TextView) alertView
+				.findViewById(R.id.indicator_text);
+		indicator_text.setText(info);
+		TextView safe_range_text = (TextView) alertView
+				.findViewById(R.id.safe_range_text);
+		safe_range_text.setText(safe_value);
+		TextView increase_text = (TextView) alertView
+				.findViewById(R.id.increase_value_text);
+		increase_text.setText(increase_value);
+
+		alert.setCustomTitle(view);
+		alert.setView(alertView);
+
+		alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				// do things
+			}
+		});
+		// alert.setMessage("helo");
+		alert.show();
+
 	}
-	
-	private void loadForGasolineOrDiesel(){
-		
+
+	private void loadForGasolineOrDiesel() {
+
 		Car car = CarManager.instance().getCar();
-		if(car!=null && car.getFuelType()==FuelType.GASOLINE){
+		if (car != null && car.getFuelType() == FuelType.GASOLINE) {
 			View speed_view = getView().findViewById(R.id.speed_view);
-			if(speed_view!=null){
-				replaceView(speed_view,R.layout.dashboard_diesel);
+			if (speed_view != null) {
+				replaceView(speed_view, R.layout.dashboard_diesel);
 			}
 		}
-		
-		else if(car!=null && car.getFuelType()==FuelType.DIESEL){
-			
-			View consumption_view = getView().findViewById(R.id.consumption_view);
-			if(consumption_view!=null)
-				replaceView(consumption_view,R.layout.dashboard_gasoline);
-			
+
+		else if (car != null && car.getFuelType() == FuelType.DIESEL) {
+
+			View consumption_view = getView().findViewById(
+					R.id.consumption_view);
+			if (consumption_view != null)
+				replaceView(consumption_view, R.layout.dashboard_gasoline);
+
 		}
-		
-		
-		
+
 	}
-	
-	private void replaceView(View v,int r){
-		
-		 ViewGroup parent = (ViewGroup) v.getParent();
-		 int index = parent.indexOfChild(v);
-		 parent.removeView(v);
-		 LayoutInflater inflater = (LayoutInflater) getView().getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		 v = inflater.inflate(r, parent, false);
-		 parent.addView(v, index);
-		 
-		 
-		
+
+	private void replaceView(View v, int r) {
+
+		ViewGroup parent = (ViewGroup) v.getParent();
+		int index = parent.indexOfChild(v);
+		parent.removeView(v);
+		LayoutInflater inflater = (LayoutInflater) getView().getContext()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		v = inflater.inflate(r, parent, false);
+		parent.addView(v, index);
+
 	}
+
 	private void setupStatusImages() {
 		gpsFixView = (ImageView) getView().findViewById(R.id.gpsFixView);
 
@@ -461,7 +580,7 @@ public class DashboardFragment extends SherlockFragment {
 				} else {
 					Toast.makeText(getActivity(), R.string.no_sensor_selected,
 							Toast.LENGTH_SHORT).show();
-					Intent i=new Intent(getActivity(),SettingsActivity.class);
+					Intent i = new Intent(getActivity(), SettingsActivity.class);
 					startActivity(i);
 				}
 			}
@@ -480,9 +599,13 @@ public class DashboardFragment extends SherlockFragment {
 				if (remoteDevice == null) {
 					Toast.makeText(getActivity(), R.string.no_device_selected,
 							Toast.LENGTH_SHORT).show();
-					Intent i=new Intent(getActivity(),SettingsActivity.class);
+					Intent i = new Intent(getActivity(), SettingsActivity.class);
 					startActivity(i);
 				}
+				else
+					Toast.makeText(getActivity(), remoteDevice,
+							Toast.LENGTH_SHORT).show();
+				
 			}
 		});
 	}
@@ -497,6 +620,8 @@ public class DashboardFragment extends SherlockFragment {
 		btStopped = getResources().getDrawable(R.drawable.bt_device_stopped);
 		btPending = getResources().getDrawable(R.drawable.bt_device_pending);
 		btActive = getResources().getDrawable(R.drawable.bt_device_active);
+		adapterSelected = getResources().getDrawable(R.drawable.adapter_selected);
+		
 	}
 
 	@Override
@@ -538,8 +663,8 @@ public class DashboardFragment extends SherlockFragment {
 		this.location = savedInstanceState.getParcelable(LOCATION);
 		this.speed = savedInstanceState.getInt(SPEED);
 		this.co2 = savedInstanceState.getDouble(CO2);
-		this.engineLoad=savedInstanceState.getDouble(ENGINE_LOAD);
-		this.fuelConsumption=savedInstanceState.getDouble(FUEL_CONSUMPTION);
+		this.engineLoad = savedInstanceState.getDouble(ENGINE_LOAD);
+		this.fuelConsumption = savedInstanceState.getDouble(FUEL_CONSUMPTION);
 	}
 
 	@Override
@@ -590,7 +715,7 @@ public class DashboardFragment extends SherlockFragment {
 		EventBus.getInstance().unregisterListener(this.gpsFixListener);
 		EventBus.getInstance().unregisterListener(this.engineLoadListener);
 		EventBus.getInstance().unregisterListener(this.consumptionListener);
-		
+
 	}
 
 	@Override
@@ -610,14 +735,16 @@ public class DashboardFragment extends SherlockFragment {
 	public void onResume() {
 		logger.info("onResume. hash=" + System.identityHashCode(this));
 		super.onResume();
-		Toast.makeText(getActivity(), "HHH", Toast.LENGTH_SHORT).show();
 		
-		if(CAR_PREFERANCE_CHANGED==1){
+		
+		MainActivity.loadLanguage(preferences,getActivity().getBaseContext());
+		if (CAR_PREFERANCE_CHANGED == 1) {
 			
-		loadForGasolineOrDiesel();
-		setUpUIElements();
-				
-		CAR_PREFERANCE_CHANGED=0;
+			
+//			loadForGasolineOrDiesel();
+//			setUpUIElements();
+
+			CAR_PREFERANCE_CHANGED = 0;
 		}
 		initializeEventListeners();
 		updateGpsStatus();
@@ -629,9 +756,7 @@ public class DashboardFragment extends SherlockFragment {
 			Crouton.makeText(getActivity(), R.string.diesel_not_yet_supported,
 					de.keyboardsurfer.android.widget.crouton.Style.ALERT)
 					.show();
-			}
-		
-		
+		}
 
 		bindToBackgroundService();
 	}
@@ -646,38 +771,36 @@ public class DashboardFragment extends SherlockFragment {
 		this.speedListener = new SpeedEventListener() {
 			@Override
 			public void receiveEvent(SpeedEvent event) {
-				//Toast.makeText(getActivity(), event.toString(), Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getActivity(), event.toString(),
+				// Toast.LENGTH_SHORT).show();
 				Car car = CarManager.instance().getCar();
-				if(car!=null && car.getFuelType()==FuelType.DIESEL)
-				updateSpeed(event.getPayload());
+				if (car != null && car.getFuelType() == FuelType.DIESEL)
+					updateSpeed(event.getPayload());
 			}
 		};
-		
-		this.engineLoadListener=new EngineLoadEventListener(){
+
+		this.engineLoadListener = new EngineLoadEventListener() {
 
 			@Override
 			public void receiveEvent(EngineLoadEvent event) {
-			//Toast.makeText(getActivity(), ""+event.getPayload(), Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getActivity(), ""+event.getPayload(),
+				// Toast.LENGTH_SHORT).show();
 				updateEngineLoad(event.getPayload());
-				
+
 			}
-			
-			
+
 		};
-		
-		this.consumptionListener=new ConsumptionEventListener(){
-		
+
+		this.consumptionListener = new ConsumptionEventListener() {
 
 			@Override
 			public void receiveEvent(ConsumptionEvent event) {
 				Car car = CarManager.instance().getCar();
-				if(car!=null && car.getFuelType()==FuelType.GASOLINE)
+				if (car != null && car.getFuelType() == FuelType.GASOLINE)
 					updateFuelConsumption(event.getPayload());
-				
-				
+
 			}
-			
-			
+
 		};
 		this.co2Listener = new CO2EventListener() {
 			@Override
@@ -725,16 +848,17 @@ public class DashboardFragment extends SherlockFragment {
 		this.speed = speed;
 		checkUIUpdate();
 	}
-	
-	protected void updateEngineLoad(final double engineLoad){
-		this.engineLoad=engineLoad;
+
+	protected void updateEngineLoad(final double engineLoad) {
+		this.engineLoad = engineLoad;
 		checkUIUpdate();
-	
+
 	}
-	protected void updateFuelConsumption(final double fuelConsumption){
-		this.fuelConsumption=fuelConsumption;
+
+	protected void updateFuelConsumption(final double fuelConsumption) {
+		this.fuelConsumption = fuelConsumption;
 		checkUIUpdate();
-	
+
 	}
 
 	protected void updateLocation(final Location location) {
@@ -761,34 +885,43 @@ public class DashboardFragment extends SherlockFragment {
 		} else if (serviceState == ServiceState.SERVICE_STARTING) {
 			connectionStateImage.setImageDrawable(btPending);
 		} else {
-			connectionStateImage.setImageDrawable(btStopped);
+			connectionStateImage.setImageDrawable(adapterSelected);
 			co2 = 0.0;
 			speed = 0;
-			engineLoad=0;
-			fuelConsumption=0;
-			
-//			Car car = CarManager.instance().getCar();
-//			if(car!=null)
-//				{
-//					if(car.getFuelType()==FuelType.GASOLINE)
-//							updateFuelConsumptionValue();
-//					else if(car.getFuelType()==FuelType.DIESEL)
-//							updateSpeedValue();
-//				}
+			engineLoad = 0;
+			fuelConsumption = 0;
+
+			// Car car = CarManager.instance().getCar();
+			// if(car!=null)
+			// {
+			// if(car.getFuelType()==FuelType.GASOLINE)
+			// updateFuelConsumptionValue();
+			// else if(car.getFuelType()==FuelType.DIESEL)
+			// updateSpeedValue();
+			// }
 			updateCo2Value();
-			
+
 			updateEngineLoadValue();
-			
+
 		}
 
 	}
 
 	private void updateFuelConsumptionValue() {
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
-		fuelConsumptionTextView.setText(twoDForm.format(fuelConsumption) + "l/h");
+		
+		if (UNITS_PREFERENCE_CHANGED == 1) {
+			
+		    conversion_factor_fuel=findConversionfactor(units.getFuelConsumption(),2);
+         	shortFuelUnit = extractSmallUnit(units.getFuelConsumption());
+			
+			UNITS_PREFERENCE_CHANGED = 0;
+
+		}
+		fuelConsumptionTextView.setText(twoDForm.format(fuelConsumption*conversion_factor_fuel)
+				+ shortFuelUnit);
 		consumptionRotatableView.submitScaleValue((float) fuelConsumption);
-		
-		
+
 	}
 
 	private synchronized void checkUIUpdate() {
@@ -801,19 +934,19 @@ public class DashboardFragment extends SherlockFragment {
 
 		lastUIUpdate = System.currentTimeMillis();
 
-		if (location != null || speed != 0 || co2 != 0.0 || engineLoad!=0 || fuelConsumption!=0) {
+		if (location != null || speed != 0 || co2 != 0.0 || engineLoad != 0
+				|| fuelConsumption != 0) {
 			getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					
+
 					Car car = CarManager.instance().getCar();
-					if(car!=null)
-						{
-							if(car.getFuelType()==FuelType.GASOLINE)
-									updateFuelConsumptionValue();
-							else if(car.getFuelType()==FuelType.DIESEL)
-									updateSpeedValue();
-						}
+					if (car != null) {
+						if (car.getFuelType() == FuelType.GASOLINE)
+							updateFuelConsumptionValue();
+						else if (car.getFuelType() == FuelType.DIESEL)
+							updateSpeedValue();
+					}
 
 					updateCo2Value();
 					updateEngineLoadValue();
@@ -821,22 +954,30 @@ public class DashboardFragment extends SherlockFragment {
 			});
 		}
 	}
-	
-	protected void updateEngineLoadValue(){
-		
+
+	protected void updateEngineLoadValue() {
+
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		engineLoadTextView.setText(twoDForm.format(engineLoad) + "%");
-		int integerEngineLoad=(int)engineLoad;
+		int integerEngineLoad = (int) engineLoad;
 		engineLoadProgressView.setProgress(integerEngineLoad);
-		
-		
+
 	}
 
 	protected void updateCo2Value() {
 
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
+		
+		if (UNITS_PREFERENCE_CHANGED == 1) {
+			
+		    conversion_factor_co2=findConversionfactor(units.getCo2Emission(),1);
+         	shortCo2Unit = extractSmallUnit(units.getCo2Emission());
+			
+			UNITS_PREFERENCE_CHANGED = 0;
 
-		co2TextView.setText(twoDForm.format(co2) + " kg/h");
+		}
+
+		co2TextView.setText(twoDForm.format(co2*conversion_factor_co2) + shortCo2Unit);
 		co2RotableView.submitScaleValue((float) co2);
 
 		if (co2 > 30) {
@@ -846,48 +987,35 @@ public class DashboardFragment extends SherlockFragment {
 		}
 	}
 
+	
+	
+	
 	protected void updateSpeedValue() {
-		
-		
-		
-		if(UNITS_PREFERENCE_CHANGED==1){
+
+		if (UNITS_PREFERENCE_CHANGED == 1) {
 			
-			UnitSelection units = new UnitSelection();
-			units = UnitSelectionPreference.instantiateUnits(preferences.getString(SettingsActivity.UNITS, null));
-			Map<String,String> values_maps[]=UnitsParser.getHashMapResource(getActivity(), R.xml.unit_values_final);
-				 
-			conversion_length=Float.parseFloat(values_maps[0].get(lengthUnit));
-			conversion_time=Float.parseFloat(values_maps[1].get(timeUnit));
+		    conversion_factor_speed=findConversionfactor(units.getSpeed(),0);
+         	shortSpeedUnit = extractSmallUnit(units.getSpeed());
 			
-			shortLengthUnit=extractSmallUnit(lengthUnit);
-			shortTimeUnit=extractSmallUnit(timeUnit);
-			
-			
-			UNITS_PREFERENCE_CHANGED=0;
-		
+			UNITS_PREFERENCE_CHANGED = 0;
+
 		}
-		
-		
-		
-		
+
 		if (!preferences.getBoolean(SettingsActivity.IMPERIAL_UNIT, false)) {
-			
-			int integerSpeed=(int) (speed*(conversion_length/conversion_time));
-			speedTextView.setText(integerSpeed + shortLengthUnit+"/"+shortTimeUnit);
+
+			int integerSpeed = (int) (speed * (conversion_factor_speed));
+			speedTextView.setText(integerSpeed + shortSpeedUnit);
 			speedRotatableView.submitScaleValue(speed);
 		} else {
 			speedTextView.setText(speed / 1.6f + " mph");
 			speedRotatableView.submitScaleValue(speed / 1.6f);
 		}
 	}
-	
-	
-	protected String extractSmallUnit(String s){
-		
-		return(s.substring(s.indexOf("(")+1,s.indexOf(")")));
-		
+
+	protected String extractSmallUnit(String s) {
+
+		return (s.substring(s.indexOf("(") + 1, s.indexOf(")")));
+
 	}
-	
-	
 
 }

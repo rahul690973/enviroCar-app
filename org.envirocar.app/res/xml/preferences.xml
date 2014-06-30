@@ -10,13 +10,26 @@
             android:title="@string/pref_title_chose_adapter" />
     </PreferenceCategory>
     
+   
+    
     <PreferenceCategory android:title="@string/pref_car_settings" >
 		<org.envirocar.app.activity.preference.CarSelectionPreference 
             android:title="@string/select_car"
             android:key="pref_selected_car"
             android:summary="@string/pref_select_car"
             />
-    </PreferenceCategory>    
+    </PreferenceCategory>   
+    
+     <PreferenceCategory android:title="@string/pref_language_title" >
+        <ListPreference
+            android:dialogTitle="@string/pref_prompt_chose_language"
+            android:key="select_language"
+            android:title="@string/pref_prompt_chose_language" 
+            android:entries="@array/languages_available"
+            android:entryValues="@array/languages_value">
+            
+        </ListPreference>
+    </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/pref_general_settings" >
         <!-- <CheckBoxPreference
