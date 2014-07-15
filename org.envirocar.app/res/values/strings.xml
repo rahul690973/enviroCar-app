@@ -11,6 +11,8 @@
     <string name="menu_send_log">Report Issue</string>
     <string name="menu_garage">My Garage</string>
     
+    <string name="search_friends">Search Friends...</string>
+    
     <string name="activity_checklist_title">Checklist</string>
     <string name="checklist_item_bluetooth_enabled">Bluetooth enabled</string>
     <string name="checklist_item_bluetooth_disabled">Bluetooth not enabled</string>

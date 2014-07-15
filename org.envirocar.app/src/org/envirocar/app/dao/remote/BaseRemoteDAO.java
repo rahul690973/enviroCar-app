@@ -20,26 +20,34 @@
  */
 package org.envirocar.app.dao.remote;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.FileEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.envirocar.app.activity.ProfileFragment;
 import org.envirocar.app.application.ECApplication;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.exception.NotConnectedException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
+import org.envirocar.app.dao.exception.UserRetrievalException;
 import org.envirocar.app.dao.exception.UnauthorizedException;
 import org.envirocar.app.exception.ServerException;
 import org.envirocar.app.model.User;
@@ -48,6 +56,17 @@ import org.envirocar.app.util.FileWithMetadata;
 import org.envirocar.app.util.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+
+
+
+
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
 
 
 public abstract class BaseRemoteDAO {
@@ -323,6 +342,90 @@ public abstract class BaseRemoteDAO {
 		}
 		
 		return result.getEntity().getContent();
+	}
+	
+	
+	class fetchImage extends AsyncTask<User, String, Void>
+	{
+	 InputStream inputStream = null ;
+	 HttpResponse response=null;
+	 String username=null;
+	 User user;
+
+	 		protected void onPreExecute() {
+
+	 		}
+	 		
+	 		@Override
+			protected Void doInBackground(User... params){
+
+		    	    user=params[0];				
+					username=user.getUsername();
+					
+					String url_select = "https://envirocar.org/api/stable/users/"+username+"/avatar?size=200";
+				    DefaultHttpClient client = new DefaultHttpClient();
+			        HttpGet httpPost = new HttpGet(url_select);
+			      
+			        httpPost.setHeader("X-User", user.getUsername());
+			        httpPost.setHeader("X-Token", user.getToken());
+		
+		
+				    try {
+				    		response = client.execute(httpPost);		    			                                    
+				    }catch (IOException e) {
+		
+				    	e.printStackTrace();
+		
+					}
+				
+		  	    
+					return null;
+	   }	
+
+	 		protected void onPostExecute(Void v) {
+	    		
+	    	 if(response!=null){
+	    		 
+	    		 final HttpEntity entity = response.getEntity();
+			  			        
+			        try {
+						inputStream = entity.getContent();
+					} catch (IllegalStateException e) {
+							e.printStackTrace();
+					} catch (IOException e) {
+					    	e.printStackTrace();
+					} 
+	             final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+	             saveImage(bitmap,user);
+	             
+	    		 
+	    	 }
+	    	 
+            
+
+	 }
+
+	}
+	
+	private void saveImage( Bitmap bitmap,User user){
+		
+		String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/enviroCar/images");    
+        myDir.mkdirs();
+        String fname = user.getUsername()+ ".jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete (); 
+        try {
+               FileOutputStream out = new FileOutputStream(file);
+               bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+               out.flush();
+               out.close();
+               ProfileFragment.setImageOnView();
+
+        } catch (Exception e) {
+               e.printStackTrace();
+        }
+		
 	}
 
 }

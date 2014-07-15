@@ -23,6 +23,7 @@
 package org.envirocar.app.activity;
 
 import java.util.HashSet;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -246,7 +247,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		actionBar.setLogo(getResources().getDrawable(R.drawable.actionbarlogo_with_padding));
 		
 		manager = getSupportFragmentManager();
-
+        
 		DashboardFragment initialFragment = new DashboardFragment();
 		manager.beginTransaction().replace(R.id.content_frame, initialFragment, DASHBOARD_TAG)
 		.commit();
@@ -368,7 +369,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	}
 	
 	
- public  static void loadLanguage(SharedPreferences preferences,Context base){
+ private  static void loadLanguage(SharedPreferences preferences,Context base){
 	 
 	 String languageToLoad=null;
 		//Toast.makeText(this, preferences.getString(SettingsActivity.LANGUAGE_KEY, null), Toast.LENGTH_LONG).show();

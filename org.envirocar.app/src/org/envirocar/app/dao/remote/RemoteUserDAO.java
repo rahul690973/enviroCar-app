@@ -27,6 +27,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.envirocar.app.application.ECApplication;
+import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.UserDAO;
 import org.envirocar.app.dao.exception.NotConnectedException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
@@ -90,6 +91,13 @@ public class RemoteUserDAO extends BaseRemoteDAO implements UserDAO, Authenticat
 		} catch (UnauthorizedException e) {
 			throw new UserUpdateException(e);
 		}
+	}
+
+	@Override
+	public void getProfilePicture(User user) throws UserRetrievalException {
+		
+		
+		new fetchImage().execute(user);
 	}
 
 }

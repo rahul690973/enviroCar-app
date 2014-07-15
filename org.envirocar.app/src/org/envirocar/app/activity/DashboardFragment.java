@@ -229,7 +229,7 @@ public class DashboardFragment extends SherlockFragment {
 				.getDefaultSharedPreferences(getActivity()
 						.getApplicationContext());
 		
-		MainActivity.loadLanguage(preferences,getActivity().getBaseContext());
+		loadLanguage(preferences,getActivity().getBaseContext());
 
 		if (preferences.getString(SettingsActivity.UNITS, null) == null) {
 
@@ -246,6 +246,7 @@ public class DashboardFragment extends SherlockFragment {
 		
 		units = UnitSelectionPreference.instantiateUnits(preferences.getString(
 				SettingsActivity.UNITS, null));
+				
 		setUnitsOnTextViews();
 		setRangeInRotableViews();
 		
@@ -288,6 +289,7 @@ public class DashboardFragment extends SherlockFragment {
 					updateCarStatus();
 					if(units!=null){
 						
+						
 						setUnitsOnTextViews();
 						setRangeInRotableViews();
 					}
@@ -303,9 +305,10 @@ public class DashboardFragment extends SherlockFragment {
 							SettingsActivity.UNITS, null));
 					if(units!=null){
 						
+						Toast.makeText(getActivity(), "called", Toast.LENGTH_LONG).show();
 						setUnitsOnTextViews();
 						setRangeInRotableViews();
-						UNITS_PREFERENCE_CHANGED = 1;
+						calculateNewUnits();
 					
 					}
 				}
@@ -327,6 +330,25 @@ public class DashboardFragment extends SherlockFragment {
 		bindToBackgroundService();
 	}
 	
+	
+	private  static void loadLanguage(SharedPreferences preferences,Context base){
+		 
+		 String languageToLoad=null;
+			//Toast.makeText(this, preferences.getString(SettingsActivity.LANGUAGE_KEY, null), Toast.LENGTH_LONG).show();
+			if ((languageToLoad=preferences.getString(SettingsActivity.LANGUAGE_KEY, null)) != null) {
+				
+				
+				Locale locale = new Locale(languageToLoad);  
+				Locale.setDefault(locale); 
+				Configuration config = new Configuration(); 
+				config.locale = locale; 
+				base.getResources().updateConfiguration(config,  
+				base.getResources().getDisplayMetrics());
+			
+			}
+			
+		 
+	 }
 	
 	private void setRangeInRotableViews(){
 		
@@ -380,7 +402,9 @@ public class DashboardFragment extends SherlockFragment {
 				getActivity(), R.xml.unit_values_final);
 		
 		float conversion_factor = Float
-				.parseFloat(values_maps[pos].get(unit));       // o for speed, 1 for co2 and 2 for fuel
+				.parseFloat(values_maps[pos].get(unit));       // 0 for speed, 1 for co2 and 2 for fuel
+		
+		
 		return conversion_factor;
 		
 	}
@@ -388,10 +412,7 @@ public class DashboardFragment extends SherlockFragment {
 	private void setUnitsOnTextViews() {
 
 		
-		
-		//Toast.makeText(getActivity(), units.getCo2Emission(), Toast.LENGTH_LONG).show();
-
-		Car car = CarManager.instance().getCar();
+			Car car = CarManager.instance().getCar();
 		
 			if (car!=null && car.getFuelType() == FuelType.GASOLINE) {
 				
@@ -412,6 +433,7 @@ public class DashboardFragment extends SherlockFragment {
 	
 	
 	private void setValuesDependingOnCar(TextView tv,String unit){
+		
 		
 		tv.setText(0+" "+extractSmallUnit(unit));
 		
@@ -737,7 +759,7 @@ public class DashboardFragment extends SherlockFragment {
 		super.onResume();
 		
 		
-		MainActivity.loadLanguage(preferences,getActivity().getBaseContext());
+		loadLanguage(preferences,getActivity().getBaseContext());
 		if (CAR_PREFERANCE_CHANGED == 1) {
 			
 			
@@ -748,8 +770,7 @@ public class DashboardFragment extends SherlockFragment {
 		}
 		initializeEventListeners();
 		updateGpsStatus();
-
-		updateCarStatus();
+        updateCarStatus();
 
 		Car car = CarManager.instance().getCar();
 		if (car != null && car.getFuelType() == FuelType.DIESEL) {
@@ -910,14 +931,6 @@ public class DashboardFragment extends SherlockFragment {
 	private void updateFuelConsumptionValue() {
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		
-		if (UNITS_PREFERENCE_CHANGED == 1) {
-			
-		    conversion_factor_fuel=findConversionfactor(units.getFuelConsumption(),2);
-         	shortFuelUnit = extractSmallUnit(units.getFuelConsumption());
-			
-			UNITS_PREFERENCE_CHANGED = 0;
-
-		}
 		fuelConsumptionTextView.setText(twoDForm.format(fuelConsumption*conversion_factor_fuel)
 				+ shortFuelUnit);
 		consumptionRotatableView.submitScaleValue((float) fuelConsumption);
@@ -968,14 +981,7 @@ public class DashboardFragment extends SherlockFragment {
 
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
 		
-		if (UNITS_PREFERENCE_CHANGED == 1) {
-			
-		    conversion_factor_co2=findConversionfactor(units.getCo2Emission(),1);
-         	shortCo2Unit = extractSmallUnit(units.getCo2Emission());
-			
-			UNITS_PREFERENCE_CHANGED = 0;
-
-		}
+		
 
 		co2TextView.setText(twoDForm.format(co2*conversion_factor_co2) + shortCo2Unit);
 		co2RotableView.submitScaleValue((float) co2);
@@ -991,15 +997,9 @@ public class DashboardFragment extends SherlockFragment {
 	
 	
 	protected void updateSpeedValue() {
-
-		if (UNITS_PREFERENCE_CHANGED == 1) {
-			
-		    conversion_factor_speed=findConversionfactor(units.getSpeed(),0);
-         	shortSpeedUnit = extractSmallUnit(units.getSpeed());
-			
-			UNITS_PREFERENCE_CHANGED = 0;
-
-		}
+		
+		
+	
 
 		if (!preferences.getBoolean(SettingsActivity.IMPERIAL_UNIT, false)) {
 
@@ -1010,6 +1010,19 @@ public class DashboardFragment extends SherlockFragment {
 			speedTextView.setText(speed / 1.6f + " mph");
 			speedRotatableView.submitScaleValue(speed / 1.6f);
 		}
+	}
+	
+	private void calculateNewUnits(){
+		
+		 conversion_factor_speed=findConversionfactor(units.getSpeed(),0);
+      	 shortSpeedUnit = extractSmallUnit(units.getSpeed());
+      	 
+      	 conversion_factor_co2=findConversionfactor(units.getCo2Emission(),1);
+      	 shortCo2Unit = extractSmallUnit(units.getCo2Emission());
+      	 
+      	 conversion_factor_fuel=findConversionfactor(units.getFuelConsumption(),2);
+     	 shortFuelUnit = extractSmallUnit(units.getFuelConsumption());
+		
 	}
 
 	protected String extractSmallUnit(String s) {

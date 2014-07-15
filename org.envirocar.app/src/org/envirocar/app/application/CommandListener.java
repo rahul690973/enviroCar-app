@@ -233,8 +233,8 @@ public class CommandListener implements Listener, LocationEventListener, Measure
 		else if (command instanceof EngineLoad) {
 			double load = (Float) numberCommand.getNumberResult();
 			this.collector.newEngineLoad(load);
-			Log.d("rahulraja",String.valueOf(load));
-			//Log.d("engine load",String.valueOf(load));
+			
+	
 			EventBus.getInstance().fireEvent(new EngineLoadEvent(load));
 //			logger.info("Processed EngineLoad Response: "+load +" time: "+command.getResultTime());
 		}

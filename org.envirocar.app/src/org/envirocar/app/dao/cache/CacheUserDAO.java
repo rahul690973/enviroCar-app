@@ -44,4 +44,10 @@ public class CacheUserDAO implements UserDAO {
 		throw new UserUpdateException("Not supported by Cache");
 	}
 
+	@Override
+	public void getProfilePicture(User user) throws UserRetrievalException{
+		throw new UserRetrievalException("Not supported by Cache");
+		
+	}
+
 }

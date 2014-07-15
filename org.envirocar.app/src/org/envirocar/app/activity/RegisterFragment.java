@@ -288,10 +288,15 @@ public class RegisterFragment extends SherlockFragment {
 						TermsOfUseManager.askForTermsOfUseAcceptance(user, getActivity(), null);
 						
 						getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-						DashboardFragment dashboardFragment = new DashboardFragment();
+//						DashboardFragment dashboardFragment = new DashboardFragment();
+//						getActivity().getSupportFragmentManager().beginTransaction()
+//								.replace(R.id.content_frame, dashboardFragment)
+//								.commit();			
+						
+						ProfileFragment profileFragment = new ProfileFragment();
 						getActivity().getSupportFragmentManager().beginTransaction()
-								.replace(R.id.content_frame, dashboardFragment)
-								.commit();						
+								.replace(R.id.content_frame, profileFragment)
+								.commit();
 					}
 				});
 			} catch (UserUpdateException e) {

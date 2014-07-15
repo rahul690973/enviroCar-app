@@ -23,6 +23,7 @@ package org.envirocar.app.activity;
 
 
 import org.envirocar.app.R;
+
 import org.envirocar.app.application.TermsOfUseManager;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.DAOProvider;
@@ -36,6 +37,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +51,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
@@ -281,12 +284,16 @@ public class LoginFragment extends SherlockFragment {
 						getResources().getString(R.string.welcome_message)
 								+ " " + mUsername, Style.CONFIRM).show();
 				
+				
+				
 				TermsOfUseManager.askForTermsOfUseAcceptance(newUser, getActivity(), null);
 				
 				getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				DashboardFragment dashboardFragment = new DashboardFragment();
+				//Intent i=new Intent(getActivity(),ProfileFragment.class);
+				//startActivity(i);
+				ProfileFragment profileFragment = new ProfileFragment();
 				getActivity().getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, dashboardFragment)
+						.replace(R.id.content_frame, profileFragment)
 						.commit();
 				
 			} else {

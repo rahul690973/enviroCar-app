@@ -33,4 +33,6 @@ public interface UserDAO {
 	User getUser(String id) throws UserRetrievalException, UnauthorizedException;
 
 	void createUser(User newUser) throws UserUpdateException, ResourceConflictException;
+	
+	void getProfilePicture (User user) throws UserRetrievalException;
 }
