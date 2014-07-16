@@ -20,6 +20,7 @@
  */
 package org.envirocar.app.dao;
 
+import org.envirocar.app.dao.exception.FriendsRetrievalException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
 import org.envirocar.app.dao.exception.UnauthorizedException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
@@ -35,4 +36,6 @@ public interface UserDAO {
 	void createUser(User newUser) throws UserUpdateException, ResourceConflictException;
 	
 	void getProfilePicture (User user) throws UserRetrievalException;
+	
+	void getFriends (User user) throws FriendsRetrievalException;
 }

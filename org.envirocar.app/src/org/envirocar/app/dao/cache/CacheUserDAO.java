@@ -21,6 +21,7 @@
 package org.envirocar.app.dao.cache;
 
 import org.envirocar.app.dao.UserDAO;
+import org.envirocar.app.dao.exception.FriendsRetrievalException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
 import org.envirocar.app.dao.exception.UserUpdateException;
@@ -47,6 +48,12 @@ public class CacheUserDAO implements UserDAO {
 	@Override
 	public void getProfilePicture(User user) throws UserRetrievalException{
 		throw new UserRetrievalException("Not supported by Cache");
+		
+	}
+
+	@Override
+	public void getFriends(User user) throws FriendsRetrievalException {
+		throw new FriendsRetrievalException("Not supported by Cache");
 		
 	}
 

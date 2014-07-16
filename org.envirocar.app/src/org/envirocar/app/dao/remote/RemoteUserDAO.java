@@ -29,6 +29,7 @@ import org.apache.http.entity.StringEntity;
 import org.envirocar.app.application.ECApplication;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.UserDAO;
+import org.envirocar.app.dao.exception.FriendsRetrievalException;
 import org.envirocar.app.dao.exception.NotConnectedException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
 import org.envirocar.app.dao.exception.UnauthorizedException;
@@ -98,6 +99,13 @@ public class RemoteUserDAO extends BaseRemoteDAO implements UserDAO, Authenticat
 		
 		
 		new fetchImage().execute(user);
+	}
+
+	@Override
+	public void getFriends(User user) throws FriendsRetrievalException {
+		
+		new fetchFriends().execute(user);
+		
 	}
 
 }

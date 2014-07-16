@@ -54,8 +54,12 @@ import org.envirocar.app.model.User;
 import org.envirocar.app.network.HTTPClient;
 import org.envirocar.app.util.FileWithMetadata;
 import org.envirocar.app.util.Util;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+
+
 
 
 
@@ -67,9 +71,12 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 
 public abstract class BaseRemoteDAO {
+	
+	
 	
 	private void assertStatusCode(HttpResponse response) throws NotConnectedException, UnauthorizedException, ResourceConflictException {
 		if (response == null || response.getStatusLine() == null) {
@@ -345,6 +352,78 @@ public abstract class BaseRemoteDAO {
 	}
 	
 	
+	class fetchFriends extends AsyncTask<User, String, Void>
+	{
+	 InputStream inputStream = null ;
+	 String response=null;
+	 String username=null;
+	 User user;
+
+	 		protected void onPreExecute() {
+
+	 		}
+	 		
+	 		@Override
+			protected Void doInBackground(User... params){
+	 				
+	 				
+	 				
+		    	    user=params[0];				
+					username=user.getUsername();
+					String url_select = "https://envirocar.org/api/stable/users/"+username+"/friends";
+					
+				    DefaultHttpClient client = new DefaultHttpClient();
+			        HttpGet httpPost = new HttpGet(url_select);
+			      
+			        httpPost.setHeader("X-User", user.getUsername());
+			        httpPost.setHeader("X-Token", user.getToken());
+		
+		
+				    try {
+				    	    ResponseHandler<String> responseHandler = new BasicResponseHandler();
+				    		response = client.execute(httpPost,responseHandler);		    			                                    
+				    }catch (IOException e) {
+		
+				    	e.printStackTrace();
+		
+					}
+				
+		  	    
+					return null;
+	   }	
+
+	 		protected void onPostExecute(Void v) {
+	    		
+	    	 if(response!=null){
+	    		 
+	    		 try {
+					JSONObject json=new JSONObject(response);
+					if(json!=null){
+						
+						JSONArray jsonFriends=json.getJSONArray("users");
+						String [] friends=new String[jsonFriends.length()];
+						for(int i=0;i<jsonFriends.length();i++){
+							
+							friends[i]=jsonFriends.getJSONObject(i).getString("name");
+							
+						}
+						
+						
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+	             
+	    		 
+	    	 }
+	    	 
+            
+
+	 }
+
+	}
+	
+	
 	class fetchImage extends AsyncTask<User, String, Void>
 	{
 	 InputStream inputStream = null ;
@@ -407,6 +486,10 @@ public abstract class BaseRemoteDAO {
 
 	}
 	
+	void fetchResponse(String url,User... params){
+		
+		
+	}
 	private void saveImage( Bitmap bitmap,User user){
 		
 		String root = Environment.getExternalStorageDirectory().toString();
@@ -421,6 +504,8 @@ public abstract class BaseRemoteDAO {
                out.flush();
                out.close();
                ProfileFragment.setImageOnView();
+               
+              
 
         } catch (Exception e) {
                e.printStackTrace();
