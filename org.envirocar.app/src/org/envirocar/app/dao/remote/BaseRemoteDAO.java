@@ -21,6 +21,7 @@
 package org.envirocar.app.dao.remote;
 
 import java.io.File;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,9 +43,11 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.envirocar.app.activity.FriendListFragment;
 import org.envirocar.app.activity.ProfileFragment;
 import org.envirocar.app.application.ECApplication;
 import org.envirocar.app.application.UserManager;
+
 import org.envirocar.app.dao.exception.NotConnectedException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
@@ -66,6 +69,8 @@ import org.json.JSONObject;
 
 
 
+
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -76,6 +81,7 @@ import android.widget.Toast;
 
 public abstract class BaseRemoteDAO {
 	
+	String friends[];
 	
 	
 	private void assertStatusCode(HttpResponse response) throws NotConnectedException, UnauthorizedException, ResourceConflictException {
@@ -365,9 +371,7 @@ public abstract class BaseRemoteDAO {
 	 		
 	 		@Override
 			protected Void doInBackground(User... params){
-	 				
-	 				
-	 				
+	 					 				
 		    	    user=params[0];				
 					username=user.getUsername();
 					String url_select = "https://envirocar.org/api/stable/users/"+username+"/friends";
@@ -401,14 +405,14 @@ public abstract class BaseRemoteDAO {
 					if(json!=null){
 						
 						JSONArray jsonFriends=json.getJSONArray("users");
-						String [] friends=new String[jsonFriends.length()];
+						friends=new String[jsonFriends.length()];
 						for(int i=0;i<jsonFriends.length();i++){
 							
 							friends[i]=jsonFriends.getJSONObject(i).getString("name");
 							
 						}
-						
-						
+						FriendListFragment.initializeList(friends);
+											
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -486,10 +490,12 @@ public abstract class BaseRemoteDAO {
 
 	}
 	
-	void fetchResponse(String url,User... params){
+	public String[] returnFriends(){
 		
-		
+		return friends;
+				
 	}
+	
 	private void saveImage( Bitmap bitmap,User user){
 		
 		String root = Environment.getExternalStorageDirectory().toString();

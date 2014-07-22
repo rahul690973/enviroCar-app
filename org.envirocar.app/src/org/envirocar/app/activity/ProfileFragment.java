@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -140,8 +141,12 @@ public class ProfileFragment extends SherlockFragment
 
 			if(v.getId()==R.id.compare_friends){
 				
-				Intent i=new Intent(getActivity(),FriendListActivity.class);
-				startActivity(i);
+				getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				
+				FriendListFragment friendsFragment = new FriendListFragment();
+				getActivity().getSupportFragmentManager().beginTransaction()
+						.replace(R.id.content_frame, friendsFragment)
+						.commit();
 				
 			}
 				

@@ -3,7 +3,6 @@
     xmlns:enviroCar="http://envirocar.org"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/envirocar_background"
     android:paddingTop="10dp"
     android:tag="Dashboard" >
 

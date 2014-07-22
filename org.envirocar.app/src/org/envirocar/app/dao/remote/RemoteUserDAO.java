@@ -107,5 +107,7 @@ public class RemoteUserDAO extends BaseRemoteDAO implements UserDAO, Authenticat
 		new fetchFriends().execute(user);
 		
 	}
+	
+
 
 }
