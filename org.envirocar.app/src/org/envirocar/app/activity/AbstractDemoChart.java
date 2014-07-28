@@ -16,7 +16,6 @@
 package org.envirocar.app.activity;
 
 import java.util.Date;
-
 import java.util.List;
 
 import org.achartengine.chart.PointStyle;
@@ -29,6 +28,8 @@ import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+
+import android.util.Log;
 
 /**
  * An abstract class for the demo charts to extend.
@@ -199,16 +200,20 @@ public  class AbstractDemoChart {
    * @param values the values
    * @return the XY multiple bar dataset
    */
-  protected XYMultipleSeriesDataset buildBarDataset(String[] titles, List<double[]> values) {
+  protected XYMultipleSeriesDataset buildBarDataset(String[] titles, List<Double[]> values) {
     XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
     int length = titles.length;
+    
+
+    
     for (int i = 0; i < length; i++) {
+    	
       CategorySeries series = new CategorySeries(titles[i]);
-      double[] v = values.get(i);
+      Double[] v = values.get(i);
       int seriesLength = v.length;
       for (int k = 0; k < seriesLength; k++) {
         series.add(v[k]);
-      }
+       }
       dataset.addSeries(series.toXYSeries());
     }
     return dataset;
@@ -230,6 +235,12 @@ public  class AbstractDemoChart {
     for (int i = 0; i < length; i++) {
       SimpleSeriesRenderer r = new SimpleSeriesRenderer();
       r.setColor(colors[i]);
+      r.setDisplayChartValues(true);
+      r.setDisplayChartValuesDistance(100);
+      r.setChartValuesTextSize(15);
+      r.setChartValuesSpacing(40);
+      
+      
       renderer.addSeriesRenderer(r);
     }
     return renderer;

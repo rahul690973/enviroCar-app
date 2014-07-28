@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+     
     <string name="app_name">enviroCar</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="menu_help">Hilfe</string>
     <string name="menu_about">Über enviroCar</string>
 	<string name="menu_garage">Meine Garage</string>    
     <string name="activity_checklist_title">Checkliste</string>
+    
+     <string name="previous">Früher</string>
+     <string name="next">Nächste</string>
+     <string name="profile_picture">Profil Bild</string>
+    
+    
+    <string name="your_tracks">Ihre Spuren</string>
+    <string name="total_tracks">Gesamt Tracks</string>
+    <string name="sustainability_rank">Nachhaltigkeit Rang</string>
+    <string name="view_statistics">Statistiken anzeigen</string>
+    <string name="compare_wid_friends">Vergleichen Mit Freunden</string>
     
     <string name="checklist_item_bluetooth_enabled">Bluetooth aktiviert</string>
     <string name="checklist_item_bluetooth_disabled">Bluetooth deaktiviert</string>
@@ -36,6 +48,9 @@
     <string name="tps">Drosselklappenstellung</string>
     <string name="rpm">U/Min</string>
     <string name="speed">Geschwindigkeit</string>
+    <string name="gps_accuracy">GPS-Genauigkeit</string>
+    <string name="gps_altitude">GPS Altitude</string>
+    <string name="gps_speed">GPS-Geschwindigkeit</string>
     <string name="fuel_type">Treibstoff Art</string>
     <string name="fuel_consumption">Benzinverbrauch</string>
     <string name="intake_pressure">Ansaugdruck</string>

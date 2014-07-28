@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="15dp"
+    android:orientation="horizontal" 
+    android:weightSum="4">
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/person_trans"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="15dp"
+        android:contentDescription="@string/profile_picture">
+        
+        
+    </ImageView>
+    
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:id="@+id/user_name"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        android:layout_weight="3"
+        android:text="Rahul Raja"
+        />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:id="@+id/user_score"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        android:layout_weight="1"
+        />
+    
+    
+
+</LinearLayout>

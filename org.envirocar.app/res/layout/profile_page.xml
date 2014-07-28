@@ -8,9 +8,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/user_info"
-        
-       >
+        android:id="@+id/user_info">
         
         	<RelativeLayout 
         	    android:layout_width="wrap_content"
@@ -50,7 +48,7 @@
 		        	    android:layout_width="wrap_content"
 		        	    android:layout_height="wrap_content"
 		        	    android:layout_marginTop="60dp"
-		        	    android:text="Your Tracks" 
+		        	    android:text="@string/your_tracks" 
 		        	    android:id="@+id/your_tracks"
 		        	    android:textStyle="bold"/>
         	    	
@@ -60,7 +58,7 @@
 		        	    android:layout_below="@+id/your_tracks"
 		        	    android:id="@+id/total_tracks"
 		        	    android:layout_marginTop="10dp"
-		        	    android:text="Total Tracks"
+		        	    android:text="@string/total_tracks"
 		        	    android:textStyle="bold" />
         	    
         	</RelativeLayout>
@@ -78,7 +76,7 @@
         	        android:layout_gravity="center"
         	        android:drawableRight="@drawable/sustainability_help"
         	        android:gravity="center_vertical"
-        	        android:text="Sustainability Rank"
+        	        android:text="@string/sustainability_rank"
         	        android:textSize="22sp"
         	        android:textStyle="bold" />
 
@@ -94,7 +92,9 @@
         	        android:paddingTop="12dp"
         	        android:text="4 out of 45"
         	        android:textColor="#ffffff"
-        	        android:textSize="16sp" />
+        	        android:textSize="16sp"
+        	        android:clickable="true"
+        	        android:id="@+id/view_leaderboard" />
 
         	    <TextView
         	        android:layout_width="wrap_content"
@@ -104,7 +104,7 @@
         	        android:drawablePadding="20dp"
         	        android:gravity="center"
         	        android:paddingRight="40dp"
-        	        android:text="View Statistics"
+        	        android:text="@string/view_statistics"
         	        android:textSize="20sp"
         	        android:textStyle="bold" 
         	        android:clickable="true"
@@ -112,14 +112,14 @@
 
         	    <TextView
         	        android:layout_width="wrap_content"
-        	        android:layout_height="wrap_content"
+        	        android:layout_height="0dp"
         	        android:layout_marginTop="18dp"
         	        android:layout_weight="0.09"
         	        android:drawableLeft="@drawable/friends_icon"
         	        android:drawablePadding="20dp"
         	        android:gravity="center"
         	        android:paddingRight="40dp"
-        	        android:text="Compare with Friends"
+        	        android:text="@string/compare_wid_friends"
         	        android:textSize="20sp"
         	        android:textStyle="bold" 
         	        android:id="@+id/compare_friends"

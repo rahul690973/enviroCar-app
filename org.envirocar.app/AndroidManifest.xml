@@ -100,7 +100,8 @@
                 android:value="org.envirocar.app.activity.MainActivity" />
         </activity>
         
-        <activity android:name="org.achartengine.GraphicalActivity" />
+        <activity android:name="org.achartengine.GraphicalActivity" 
+            android:screenOrientation="landscape"/>
 
         <service
             android:name="org.envirocar.app.application.service.BackgroundServiceImpl"

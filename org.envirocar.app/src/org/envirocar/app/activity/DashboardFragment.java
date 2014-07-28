@@ -22,6 +22,7 @@
 package org.envirocar.app.activity;
 
 import java.text.DecimalFormat;
+
 import java.util.Locale;
 import java.util.Map;
 

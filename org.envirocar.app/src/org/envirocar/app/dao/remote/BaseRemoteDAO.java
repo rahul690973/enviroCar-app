@@ -22,6 +22,7 @@ package org.envirocar.app.dao.remote;
 
 import java.io.File;
 
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -141,6 +142,7 @@ public abstract class BaseRemoteDAO {
 		
 		HttpResponse result;
 		try {
+			
 			result = HTTPClient.execute(request);
 		} catch (IOException e) {
 			throw new NotConnectedException(e);

@@ -1,10 +1,14 @@
 package org.envirocar.app.activity;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.envirocar.app.R;
 import org.envirocar.app.model.User;
+import org.envirocar.app.application.FriendsImageAdapter;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.DAOProvider;
 import org.envirocar.app.dao.exception.FriendsRetrievalException;
@@ -101,9 +105,11 @@ public class FriendListFragment extends SherlockFragment{
 
 	public static void initializeList(String[] friends){
 		
-		adapter = new ArrayAdapter<String>(c, R.layout.friends_list_item, R.id.friends_name_list,friends);
-	    friendsList.setAdapter(adapter); 
-	    handleClickOnList();
+		//adapter = new ArrayAdapter<String>(c, R.layout.friends_list_item, R.id.friends_name_list,friends);
+		List<String>al=Arrays.asList(friends);
+		FriendsImageAdapter fia=new FriendsImageAdapter(c, al);
+	    friendsList.setAdapter(fia); 
+	   // handleClickOnList();
 		
 	}
 	
@@ -114,18 +120,19 @@ public class FriendListFragment extends SherlockFragment{
             public void onItemClick(AdapterView<?> parent, View view, int position,
                     long id) {
             	
-            	TextView tv = (TextView)view.findViewById(R.id.friends_name_list);
+            	TextView tv = (TextView)view.findViewById(R.id.friends_name);
             	String friendName=tv.getText().toString();
             	
-            	Bundle bundle = new Bundle();
-            	bundle.putString("friend_name", friendName);
-            	FriendsGraphFragment fragobj = new FriendsGraphFragment();
-            	fragobj.setArguments(bundle);
+            	//Bundle bundle = new Bundle();
+            	//bundle.putString("friend_name", friendName);
+            	FriendsGraphFragment fragobj = new FriendsGraphFragment(friendName,c);
+            	//fragobj.setArguments(bundle);
+            	//fragobj.downloadStatistics();
             	
-            	((FragmentActivity) c).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				((FragmentActivity) c).getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, fragobj)
-						.commit();
+//           	((FragmentActivity) c).getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//				((FragmentActivity) c).getSupportFragmentManager().beginTransaction()
+//						.replace(R.id.content_frame, fragobj)
+//						.commit();
             	
             	
                 
