@@ -13,6 +13,7 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="profile_picture">Profile Picture</string>
+    <string name="loading_graphs">Loading Graphs</string>
     
     
     
@@ -293,6 +294,7 @@ If you discover and problems, please send us an error log (-> report problem). T
 	
 	<string name="ok">OK</string>
 	<string name="menu_logbook">Logbook</string>
+	<string name="menu_profile">My Profile</string>
 	
 	<string name="service_state_starting">Establishing connection to OBDII adapter</string>
 	<string name="service_state_started">Connected to OBDII adapter. Recording.</string>

@@ -23,7 +23,6 @@ package org.envirocar.app.activity;
 
 
 import org.envirocar.app.R;
-
 import org.envirocar.app.application.TermsOfUseManager;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.DAOProvider;
@@ -31,6 +30,7 @@ import org.envirocar.app.dao.exception.UnauthorizedException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
 import org.envirocar.app.logging.Logger;
 import org.envirocar.app.model.User;
+import org.envirocar.app.util.ShowProgressBar;
 import org.envirocar.app.views.TypefaceEC;
 
 import android.animation.Animator;
@@ -81,8 +81,9 @@ public class LoginFragment extends SherlockFragment {
 	private EditText mUsernameView;
 	private EditText mPasswordView;
 	private View mLoginFormView;
-	private View mLoginStatusView;
-	private TextView mLoginStatusMessageView;
+	private View mProgressStatusView;
+	private TextView mProgressStatusMessageView;
+	ShowProgressBar progressBar;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,9 +92,9 @@ public class LoginFragment extends SherlockFragment {
 		setHasOptionsMenu(true);
 
 		View view = inflater.inflate(R.layout.login_layout, null);
-
+		
+	    progressBar=new ShowProgressBar();
 		mUsernameView = (EditText) view.findViewById(R.id.login_username);
-
 		mPasswordView = (EditText) view.findViewById(R.id.login_password);
 		mPasswordView
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -108,9 +109,9 @@ public class LoginFragment extends SherlockFragment {
 					}
 				});
 		mLoginFormView = view.findViewById(R.id.login_form);
-		mLoginStatusView = view.findViewById(R.id.login_status);
-		mLoginStatusMessageView = (TextView) view
-				.findViewById(R.id.login_status_message);
+		mProgressStatusView = view.findViewById(R.id.progress_status);
+		mProgressStatusMessageView = (TextView) view
+				.findViewById(R.id.progress_status_message);
 
 		view.findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
@@ -214,8 +215,9 @@ public class LoginFragment extends SherlockFragment {
 
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
-			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-			showProgress(true);
+			//mProgressStatusMessageView.setText(R.string.login_progress_signing_in);
+			//showProgress(true);
+			progressBar.showProgress(getActivity(), mProgressStatusView, mLoginFormView,mProgressStatusMessageView,getString(R.string.login_progress_signing_in),true);
 			mAuthTask = new UserLoginTask();
 			mAuthTask.execute();
 		}
@@ -229,37 +231,40 @@ public class LoginFragment extends SherlockFragment {
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(
-					android.R.integer.config_shortAnimTime);
-
-			mLoginStatusView.setVisibility(View.VISIBLE);
-			mLoginStatusView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginStatusView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
-						}
-					});
-
-			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
+		
+		
+		//spb.showProgress(getActivity(), mLoginStatusView, mLoginFormView, "Signing in",show);
+//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//			int shortAnimTime = getResources().getInteger(
+//					android.R.integer.config_shortAnimTime);
+//
+//			mLoginStatusView.setVisibility(View.VISIBLE);
+//			mLoginStatusView.animate().setDuration(shortAnimTime)
+//					.alpha(show ? 1 : 0)
+//					.setListener(new AnimatorListenerAdapter() {
+//						@Override
+//						public void onAnimationEnd(Animator animation) {
+//							mLoginStatusView.setVisibility(show ? View.VISIBLE
+//									: View.GONE);
+//						}
+//					});
+//
+//			mLoginFormView.setVisibility(View.VISIBLE);
+//			mLoginFormView.animate().setDuration(shortAnimTime)
+//					.alpha(show ? 0 : 1)
+//					.setListener(new AnimatorListenerAdapter() {
+//						@Override
+//						public void onAnimationEnd(Animator animation) {
+//							mLoginFormView.setVisibility(show ? View.GONE
+//									: View.VISIBLE);
+//						}
+//					});
+//		} else {
+//			// The ViewPropertyAnimator APIs are not available, so simply show
+//			// and hide the relevant UI components.
+//			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+//			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//		}
 	}
 
 	/**
@@ -275,7 +280,8 @@ public class LoginFragment extends SherlockFragment {
 		@Override
 		protected void onPostExecute(final User newUser) {
 			mAuthTask = null;
-			showProgress(false);
+			//showProgress(false);
+			progressBar.showProgress(getActivity(), mProgressStatusView, mLoginFormView,mProgressStatusMessageView,getString(R.string.login_progress_signing_in),false);
 
 			if (newUser != null) {
 				UserManager.instance().setUser(newUser);
@@ -293,7 +299,7 @@ public class LoginFragment extends SherlockFragment {
 				//startActivity(i);
 				ProfileFragment profileFragment = new ProfileFragment();
 				getActivity().getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, profileFragment)
+						.replace(R.id.content_frame, profileFragment,MainActivity.PROFILE_TAG)
 						.commit();
 				
 			} else {
@@ -308,7 +314,8 @@ public class LoginFragment extends SherlockFragment {
 		@Override
 		protected void onCancelled() {
 			mAuthTask = null;
-			showProgress(false);
+			//showProgress(false);
+			progressBar.showProgress(getActivity(), mProgressStatusView, mLoginFormView,mProgressStatusMessageView,getString(R.string.login_progress_signing_in),false);
 		}
 	}
 

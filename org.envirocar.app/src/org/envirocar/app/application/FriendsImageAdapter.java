@@ -18,6 +18,7 @@ import org.envirocar.app.R;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,7 @@ public class FriendsImageAdapter  extends BaseAdapter{
 	        
 	        String friend=friends.get(position);
 	        tv.setText(friend);
-	        Uri absolute = Uri.parse(ECApplication.BASE_URL+"/users/friends/"+friend+"/avator?size=80");
+	        Uri absolute = Uri.parse(ECApplication.BASE_URL+"/users/"+user.getUsername()+"/avator?size=200");
 	        getImageLoader(context).load(absolute).into(image);
 	        
 	        
@@ -81,12 +82,12 @@ public class FriendsImageAdapter  extends BaseAdapter{
 	
 	public Picasso getImageLoader(Context ctx) {
 	    Picasso.Builder builder = new Picasso.Builder(ctx);
-	    //OkHttpClient okHttpClient;
+	    
 	    builder.downloader(new OkHttpDownloader(ctx) {
 	        @Override
 	        protected HttpURLConnection openConnection(Uri uri) throws IOException {
 	            HttpURLConnection connection = super.openConnection(uri);
-	            
+	           
 	            connection.setRequestProperty("X-User",user.getUsername());
 	            connection.setRequestProperty("X-Token",user.getToken());
 	            

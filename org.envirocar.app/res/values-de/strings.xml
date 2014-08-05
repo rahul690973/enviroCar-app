@@ -8,10 +8,12 @@
     <string name="menu_about">Über enviroCar</string>
 	<string name="menu_garage">Meine Garage</string>    
     <string name="activity_checklist_title">Checkliste</string>
+    <string name="menu_logout">Ausloggen</string>
     
      <string name="previous">Früher</string>
      <string name="next">Nächste</string>
      <string name="profile_picture">Profil Bild</string>
+     <string name="loading_graphs">Laden Graphs</string>
     
     
     <string name="your_tracks">Ihre Spuren</string>
@@ -136,7 +138,7 @@
    	<string name="open_drawer">Open</string>
 	<string name="close_drawer">Close</string>
     
-    <string name="menu_logout">Ausloggen</string>
+    
     <string name="menu_register">Registrieren</string>
     
     <string name="dashboard">Dashboard</string>

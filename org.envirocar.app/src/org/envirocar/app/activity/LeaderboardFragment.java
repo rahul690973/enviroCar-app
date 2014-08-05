@@ -10,6 +10,7 @@ import org.envirocar.app.application.LeaderboardAdapter;
 import com.actionbarsherlock.app.SherlockFragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,13 +41,16 @@ public class LeaderboardFragment extends SherlockFragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
+		
+		userAndScore=(LinkedHashMap<String, String>) getArguments().getSerializable("rank_map");
+		TOTAL_LIST_ITEMS= userAndScore.size();
 		View view = inflater.inflate(R.layout.leaderboard_fragment,null);
 		leadersList=(ListView)view.findViewById(R.id.leaderboard_list);
 		previousButton=(TextView)view.findViewById(R.id.previous);
 		nextButton=(TextView)view.findViewById(R.id.next);
-		userAndScore=new LinkedHashMap<String,String>();
+	
 		
-		getLeaderBoardFromServer();
+		//getLeaderBoardFromServer();
 			
 		return view;
 		
@@ -94,7 +98,7 @@ public class LeaderboardFragment extends SherlockFragment{
 		for(int i=0;i<500;i++)
 			userAndScore.put(String.valueOf(i), "711");
 		
-		TOTAL_LIST_ITEMS= userAndScore.size();
+		
 		
 	}
 	private void CheckEnable()
@@ -134,6 +138,7 @@ public class LeaderboardFragment extends SherlockFragment{
                 break;
             }
         }
+        
         
         adapter=new LeaderboardAdapter(getActivity(),userAndScore,sort);
         leadersList.setAdapter(adapter);

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -24,9 +25,78 @@ public class HelpFragment extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		
-		return inflater.inflate(R.layout.help, container, false);
+		View view=inflater.inflate(R.layout.help_layout_new, container, false);
+		setListeners(view);
+		
+		
+		return view;
 
 	}
+	
+	private OnClickListener mCorkyListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+
+			
+			
+
+		}
+	};
+	
+	
+	private void closeOrOpen(int id){
+		
+		
+		
+		
+	}
+	
+	private void setListeners(View view){
+		
+		
+		view.findViewById(R.id.about_envirocar).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.about_envirocar_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.getting_started).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.getting_started_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.register).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.register_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.car_data).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.car_data_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.connect_to_car).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.connect_to_car_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.record_track).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.record_track_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.observe_track).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.observe_track_text).setOnClickListener(mCorkyListener);
+		
+		
+		view.findViewById(R.id.upload_track).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.upload_track_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.settings).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.settings_part_1).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.settings_part_1_text).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.settings_part_2).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.settings_part_2_text).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.settings_part_3).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.settings_part_3_text).setOnClickListener(mCorkyListener);
+		
+		view.findViewById(R.id.feedback).setOnClickListener(mCorkyListener);
+		view.findViewById(R.id.feedback_text).setOnClickListener(mCorkyListener);
+		
+		
+		
+		
+	}
+	
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -50,13 +120,13 @@ public class HelpFragment extends SherlockFragment {
 //		}
 		
 		
-	    TextView versionTextview = (TextView) getActivity().findViewById(R.id.textView22);
-
-	    CharSequence versionString = getActivity().getText(R.string.help_text_6_3);
-	    
-	    versionString = versionString + " " + Util.getVersionString(getActivity());
-	    
-	    versionTextview.setText(versionString);	    
+//	    TextView versionTextview = (TextView) getActivity().findViewById(R.id.textView22);
+//
+//	    CharSequence versionString = getActivity().getText(R.string.help_text_6_3);
+//	    
+//	    versionString = versionString + " " + Util.getVersionString(getActivity());
+//	    
+//	    versionTextview.setText(versionString);	    
 	    
 	}
 }

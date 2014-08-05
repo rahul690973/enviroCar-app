@@ -43,7 +43,7 @@ public class UserStatisticsFragment extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
-		View view = inflater.inflate(R.layout.user_statistics,null);
+		 View view = inflater.inflate(R.layout.user_statistics,null);
 		
 		 chartCo2=(LinearLayout)view.findViewById(R.id.chart_co2_emission);
 		 chartFuel=(LinearLayout)view.findViewById(R.id.chart_fuel_consumption);
@@ -51,6 +51,7 @@ public class UserStatisticsFragment extends SherlockFragment {
 		return view;
 		
 	}	
+	
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -66,6 +67,8 @@ public class UserStatisticsFragment extends SherlockFragment {
 		
 	}
 	
+	
+	
 	 public GraphicalView execute(Context context,String title) {
 		    String[] titles = new String[] {title };
 		    List<Date[]> dates = new ArrayList<Date[]>();
@@ -79,6 +82,9 @@ public class UserStatisticsFragment extends SherlockFragment {
 		        new Date(100, 9, 1), new Date(100, 11, 1) };
 		    dates.add(dateValues);
 
+		    // for transforming this values into local values, fetch the units from sharedpreferences and
+		    // divide these numbers by the unit's values. It has to be done at the time of inserting the
+		    // values into the array
 		    values.add(new double[] { 4.9, 5.3, 3.2, 4.5, 6.5, 4.7, 5.8, 4.3, 4, 2.3, -0.5, -2.9, 3.2, 5.5,
 		        4.6, 9.4, 4.3, 1.2, 0, 0.4, 4.5, 3.4, 4.5, 4.3, 4 });
 		    int[] colors = new int[] { Color.BLUE };

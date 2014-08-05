@@ -3,8 +3,13 @@ package org.envirocar.app.activity;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -14,6 +19,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.PorterDuff.Mode;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,6 +42,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.envirocar.app.R;
+import org.envirocar.app.application.ECApplication;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.DAOProvider;
 import org.envirocar.app.dao.exception.NotConnectedException;
@@ -51,6 +58,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends SherlockFragment {
 	TextView totalTracksView, ownTracksView, compareWithFriendsView,
@@ -60,10 +69,13 @@ public class ProfileFragment extends SherlockFragment {
 	String OWN_TRACK_NUMBER = "own-tracks";
 	String prefTotalTrack, prefOwnTrack;
 	String whichTrack;
+	private LinkedHashMap<String,String>userAndScore;
 
 	static User user;
 	static String root;
 	int x;
+	static Context c;
+	static Bitmap m;
 
 	SharedPreferences preferences;
 	private static final Logger logger = Logger
@@ -75,6 +87,8 @@ public class ProfileFragment extends SherlockFragment {
 
 		setHasOptionsMenu(true);
 		View view = inflater.inflate(R.layout.profile_page, null);
+		c=getActivity();
+				
 
 		totalTracksView = (TextView) view.findViewById(R.id.total_tracks);
 		ownTracksView = (TextView) view.findViewById(R.id.your_tracks);
@@ -86,7 +100,9 @@ public class ProfileFragment extends SherlockFragment {
 		compareWithFriendsView.setOnClickListener(textViewClickListener);
 		viewStatisticsView.setOnClickListener(textViewClickListener);
 		leaderBoardView.setOnClickListener(textViewClickListener);
+		userAndScore=new LinkedHashMap<String,String>();
 		
+		leaderBoardView.setClickable(false); // to be enabled when the rank is dispayed on the view
 
 		return view;
 	}
@@ -130,8 +146,12 @@ public class ProfileFragment extends SherlockFragment {
 		}
 
 		new displayNumberOfTracks().execute();
+		getLeaderBoardFromServer();
+		setUsersRank();
 
 	}
+	
+	
 
 	private OnClickListener textViewClickListener = new OnClickListener() {
 
@@ -144,7 +164,7 @@ public class ProfileFragment extends SherlockFragment {
 						FragmentManager.POP_BACK_STACK_INCLUSIVE);
 				FriendListFragment friendsFragment = new FriendListFragment();
 				getActivity().getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, friendsFragment).commit();
+						.replace(R.id.content_frame, friendsFragment,MainActivity.FRIENDS_LIST_TAG).commit();
 
 			}
 
@@ -154,7 +174,7 @@ public class ProfileFragment extends SherlockFragment {
 						FragmentManager.POP_BACK_STACK_INCLUSIVE);
 				UserStatisticsFragment userStatisticsFragment = new UserStatisticsFragment();
 				getActivity().getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, userStatisticsFragment)
+						.replace(R.id.content_frame, userStatisticsFragment,MainActivity.STATISTICS_TAG)
 						.commit();
 
 			}
@@ -164,8 +184,11 @@ public class ProfileFragment extends SherlockFragment {
 				getActivity().getSupportFragmentManager().popBackStack(null,
 						FragmentManager.POP_BACK_STACK_INCLUSIVE);
 				LeaderboardFragment lbFragment = new LeaderboardFragment();
+				Bundle lbBundle=new Bundle();
+				lbBundle.putSerializable("rank_map", userAndScore);
+				lbFragment.setArguments(lbBundle);
 				getActivity().getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, lbFragment)
+						.replace(R.id.content_frame, lbFragment,MainActivity.LEADERBOARD_TAG)
 						.commit();
 				
 				
@@ -173,14 +196,119 @@ public class ProfileFragment extends SherlockFragment {
 
 		}
 	};
+	
+	
+protected void setUsersRank(){
+	
+	int totalSize=userAndScore.size();
+	List<String> keys = new ArrayList<String>(userAndScore.keySet());
+	int userIndex=keys.indexOf(user.getUsername());
+	if(userIndex!=-1)
+		leaderBoardView.setText(""+userIndex+ "out of"+" "+ totalSize);
+	else
+		leaderBoardView.setText("Not Applicable");
+	leaderBoardView.setClickable(true);
+	
+	
+}
+	
+	
+protected void getLeaderBoardFromServer(){
+		
+		for(int i=0;i<500;i++)
+			userAndScore.put(String.valueOf(i), "711");
+			
+	}
 
 	public static void setImageOnView() {
 
-		Bitmap bitmap = BitmapFactory.decodeFile(root + "/enviroCar/images/"
-				+ user.getUsername() + ".jpg");
-		Bitmap roundedBitmap = getRoundedBitmap(bitmap, 200);
-		profilePicView.setImageBitmap(roundedBitmap);
+//		Bitmap bitmap = BitmapFactory.decodeFile(root + "/enviroCar/images/"
+//				+ user.getUsername() + ".jpg");
+//		Bitmap roundedBitmap = getRoundedBitmap(bitmap, 200);
+//		profilePicView.setImageBitmap(roundedBitmap);
+		
+//		 Uri absolute = Uri.parse(ECApplication.BASE_URL+"/users/"+user.getUsername()+"/avator?size=200");
+//		 
+//	     getImageLoader(c).load(absolute).into(profilePicView);
+//	     try {
+//			Bitmap m=getImageLoader(c).load(absolute).get();
+//			Log.d("rahulraja",""+m);
+//			profilePicView.setImageBitmap(m);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+	
+		 new Thread() {
+		        @Override
+		        public void run() {
+		            //If there are stories, add them to the table
+		        	Uri absolute = Uri.parse(ECApplication.BASE_URL+"/users/"+user.getUsername()+"/avator?size=200");
+		        	try {
+					 m=getImageLoader(c).load(absolute).get();
+					 Log.d("rahulraja",""+m);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		               
+		        }
+		 }.start();
+		 
+		 profilePicView.setImageBitmap(m);
+
 	}
+	
+	
+	
+	public static Picasso getImageLoader(Context ctx) {
+	    Picasso.Builder builder = new Picasso.Builder(ctx);
+	    
+	    builder.downloader(new OkHttpDownloader(ctx) {
+	        @Override
+	        protected HttpURLConnection openConnection(Uri uri) throws IOException {
+	            HttpURLConnection connection = super.openConnection(uri);
+	           
+	            connection.setRequestProperty("X-User",user.getUsername());
+	            connection.setRequestProperty("X-Token",user.getToken());
+	            
+	            return connection;
+	        }
+	    });
+	    return builder.build();
+	}
+	
+//	class Task implements Runnable {
+//		@Override
+//		public void run() {
+//			
+//			 Uri absolute = Uri.parse(ECApplication.BASE_URL+"/users/"+user.getUsername()+"/avator?size=200");
+//			 
+//		     getImageLoader(c).load(absolute).into(profilePicView);
+//		     try {
+//				Bitmap m=getImageLoader(c).load(absolute).get();
+//				Log.d("rahulraja",""+m);
+//				profilePicView.setImageBitmap(m);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		     
+//		     try {
+//                 // code runs in a thread
+//                 runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            
+//                        }
+//                 });
+//           } catch (final Exception ex) {
+//               Log.i("---","Exception in thread");
+//           }
+//		}
+//
+//	}
 
 	public static Bitmap getRoundedBitmap(Bitmap bitmap, int pixels) {
 		Bitmap result = null;

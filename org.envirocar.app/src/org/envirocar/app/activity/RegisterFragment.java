@@ -295,7 +295,7 @@ public class RegisterFragment extends SherlockFragment {
 						
 						ProfileFragment profileFragment = new ProfileFragment();
 						getActivity().getSupportFragmentManager().beginTransaction()
-								.replace(R.id.content_frame, profileFragment)
+								.replace(R.id.content_frame, profileFragment,MainActivity.PROFILE_TAG)
 								.commit();
 					}
 				});

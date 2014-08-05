@@ -47,6 +47,7 @@ import org.envirocar.app.dao.exception.AnnouncementsRetrievalException;
 import org.envirocar.app.exception.InvalidObjectStateException;
 import org.envirocar.app.logging.Logger;
 import org.envirocar.app.model.Announcement;
+import org.envirocar.app.model.User;
 import org.envirocar.app.storage.DbAdapterImpl;
 import org.envirocar.app.util.Util;
 import org.envirocar.app.util.VersionRange.Version;
@@ -102,7 +103,6 @@ import com.actionbarsherlock.view.SubMenu;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-
 /**
  * Main UI application that cares about the auto-upload, auto-connect and global
  * UI elements
@@ -112,18 +112,19 @@ import de.keyboardsurfer.android.widget.crouton.Style;
  * 
  * @param <AndroidAlarmService>
  */
-public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity implements OnItemClickListener {
+public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
+		implements OnItemClickListener {
 
 	public static final int TRACK_MODE_SINGLE = 0;
 	public static final int TRACK_MODE_AUTO = 1;
-	
+
 	private int actionBarTitleID = 0;
 	private ActionBar actionBar;
 
 	public ECApplication application;
 
 	private FragmentManager manager;
-	//Navigation Drawer
+	// Navigation Drawer
 	private DrawerLayout drawer;
 	private ListView drawerList;
 	private NavAdapter navDrawerAdapter;
@@ -136,34 +137,39 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	static final int MY_TRACKS = 2;
 	static final int START_STOP_MEASUREMENT = 3;
 	static final int SETTINGS = 4;
-//	static final int LOGBOOK = 5;
-	static final int LANGUAGE=5;
-	static final int HELP = 6;
+	// static final int LOGBOOK = 5;
+	static final int LANGUAGE = 5;
+	static final int HELP = 8;
 	static final int SEND_LOG = 7;
-	static final int SUBMENU_ABOUT=0;
-	static final int SUBMENU_HELP=1;
-	static final int SUBMENU_REPORT=2;
-	static final int SUBMENU_LOGBOOK=3;
-	static final int MENU_ID=4;
-	
+	static final int LOGOUT = 6;
+	static final int SUBMENU_ABOUT = 0;
+	static final int SUBMENU_HELP = 1;
+	static final int SUBMENU_REPORT = 2;
+	static final int SUBMENU_LOGBOOK = 3;
+	static final int SUBMENU_LOGOUT = 4;
+	static final int MENU_ID = 5;
+
 	static final String DASHBOARD_TAG = "DASHBOARD";
 	static final String LOGIN_TAG = "LOGIN";
 	static final String MY_TRACKS_TAG = "MY_TRACKS";
 	static final String HELP_TAG = "HELP";
 	static final String TROUBLESHOOTING_TAG = "TROUBLESHOOTING";
 	static final String SEND_LOG_TAG = "SEND_LOG";
-	static final String LOGBOOK_TAG ="LOGBOOK";
+	static final String LOGBOOK_TAG = "LOGBOOK";
+	static final String PROFILE_TAG = "PROFILE";
+	static final String FRIENDS_LIST_TAG = "FRIENDS";
+	static final String STATISTICS_TAG = "STATISTICS";
+	static final String LEADERBOARD_TAG = "LEADERBOARD";
 
 	public static final int REQUEST_MY_GARAGE = 1336;
 	public static final int REQUEST_REDIRECT_TO_GARAGE = 1337;
-	
+
 	private static final Logger logger = Logger.getLogger(MainActivity.class);
 	private static final String TRACK_MODE = "trackMode";
 	private static final String SEEN_ANNOUNCEMENTS = "seenAnnouncements";
-	
-	
+
 	// Include settings for auto upload and auto-connect
-	
+
 	private SharedPreferences preferences = null;
 	boolean alwaysUpload = false;
 	boolean uploadOnlyInWlan = true;
@@ -180,28 +186,61 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	protected BackgroundServiceInteractor backgroundService;
 	protected DeviceInRangeServiceInteractor deviceInRangeService;
 	protected long discoveryTargetTime;
-		
-	private void prepareNavDrawerItems(){
-		if(this.navDrawerItems == null){
-			navDrawerItems = new NavMenuItem[6];
-			navDrawerItems[LOGIN] = new NavMenuItem(LOGIN, getResources().getString(R.string.menu_login),R.drawable.device_access_accounts);
-			//navDrawerItems[LOGBOOK] = new NavMenuItem(LOGBOOK, getResources().getString(R.string.menu_logbook), R.drawable.logbook);
-			navDrawerItems[SETTINGS] = new NavMenuItem(SETTINGS, getResources().getString(R.string.menu_settings),R.drawable.action_settings);
-			navDrawerItems[START_STOP_MEASUREMENT] = new NavMenuItem(START_STOP_MEASUREMENT, getResources().getString(R.string.menu_start),R.drawable.av_play);
-			navDrawerItems[DASHBOARD] = new NavMenuItem(DASHBOARD, getResources().getString(R.string.dashboard), R.drawable.dashboard);
-			navDrawerItems[MY_TRACKS] = new NavMenuItem(MY_TRACKS, getResources().getString(R.string.my_tracks),R.drawable.device_access_storage);
-			navDrawerItems[LANGUAGE] = new NavMenuItem(LANGUAGE, getResources().getString(R.string.language),R.drawable.ic_action_labels);
-			
-			//navDrawerItems[HELP] = new NavMenuItem(HELP, getResources().getString(R.string.menu_help), R.drawable.action_help);
-			//navDrawerItems[SEND_LOG] = new NavMenuItem(SEND_LOG, getResources().getString(R.string.menu_send_log), R.drawable.action_report);
+
+	private void prepareNavDrawerItems() {
+		if (this.navDrawerItems == null) {
+			navDrawerItems = new NavMenuItem[7];
+			navDrawerItems[LOGIN] = new NavMenuItem(LOGIN, getResources()
+					.getString(R.string.menu_login),
+					R.drawable.device_access_accounts);
+			// navDrawerItems[LOGBOOK] = new NavMenuItem(LOGBOOK,
+			// getResources().getString(R.string.menu_logbook),
+			// R.drawable.logbook);
+			navDrawerItems[SETTINGS] = new NavMenuItem(SETTINGS, getResources()
+					.getString(R.string.menu_settings),
+					R.drawable.action_settings);
+			navDrawerItems[START_STOP_MEASUREMENT] = new NavMenuItem(
+					START_STOP_MEASUREMENT, getResources().getString(
+							R.string.menu_start), R.drawable.av_play);
+			navDrawerItems[DASHBOARD] = new NavMenuItem(DASHBOARD,
+					getResources().getString(R.string.dashboard),
+					R.drawable.dashboard);
+			navDrawerItems[MY_TRACKS] = new NavMenuItem(MY_TRACKS,
+					getResources().getString(R.string.my_tracks),
+					R.drawable.device_access_storage);
+			navDrawerItems[LANGUAGE] = new NavMenuItem(LANGUAGE, getResources()
+					.getString(R.string.language), R.drawable.ic_action_labels);
+			navDrawerItems[LOGOUT] = new NavMenuItem(LOGOUT, "", 0);
+
+			// navDrawerItems[HELP] = new NavMenuItem(HELP,
+			// getResources().getString(R.string.menu_help),
+			// R.drawable.action_help);
+			// navDrawerItems[SEND_LOG] = new NavMenuItem(SEND_LOG,
+			// getResources().getString(R.string.menu_send_log),
+			// R.drawable.action_report);
 		}
-		
+
 		if (UserManager.instance().isLoggedIn()) {
-			navDrawerItems[LOGIN].setTitle(getResources().getString(R.string.menu_logout));
-			navDrawerItems[LOGIN].setSubtitle(String.format(getResources().getString(R.string.logged_in_as),UserManager.instance().getUser().getUsername()));
+			// navDrawerItems[LOGIN].setTitle(getResources().getString(
+			// R.string.menu_logout));
+			// navDrawerItems[LOGIN].setSubtitle(String.format(getResources()
+			// .getString(R.string.logged_in_as), UserManager.instance()
+			// .getUser().getUsername()));
+
+			navDrawerItems[LOGIN].setTitle(getResources().getString(
+					R.string.menu_profile));
+			//
+			// navDrawerItems[LOGIN].setSubtitle(String.format(getResources()
+			// .getString(R.string.logged_in_as), UserManager.instance()
+			// .getUser().getUsername()));
+			navDrawerItems[LOGOUT] = new NavMenuItem(LOGOUT, getResources()
+					.getString(R.string.menu_logout),
+					R.drawable.device_access_accounts);
+
 		} else {
-			navDrawerItems[LOGIN].setTitle(getResources().getString(R.string.menu_login));
-			navDrawerItems[LOGIN].setSubtitle("");		
+			navDrawerItems[LOGIN].setTitle(getResources().getString(
+					R.string.menu_login));
+			navDrawerItems[LOGIN].setSubtitle("");
 		}
 
 		navDrawerAdapter.notifyDataSetChanged();
@@ -211,24 +250,22 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		readSavedState(savedInstanceState);
-		
+
 		this.setContentView(R.layout.main_layout);
 
 		application = ((ECApplication) getApplication());
-		
-		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		
-		
-		
-		
-		alwaysUpload = preferences.getBoolean(SettingsActivity.ALWAYS_UPLOAD, false);
-        uploadOnlyInWlan = preferences.getBoolean(SettingsActivity.WIFI_UPLOAD, true);
 
-        checkKeepScreenOn();
-        
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		alwaysUpload = preferences.getBoolean(SettingsActivity.ALWAYS_UPLOAD,
+				false);
+		uploadOnlyInWlan = preferences.getBoolean(SettingsActivity.WIFI_UPLOAD,
+				true);
+
+		checkKeepScreenOn();
+
 		actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setHomeButtonEnabled(true);
@@ -244,14 +281,16 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 			}
 		}
 
-		actionBar.setLogo(getResources().getDrawable(R.drawable.actionbarlogo_with_padding));
-		
+		actionBar.setLogo(getResources().getDrawable(
+				R.drawable.actionbarlogo_with_padding));
+
 		manager = getSupportFragmentManager();
-        
+
 		DashboardFragment initialFragment = new DashboardFragment();
-		manager.beginTransaction().replace(R.id.content_frame, initialFragment, DASHBOARD_TAG)
-		.commit();
-		
+		manager.beginTransaction()
+				.replace(R.id.content_frame, initialFragment, DASHBOARD_TAG)
+				.commit();
+
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 		navDrawerAdapter = new NavAdapter();
@@ -261,7 +300,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
 				this, drawer, R.drawable.ic_drawer, R.string.open_drawer,
 				R.string.close_drawer) {
-		
+
 			@Override
 			public void onDrawerOpened(View drawerView) {
 				prepareNavDrawerItems();
@@ -271,52 +310,56 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 
 		drawer.setDrawerListener(actionBarDrawerToggle);
 		drawerList.setOnItemClickListener(this);
-		
+
 		manager.executePendingTransactions();
 
 		serviceStateReceiver = new AbstractBackgroundServiceStateReceiver() {
 			@Override
 			public void onStateChanged(ServiceState state) {
 				serviceState = state;
-				
-				if (serviceState == ServiceState.SERVICE_STOPPED && trackMode == TRACK_MODE_AUTO) {
+
+				if (serviceState == ServiceState.SERVICE_STOPPED
+						&& trackMode == TRACK_MODE_AUTO) {
 					/*
 					 * we need to start the DeviceInRangeService
 					 */
-					startService(new Intent(getApplicationContext(), DeviceInRangeService.class));
+					startService(new Intent(getApplicationContext(),
+							DeviceInRangeService.class));
 				}
-				
+
 				updateStartStopButton();
 			}
 		};
-		
-		registerReceiver(serviceStateReceiver, new IntentFilter(AbstractBackgroundServiceStateReceiver.SERVICE_STATE));
+
+		registerReceiver(serviceStateReceiver, new IntentFilter(
+				AbstractBackgroundServiceStateReceiver.SERVICE_STATE));
 
 		deviceDiscoveryStateReceiver = new AbstractBackgroundServiceStateReceiver() {
-			
+
 			@Override
 			public void onStateChanged(ServiceState state) {
 				if (state == ServiceState.SERVICE_DEVICE_DISCOVERY_PENDING) {
-					discoveryTargetTime = deviceInRangeService.getNextDiscoveryTargetTime();
+					discoveryTargetTime = deviceInRangeService
+							.getNextDiscoveryTargetTime();
 					invokeRemainingTimeThread();
-				}
-				else if (state == ServiceState.SERVICE_DEVICE_DISCOVERY_RUNNING) {
-					
+				} else if (state == ServiceState.SERVICE_DEVICE_DISCOVERY_RUNNING) {
+
 				}
 			}
 		};
-		registerReceiver(deviceDiscoveryStateReceiver, new IntentFilter(AbstractBackgroundServiceStateReceiver.SERVICE_STATE));
-		
+		registerReceiver(deviceDiscoveryStateReceiver, new IntentFilter(
+				AbstractBackgroundServiceStateReceiver.SERVICE_STATE));
+
 		bluetoothStateReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				updateStartStopButton();
 			}
 		};
-		
-		
-		registerReceiver(bluetoothStateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-		
+
+		registerReceiver(bluetoothStateReceiver, new IntentFilter(
+				BluetoothAdapter.ACTION_STATE_CHANGED));
+
 		settingsReceiver = new OnSharedPreferenceChangeListener() {
 			@Override
 			public void onSharedPreferenceChanged(
@@ -324,189 +367,209 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 				if (key.equals(SettingsActivity.BLUETOOTH_NAME)) {
 					updateStartStopButton();
 				}
-				if (key.equals(SettingsActivity.CAR) || key.equals(SettingsActivity.CAR_HASH_CODE)) {
+				if (key.equals(SettingsActivity.CAR)
+						|| key.equals(SettingsActivity.CAR_HASH_CODE)) {
 					updateStartStopButton();
 				}
 			}
 		};
-		
+
 		preferences.registerOnSharedPreferenceChangeListener(settingsReceiver);
-		
+
 		errorInformationReceiver = new BroadcastReceiver() {
-			
+
 			@Override
 			public void onReceive(Context context, Intent intent) {
-	        	Fragment fragment = getSupportFragmentManager().findFragmentByTag(TROUBLESHOOTING_TAG);
-	        	if (fragment == null) {
-	        		fragment = new TroubleshootingFragment();
-	        	}
-	        	fragment.setArguments(intent.getExtras());
+				Fragment fragment = getSupportFragmentManager()
+						.findFragmentByTag(TROUBLESHOOTING_TAG);
+				if (fragment == null) {
+					fragment = new TroubleshootingFragment();
+				}
+				fragment.setArguments(intent.getExtras());
 				getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, fragment)
-						.commit();
+						.replace(R.id.content_frame, fragment).commit();
 			}
 		};
-		
-		registerReceiver(errorInformationReceiver, new IntentFilter(TroubleshootingFragment.INTENT));
-		
+
+		registerReceiver(errorInformationReceiver, new IntentFilter(
+				TroubleshootingFragment.INTENT));
+
 		resolvePersistentSeenAnnouncements();
-		loadLanguage(preferences,getBaseContext());
-		
-		
+		loadLanguage(preferences, getBaseContext());
+
 	}
-	
+
 	private void readSavedState(Bundle savedInstanceState) {
-		if (savedInstanceState == null) return;
-		
+		if (savedInstanceState == null)
+			return;
+
 		this.trackMode = savedInstanceState.getInt(TRACK_MODE);
-		
-		String[] arr = (String[]) savedInstanceState.getSerializable(SEEN_ANNOUNCEMENTS);
+
+		String[] arr = (String[]) savedInstanceState
+				.getSerializable(SEEN_ANNOUNCEMENTS);
 		if (arr != null) {
 			for (String string : arr) {
 				this.seenAnnouncements.add(string);
 			}
 		}
 	}
-	
-	
- private  static void loadLanguage(SharedPreferences preferences,Context base){
-	 
-	 String languageToLoad=null;
-		//Toast.makeText(this, preferences.getString(SettingsActivity.LANGUAGE_KEY, null), Toast.LENGTH_LONG).show();
-		if ((languageToLoad=preferences.getString(SettingsActivity.LANGUAGE_KEY, null)) != null) {
-			
-			
-			Locale locale = new Locale(languageToLoad);  
-			Locale.setDefault(locale); 
-			Configuration config = new Configuration(); 
-			config.locale = locale; 
-			base.getResources().updateConfiguration(config,  
-			base.getResources().getDisplayMetrics());
-		
+
+	private static void loadLanguage(SharedPreferences preferences, Context base) {
+
+		String languageToLoad = null;
+		// Toast.makeText(this,
+		// preferences.getString(SettingsActivity.LANGUAGE_KEY, null),
+		// Toast.LENGTH_LONG).show();
+		if ((languageToLoad = preferences.getString(
+				SettingsActivity.LANGUAGE_KEY, null)) != null) {
+
+			Locale locale = new Locale(languageToLoad);
+			Locale.setDefault(locale);
+			Configuration config = new Configuration();
+			config.locale = locale;
+			base.getResources().updateConfiguration(config,
+					base.getResources().getDisplayMetrics());
+
 		}
-		
-	 
- }
-	
+
+	}
+
 	private void bindToBackgroundService() {
 		if (!bindService(new Intent(this, BackgroundServiceImpl.class),
 				new ServiceConnection() {
-					
+
 					@Override
 					public void onServiceDisconnected(ComponentName name) {
-						logger.info(String.format("BackgroundService %S disconnected!", name.flattenToString()));
+						logger.info(String.format(
+								"BackgroundService %S disconnected!",
+								name.flattenToString()));
 					}
-					
+
 					@Override
-					public void onServiceConnected(ComponentName name, IBinder service) {
+					public void onServiceConnected(ComponentName name,
+							IBinder service) {
 						backgroundService = (BackgroundServiceInteractor) service;
 						serviceState = backgroundService.getServiceState();
 						updateStartStopButton();
 					}
 				}, 0)) {
 			logger.warn("Could not connect to BackgroundService.");
-		}		
+		}
 	}
-	
+
 	private void bindToDeviceInRangeService() {
 		if (!bindService(new Intent(this, DeviceInRangeService.class),
 				new ServiceConnection() {
-					
+
 					@Override
 					public void onServiceDisconnected(ComponentName name) {
-						logger.info(String.format("DeviceInRangeService %S disconnected!", name.flattenToString()));
+						logger.info(String.format(
+								"DeviceInRangeService %S disconnected!",
+								name.flattenToString()));
 					}
-					
+
 					@Override
-					public void onServiceConnected(ComponentName name, IBinder service) {
+					public void onServiceConnected(ComponentName name,
+							IBinder service) {
 						deviceInRangeService = (DeviceInRangeServiceInteractor) service;
 						if (deviceInRangeService.isDiscoveryPending()) {
 							serviceState = ServiceState.SERVICE_DEVICE_DISCOVERY_PENDING;
 						}
 						updateStartStopButton();
-						discoveryTargetTime = deviceInRangeService.getNextDiscoveryTargetTime();
+						discoveryTargetTime = deviceInRangeService
+								.getNextDiscoveryTargetTime();
 						invokeRemainingTimeThread();
 					}
 				}, 0)) {
 			logger.warn("Could not connect to DeviceInRangeService.");
-		}		
+		}
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		
+
 		outState.putInt(TRACK_MODE, trackMode);
-		
-		outState.putSerializable(SEEN_ANNOUNCEMENTS, this.seenAnnouncements.toArray(new String[0]));
+
+		outState.putSerializable(SEEN_ANNOUNCEMENTS,
+				this.seenAnnouncements.toArray(new String[0]));
 	}
 
 	protected void updateStartStopButton() {
 		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		if (adapter != null && adapter.isEnabled()) { // was requirementsFulfilled
-			createStartStopUtil().updateStartStopButtonOnServiceStateChange(navDrawerItems[START_STOP_MEASUREMENT]);
+		if (adapter != null && adapter.isEnabled()) { // was
+														// requirementsFulfilled
+			createStartStopUtil().updateStartStopButtonOnServiceStateChange(
+					navDrawerItems[START_STOP_MEASUREMENT]);
 		} else {
-			createStartStopUtil().defineButtonContents(navDrawerItems[START_STOP_MEASUREMENT],
-					false, R.drawable.not_available, getString(R.string.pref_bluetooth_disabled),
+			createStartStopUtil().defineButtonContents(
+					navDrawerItems[START_STOP_MEASUREMENT], false,
+					R.drawable.not_available,
+					getString(R.string.pref_bluetooth_disabled),
 					getString(R.string.menu_start));
 		}
-		
+
 		navDrawerAdapter.notifyDataSetChanged();
 	}
 
 	/**
-	 * start a thread that updates the UI until the device was
-	 * discovered
+	 * start a thread that updates the UI until the device was discovered
 	 */
 	private void invokeRemainingTimeThread() {
-		if (remainingTimeThread == null || discoveryTargetTime > System.currentTimeMillis()) {
+		if (remainingTimeThread == null
+				|| discoveryTargetTime > System.currentTimeMillis()) {
 			remainingTimeHandler = new Handler();
 			remainingTimeThread = new Runnable() {
 				@Override
 				public void run() {
-					final long deltaSec = (discoveryTargetTime - System.currentTimeMillis()) / 1000;
+					final long deltaSec = (discoveryTargetTime - System
+							.currentTimeMillis()) / 1000;
 					final long minutes = deltaSec / 60;
-					final long secs = deltaSec - (minutes*60);
-					if (serviceState == ServiceState.SERVICE_DEVICE_DISCOVERY_PENDING && deltaSec > 0) {
+					final long secs = deltaSec - (minutes * 60);
+					if (serviceState == ServiceState.SERVICE_DEVICE_DISCOVERY_PENDING
+							&& deltaSec > 0) {
 						runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
-								navDrawerItems[START_STOP_MEASUREMENT].setSubtitle(
-												String.format(getString(R.string.device_discovery_next_try), 
-														String.format("%02d", minutes), String.format("%02d", secs)
-												));
+								navDrawerItems[START_STOP_MEASUREMENT]
+										.setSubtitle(String
+												.format(getString(R.string.device_discovery_next_try),
+														String.format("%02d",
+																minutes),
+														String.format("%02d",
+																secs)));
 								navDrawerAdapter.notifyDataSetChanged();
 							}
 						});
-						
+
 						/*
 						 * re-invoke the painting
 						 */
-						remainingTimeHandler.postDelayed(remainingTimeThread, 1000);
+						remainingTimeHandler.postDelayed(remainingTimeThread,
+								1000);
 					} else {
 						logger.info("NOT SHOWING!");
 					}
 				}
 			};
 			remainingTimeHandler.post(remainingTimeThread);
-		}
-		else {
-			logger.info("not invoking the discovery time painting thread: "+
-					(remainingTimeThread == null) +", "+ (discoveryTargetTime - System.currentTimeMillis()));
+		} else {
+			logger.info("not invoking the discovery time painting thread: "
+					+ (remainingTimeThread == null) + ", "
+					+ (discoveryTargetTime - System.currentTimeMillis()));
 		}
 	}
 
-	
-
 	private class NavAdapter extends BaseAdapter {
-		
 
 		@Override
 		public boolean isEnabled(int position) {
-			//to allow things like start bluetooth or go to settings from "disabled" action
-			return (position == START_STOP_MEASUREMENT ? true : navDrawerItems[position].isEnabled());
+			// to allow things like start bluetooth or go to settings from
+			// "disabled" action
+			return (position == START_STOP_MEASUREMENT ? true
+					: navDrawerItems[position].isEnabled());
 		}
-		
+
 		@Override
 		public int getCount() {
 			return navDrawerItems.length;
@@ -526,115 +589,189 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			NavMenuItem currentItem = ((NavMenuItem) getItem(position));
 			View item;
-			if(currentItem.getSubtitle().equals("")){
-				item = View.inflate(MainActivity.this,R.layout.nav_item_1, null);
-				
+			if (currentItem.getSubtitle().equals("")) {
+				item = View.inflate(MainActivity.this, R.layout.nav_item_1,
+						null);
+
 			} else {
-				item = View.inflate(MainActivity.this,R.layout.nav_item_2, null);
-				TextView textView2 = (TextView) item.findViewById(android.R.id.text2);
+				item = View.inflate(MainActivity.this, R.layout.nav_item_2,
+						null);
+				TextView textView2 = (TextView) item
+						.findViewById(android.R.id.text2);
 				textView2.setText(currentItem.getSubtitle());
-				if(!currentItem.isEnabled()) textView2.setTextColor(Color.GRAY);
+				if (!currentItem.isEnabled())
+					textView2.setTextColor(Color.GRAY);
 			}
 			ImageView icon = ((ImageView) item.findViewById(R.id.nav_item_icon));
 			icon.setImageResource(currentItem.getIconRes());
-			TextView textView = (TextView) item.findViewById(android.R.id.text1);
+			TextView textView = (TextView) item
+					.findViewById(android.R.id.text1);
 			textView.setText(currentItem.getTitle());
-			if(!currentItem.isEnabled()){
+			if (!currentItem.isEnabled()) {
 				textView.setTextColor(Color.GRAY);
 				icon.setColorFilter(Color.GRAY);
 			}
-			TypefaceEC.applyCustomFont((ViewGroup) item, TypefaceEC.Raleway(MainActivity.this));
+			TypefaceEC.applyCustomFont((ViewGroup) item,
+					TypefaceEC.Raleway(MainActivity.this));
 			return item;
 		}
 
 	}
-	
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        openFragment(position);
-    }
 
-    private void openFragment(int position) {
-        FragmentManager manager = getSupportFragmentManager();
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		openFragment(position);
+	}
 
-        switch (position) {
-        
-        // Go to the dashboard
-        
-        case DASHBOARD:
-        	
-        	if(isFragmentVisible(DASHBOARD_TAG)){
-            	break;
-            }
-        	Fragment dashboardFragment = getSupportFragmentManager().findFragmentByTag(DASHBOARD_TAG);
-        	if (dashboardFragment == null) {
-        		dashboardFragment = new DashboardFragment();
-        	}
-        	manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            manager.beginTransaction().replace(R.id.content_frame, dashboardFragment, DASHBOARD_TAG).commit();
-            break;
-            
-        //Start the Login activity
-            
-        case LOGIN:
-        	if(UserManager.instance().isLoggedIn()){
-        		UserManager.instance().logOut();
-    			ListTracksFragment listMeasurementsFragment = (ListTracksFragment) getSupportFragmentManager().findFragmentByTag("MY_TRACKS");
-    			// check if this fragment is initialized
-    			if (listMeasurementsFragment != null) {
-    				listMeasurementsFragment.clearRemoteTracks();
-    			}else{
-    				//the remote tracks need to be removed in any case
-            		DbAdapterImpl.instance().deleteAllRemoteTracks();
-    			}
-        		Crouton.makeText(this, R.string.bye_bye, Style.CONFIRM).show();
-        	} else {
-            	if(isFragmentVisible(LOGIN_TAG)){
-                	break;
-                }
-                LoginFragment loginFragment = new LoginFragment();
-                manager.beginTransaction().replace(R.id.content_frame, loginFragment, LOGIN_TAG).addToBackStack(null).commit();
-        	}
-            break;
-            
-        // Go to the settings
-            
-        case SETTINGS:
+	private void openFragment(int position) {
+		FragmentManager manager = getSupportFragmentManager();
+
+		switch (position) {
+
+		// Go to the dashboard
+
+		case DASHBOARD:
+
+			if (isFragmentVisible(DASHBOARD_TAG)) {
+				break;
+			}
+			Fragment dashboardFragment = getSupportFragmentManager()
+					.findFragmentByTag(DASHBOARD_TAG);
+			if (dashboardFragment == null) {
+				dashboardFragment = new DashboardFragment();
+			}
+			manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+			manager.beginTransaction()
+					.replace(R.id.content_frame, dashboardFragment,
+							DASHBOARD_TAG).commit();
+			break;
+
+		// Start the Login activity
+
+		case LOGIN:
+			if (UserManager.instance().isLoggedIn()) {
+
+				if (isFragmentVisible(PROFILE_TAG)) {
+					break;
+				}
+				Fragment profileFragment = getSupportFragmentManager()
+						.findFragmentByTag(PROFILE_TAG);
+				if (profileFragment == null) {
+					profileFragment = new ProfileFragment();
+				}
+				manager.popBackStack(null,
+						FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				manager.beginTransaction()
+						.replace(R.id.content_frame, profileFragment,
+								PROFILE_TAG).commit();
+
+				// UserManager.instance().logOut();
+				// ListTracksFragment listMeasurementsFragment =
+				// (ListTracksFragment) getSupportFragmentManager()
+				// .findFragmentByTag("MY_TRACKS");
+				// // check if this fragment is initialized
+				// if (listMeasurementsFragment != null) {
+				// listMeasurementsFragment.clearRemoteTracks();
+				// } else {
+				// // the remote tracks need to be removed in any case
+				// DbAdapterImpl.instance().deleteAllRemoteTracks();
+				// }
+				// Crouton.makeText(this, R.string.bye_bye,
+				// Style.CONFIRM).show();
+			} else {
+				if (isFragmentVisible(LOGIN_TAG)) {
+					break;
+				}
+				LoginFragment loginFragment = new LoginFragment();
+				manager.beginTransaction()
+						.replace(R.id.content_frame, loginFragment, LOGIN_TAG)
+						.addToBackStack(null).commit();
+			}
+			break;
+
+		// Go to the settings
+
+		case LOGOUT:
+
+			UserManager.instance().logOut();
+			ListTracksFragment listMeasurementsFragment = (ListTracksFragment) getSupportFragmentManager()
+					.findFragmentByTag("MY_TRACKS");
+			// check if this fragment is initialized
+			if (listMeasurementsFragment != null) {
+				listMeasurementsFragment.clearRemoteTracks();
+			} else {
+				// the remote tracks need to be removed in any case
+				DbAdapterImpl.instance().deleteAllRemoteTracks();
+			}
+
+			if (isFragmentVisible(PROFILE_TAG)
+					|| isFragmentVisible(FRIENDS_LIST_TAG)
+					|| isFragmentVisible(STATISTICS_TAG)
+					|| isFragmentVisible(LEADERBOARD_TAG)) {
+
+				Fragment dashboardFrag = getSupportFragmentManager()
+						.findFragmentByTag(DASHBOARD_TAG);
+				if (dashboardFrag == null) {
+					dashboardFrag = new DashboardFragment();
+				}
+				manager.popBackStack(null,
+						FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				manager.beginTransaction()
+						.replace(R.id.content_frame, dashboardFrag,
+								DASHBOARD_TAG).commit();
+			}
+			Crouton.makeText(this, R.string.bye_bye, Style.CONFIRM).show();
+
+			navDrawerItems[LOGOUT] = new NavMenuItem(LOGOUT, "", 0);
+			navDrawerItems[LOGOUT].setEnabled(false);
+
+			break;
+
+		case SETTINGS:
 			Intent configIntent = new Intent(this, SettingsActivity.class);
 			startActivity(configIntent);
-            break;
-            
-        // Go to the track list
-            
-        case MY_TRACKS:
-        	
-        	if(isFragmentVisible(MY_TRACKS_TAG)){
-            	break;
-            }
-            ListTracksFragment listMeasurementFragment = new ListTracksFragment();
-            manager.beginTransaction().replace(R.id.content_frame, listMeasurementFragment, MY_TRACKS_TAG).addToBackStack(null).commit();
-            break;
-            
-        // Start or stop the measurement process
-            
-		case START_STOP_MEASUREMENT:
-			//if (!navDrawerItems[position].isEnabled()) return;
-			
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+			break;
 
-			String remoteDevice = preferences.getString(org.envirocar.app.activity.SettingsActivity.BLUETOOTH_KEY,null);
+		// Go to the track list
+
+		case MY_TRACKS:
+
+			if (isFragmentVisible(MY_TRACKS_TAG)) {
+				break;
+			}
+			ListTracksFragment listMeasurementFragment = new ListTracksFragment();
+			manager.beginTransaction()
+					.replace(R.id.content_frame, listMeasurementFragment,
+							MY_TRACKS_TAG).addToBackStack(null).commit();
+			break;
+
+		// Start or stop the measurement process
+
+		case START_STOP_MEASUREMENT:
+			// if (!navDrawerItems[position].isEnabled()) return;
+
+			SharedPreferences preferences = PreferenceManager
+					.getDefaultSharedPreferences(this.getApplicationContext());
+
+			String remoteDevice = preferences.getString(
+					org.envirocar.app.activity.SettingsActivity.BLUETOOTH_KEY,
+					null);
 
 			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-			
-			if(adapter == null || !adapter.isEnabled()){
-				
-				Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(turnOn, 0);
+
+			if (adapter == null || !adapter.isEnabled()) {
+
+				Intent turnOn = new Intent(
+						BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				startActivityForResult(turnOn, 0);
 			}
-			
-			else if (adapter != null && adapter.isEnabled() && remoteDevice != null) {
-				if(CarManager.instance().getCar() == null){
-					Intent settingsIntent = new Intent(this, SettingsActivity.class);
+
+			else if (adapter != null && adapter.isEnabled()
+					&& remoteDevice != null) {
+				if (CarManager.instance().getCar() == null) {
+					Intent settingsIntent = new Intent(this,
+							SettingsActivity.class);
 					startActivity(settingsIntent);
 				} else {
 					/*
@@ -646,7 +783,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 							trackMode = tm;
 						}
 					};
-					
+
 					createStartStopUtil().processButtonClick(trackModeListener);
 				}
 			} else {
@@ -655,157 +792,165 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 			}
 			break;
 		case HELP:
-        	
-        	if(isFragmentVisible(HELP_TAG)){
-            	break;
-            }
+
+			if (isFragmentVisible(HELP_TAG)) {
+				break;
+			}
 			HelpFragment helpFragment = new HelpFragment();
-            manager.beginTransaction().replace(R.id.content_frame, helpFragment, HELP_TAG).addToBackStack(null).commit();
+			manager.beginTransaction()
+					.replace(R.id.content_frame, helpFragment, HELP_TAG)
+					.addToBackStack(null).commit();
 			break;
 		case SEND_LOG:
-        	
-        	if(isFragmentVisible(SEND_LOG_TAG)){
-            	break;
-            }
+
+			if (isFragmentVisible(SEND_LOG_TAG)) {
+				break;
+			}
 			SendLogFileFragment logFragment = new SendLogFileFragment();
-			manager.beginTransaction().replace(R.id.content_frame, logFragment, SEND_LOG_TAG).addToBackStack(null).commit();
-        default:
-            break;
-            
-//		case LOGBOOK:
-//        	
-//        	if(isFragmentVisible(LOGBOOK_TAG)){
-//            	break;
-//            }
-//			LogbookFragment logbookFragment = new LogbookFragment();
-//            manager.beginTransaction().replace(R.id.content_frame, logbookFragment, LOGBOOK_TAG).addToBackStack(null).commit();
-//			break;
-            
-        case LANGUAGE:
-			
-        	
-        	
-        	UnitSelectionPreference up=new UnitSelectionPreference(MainActivity.this,null);
-        	
-        	
-        
-        	
-//			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-//			LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-//			 
-//	    	View view=inflater.inflate(R.layout.custom_title, null);
-//	    	TextView head=(TextView)view.findViewById(R.id.heading);
-//	    	head.setText("Choose the Units");
-//	    	View alertView = inflater.inflate(R.layout.units, null);
-//	    	
-//	    	
-//	    	
-//	    	alert.setCustomTitle(view);
-//	    	alert.setView(alertView);
-//	    	
-//	    	alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//	            public void onClick(DialogInterface dialog, int id) {
-//	                 //do things
-//	            }
-//	        });
-//	    	
-//	    	alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//	            public void onClick(DialogInterface dialog, int id) {
-//	                 //do things
-//	            }
-//	        });
-//	    	
-//	    	alert.show();   
-        }
-        drawer.closeDrawer(drawerList);
+			manager.beginTransaction()
+					.replace(R.id.content_frame, logFragment, SEND_LOG_TAG)
+					.addToBackStack(null).commit();
+		default:
+			break;
 
-    }
+		// case LOGBOOK:
+		//
+		// if(isFragmentVisible(LOGBOOK_TAG)){
+		// break;
+		// }
+		// LogbookFragment logbookFragment = new LogbookFragment();
+		// manager.beginTransaction().replace(R.id.content_frame,
+		// logbookFragment, LOGBOOK_TAG).addToBackStack(null).commit();
+		// break;
 
-   
+		case LANGUAGE:
 
-    	
+			UnitSelectionPreference up = new UnitSelectionPreference(
+					MainActivity.this, null);
+
+			// AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			// LayoutInflater inflater = (LayoutInflater)
+			// getBaseContext().getSystemService(
+			// Context.LAYOUT_INFLATER_SERVICE );
+			//
+			// View view=inflater.inflate(R.layout.custom_title, null);
+			// TextView head=(TextView)view.findViewById(R.id.heading);
+			// head.setText("Choose the Units");
+			// View alertView = inflater.inflate(R.layout.units, null);
+			//
+			//
+			//
+			// alert.setCustomTitle(view);
+			// alert.setView(alertView);
+			//
+			// alert.setPositiveButton("OK", new
+			// DialogInterface.OnClickListener() {
+			// public void onClick(DialogInterface dialog, int id) {
+			// //do things
+			// }
+			// });
+			//
+			// alert.setNegativeButton("Cancel", new
+			// DialogInterface.OnClickListener() {
+			// public void onClick(DialogInterface dialog, int id) {
+			// //do things
+			// }
+			// });
+			//
+			// alert.show();
+		}
+		drawer.closeDrawer(drawerList);
+
+	}
+
 	private StartStopButtonUtil createStartStopUtil() {
-		return new StartStopButtonUtil(application, this, trackMode, serviceState,
+		return new StartStopButtonUtil(application, this, trackMode,
+				serviceState,
 				serviceState == ServiceState.SERVICE_DEVICE_DISCOVERY_PENDING);
 	}
 
 	/**
-     * This method checks, whether a Fragment with a certain tag is visible.
-     * @param tag The tag of the Fragment.
-     * @return True if the Fragment is visible, false if not.
-     */
-    public boolean isFragmentVisible(String tag){
-        
-    	Fragment tmpFragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if(tmpFragment != null && tmpFragment.isVisible()){
-        	logger.info("Fragment with tag: " + tag + " is already visible.");
-        	return true;
-        }
-        return false;
-    	
-    }
+	 * This method checks, whether a Fragment with a certain tag is visible.
+	 * 
+	 * @param tag
+	 *            The tag of the Fragment.
+	 * @return True if the Fragment is visible, false if not.
+	 */
+	public boolean isFragmentVisible(String tag) {
+
+		Fragment tmpFragment = getSupportFragmentManager().findFragmentByTag(
+				tag);
+		if (tmpFragment != null && tmpFragment.isVisible()) {
+			logger.info("Fragment with tag: " + tag + " is already visible.");
+			return true;
+		}
+		return false;
+
+	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
 		logger.info("onDestroy called");
-		
-//		new AsyncTask<Void, Void, Void>() {
-//			@Override
-//			protected Void doInBackground(Void... params) {
-//				HTTPClient.shutdown();
-//				return null;
-//			}
-//		}.execute();
-		
+
+		// new AsyncTask<Void, Void, Void>() {
+		// @Override
+		// protected Void doInBackground(Void... params) {
+		// HTTPClient.shutdown();
+		// return null;
+		// }
+		// }.execute();
+
 		// Close db connection
 
-//		application.closeDb();
+		// application.closeDb();
 
 		// Remove the services etc.
 
-//		application.destroyStuff();
-		
+		// application.destroyStuff();
+
 		Crouton.cancelAllCroutons();
-		
-//		this.unregisterReceiver(application.getBluetoothChangeReceiver());
+
+		// this.unregisterReceiver(application.getBluetoothChangeReceiver());
 
 		this.unregisterReceiver(bluetoothStateReceiver);
 		this.unregisterReceiver(deviceDiscoveryStateReceiver);
-		
+
 		this.unregisterReceiver(serviceStateReceiver);
-		
+
 		this.unregisterReceiver(errorInformationReceiver);
-		
+
 		if (remainingTimeHandler != null) {
 			remainingTimeHandler.removeCallbacks(remainingTimeThread);
 			discoveryTargetTime = 0;
 			remainingTimeThread = null;
 		}
-		
+
 		try {
 			TemporaryFileManager.instance().shutdown();
 		} catch (InvalidObjectStateException e) {
 			logger.warn(e.getMessage(), e);
 		}
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		drawer.closeDrawer(drawerList);
-	    //first init
-	    firstInit();
-	    
-	    application.setActivity(this);
-	    
-	    checkKeepScreenOn();
-	    
-		alwaysUpload = preferences.getBoolean(SettingsActivity.ALWAYS_UPLOAD, false);
-        uploadOnlyInWlan = preferences.getBoolean(SettingsActivity.WIFI_UPLOAD, true);
-        
-        new AsyncTask<Void, Void, Void>() {
+		// first init
+		firstInit();
+
+		application.setActivity(this);
+
+		checkKeepScreenOn();
+
+		alwaysUpload = preferences.getBoolean(SettingsActivity.ALWAYS_UPLOAD,
+				false);
+		uploadOnlyInWlan = preferences.getBoolean(SettingsActivity.WIFI_UPLOAD,
+				true);
+
+		new AsyncTask<Void, Void, Void>() {
 
 			@Override
 			protected Void doInBackground(Void... params) {
@@ -813,50 +958,51 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 				return null;
 			}
 		}.execute();
-        
+
 		bindToBackgroundService();
-		
+
 		bindToDeviceInRangeService();
 	}
 
-
 	protected void resolvePersistentSeenAnnouncements() {
-		String pers = preferences.getString(SettingsActivity.PERSISTENT_SEEN_ANNOUNCEMENTS, "");
-		
+		String pers = preferences.getString(
+				SettingsActivity.PERSISTENT_SEEN_ANNOUNCEMENTS, "");
+
 		if (!pers.isEmpty()) {
 			if (pers.contains(",")) {
 				String[] arr = pers.split(",");
 				for (String string : arr) {
 					seenAnnouncements.add(string);
 				}
-			}
-			else {
+			} else {
 				seenAnnouncements.add(pers);
 			}
-			
+
 		}
 	}
 
 	private void checkAffectingAnnouncements() {
 		final List<Announcement> annos;
 		try {
-			annos = DAOProvider.instance().getAnnouncementsDAO().getAllAnnouncements();
+			annos = DAOProvider.instance().getAnnouncementsDAO()
+					.getAllAnnouncements();
 		} catch (AnnouncementsRetrievalException e) {
 			logger.warn(e.getMessage(), e);
 			return;
 		}
-		
+
 		final Version version;
 		try {
-			String versionShort = Util.getVersionStringShort(getApplicationContext());
+			String versionShort = Util
+					.getVersionStringShort(getApplicationContext());
 			version = Version.fromString(versionShort);
 		} catch (NameNotFoundException e) {
 			logger.warn(e.getMessage());
 			return;
 		}
-		
+
 		runOnUiThread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				for (Announcement announcement : annos) {
@@ -873,47 +1019,53 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 	private void showAnnouncement(final Announcement announcement) {
 		String title = announcement.createUITitle(this);
 		String content = announcement.getContent();
-		
-		DialogUtil.createTitleMessageInfoDialog(title, Html.fromHtml(content), true, new DialogUtil.PositiveNegativeCallback() {
-			@Override
-			public void negative() {
-				seenAnnouncements.add(announcement.getId());
-			}
 
-			@Override
-			public void positive() {
-				addPersistentSeenAnnouncement(announcement.getId());
-				seenAnnouncements.add(announcement.getId());
-			}
-		}, this);
+		DialogUtil.createTitleMessageInfoDialog(title, Html.fromHtml(content),
+				true, new DialogUtil.PositiveNegativeCallback() {
+					@Override
+					public void negative() {
+						seenAnnouncements.add(announcement.getId());
+					}
+
+					@Override
+					public void positive() {
+						addPersistentSeenAnnouncement(announcement.getId());
+						seenAnnouncements.add(announcement.getId());
+					}
+				}, this);
 	}
 
 	protected void addPersistentSeenAnnouncement(String id) {
-		String currentPersisted = preferences.getString(SettingsActivity.PERSISTENT_SEEN_ANNOUNCEMENTS, "");
-		
+		String currentPersisted = preferences.getString(
+				SettingsActivity.PERSISTENT_SEEN_ANNOUNCEMENTS, "");
+
 		StringBuilder sb = new StringBuilder(currentPersisted);
 		if (!currentPersisted.isEmpty()) {
 			sb.append(",");
 		}
 		sb.append(id);
-		
-		preferences.edit().putString(SettingsActivity.PERSISTENT_SEEN_ANNOUNCEMENTS, sb.toString()).commit();
+
+		preferences
+				.edit()
+				.putString(SettingsActivity.PERSISTENT_SEEN_ANNOUNCEMENTS,
+						sb.toString()).commit();
 	}
 
 	private void checkKeepScreenOn() {
 		if (preferences.getBoolean(SettingsActivity.DISPLAY_STAYS_ACTIV, false)) {
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			getWindow()
+					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		} else {
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		}		
+			getWindow().clearFlags(
+					WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
 	}
 
 	/**
 	 * Determine what the menu buttons do
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		
+
 		switch (item.getItemId()) {
 
 		case android.R.id.home:
@@ -923,80 +1075,73 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity 
 				drawer.openDrawer(drawerList);
 			}
 			return true;
-			
+
 		case SUBMENU_HELP:
-			if(isFragmentVisible(HELP_TAG)){
-            	break;
-            }
+			if (isFragmentVisible(HELP_TAG)) {
+				break;
+			}
 			HelpFragment helpFragment = new HelpFragment();
-            manager.beginTransaction().replace(R.id.content_frame, helpFragment, HELP_TAG).addToBackStack(null).commit();
-            return true;
-            
-		case SUBMENU_REPORT:
-			if(isFragmentVisible(SEND_LOG_TAG)){
-            	break;
-            }
-			SendLogFileFragment logFragment = new SendLogFileFragment();
-			manager.beginTransaction().replace(R.id.content_frame, logFragment, SEND_LOG_TAG).addToBackStack(null).commit();
+			manager.beginTransaction()
+					.replace(R.id.content_frame, helpFragment, HELP_TAG)
+					.addToBackStack(null).commit();
 			return true;
-			
+
+		case SUBMENU_REPORT:
+			if (isFragmentVisible(SEND_LOG_TAG)) {
+				break;
+			}
+			SendLogFileFragment logFragment = new SendLogFileFragment();
+			manager.beginTransaction()
+					.replace(R.id.content_frame, logFragment, SEND_LOG_TAG)
+					.addToBackStack(null).commit();
+			return true;
+
 		case SUBMENU_LOGBOOK:
-			if(isFragmentVisible(LOGBOOK_TAG)){
-            	break;
-            }
+			if (isFragmentVisible(LOGBOOK_TAG)) {
+				break;
+			}
 			LogbookFragment logbookFragment = new LogbookFragment();
-            manager.beginTransaction().replace(R.id.content_frame, logbookFragment, LOGBOOK_TAG).addToBackStack(null).commit();
-            return true;
-            
-            
-		
-			
-			
+			manager.beginTransaction()
+					.replace(R.id.content_frame, logbookFragment, LOGBOOK_TAG)
+					.addToBackStack(null).commit();
+			return true;
+
 		}
-		
-		
+
 		return false;
 	}
-	
-	private void firstInit(){
+
+	private void firstInit() {
 		if (!preferences.contains("first_init")) {
 			drawer.openDrawer(drawerList);
-			
+
 			Editor e = preferences.edit();
 			e.putString("first_init", "seen");
 			e.putBoolean("pref_privacy", true);
 			e.commit();
 		}
 	}
-	
-	
-	 @Override
-	    public boolean onCreateOptionsMenu(Menu menu) {
-		 
-		 //SubMenu overflowMenu = menu.addSubMenu("Action Item");
-		 SubMenu overflowMenu=menu.addSubMenu(0, MENU_ID, 300, "Action Item");
-		 
-		 overflowMenu.add(0,SUBMENU_HELP,14,getString(R.string.menu_help));
-		 overflowMenu.add(0,SUBMENU_REPORT,14,getString(R.string.menu_send_log));
-		 overflowMenu.add(0,SUBMENU_LOGBOOK,14,getString(R.string.menu_logbook));
-	        
-	        
-	        
 
-	        MenuItem subMenu1Item = overflowMenu.getItem();
-	        subMenu1Item.setIcon(R.drawable.overflow_menu_trans);
-	        
-	        //subMenu1Item.getActionView().setBackgroundColor(Color.RED);
-	        subMenu1Item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		 
-		 return super.onCreateOptionsMenu(menu);
-	 }
-	 
-	 
-		     
-	 
-	 
-	 }
-	
-	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 
+		// SubMenu overflowMenu = menu.addSubMenu("Action Item");
+		SubMenu overflowMenu = menu.addSubMenu(0, MENU_ID, 300, "Action Item");
+
+		overflowMenu.add(0, SUBMENU_HELP, 14, getString(R.string.menu_help));
+		overflowMenu.add(0, SUBMENU_REPORT, 14,
+				getString(R.string.menu_send_log));
+		overflowMenu.add(0, SUBMENU_LOGBOOK, 14,
+				getString(R.string.menu_logbook));
+
+		MenuItem subMenu1Item = overflowMenu.getItem();
+		subMenu1Item.setIcon(R.drawable.overflow_menu_trans);
+
+		// subMenu1Item.getActionView().setBackgroundColor(Color.RED);
+		subMenu1Item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
+				| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+		return super.onCreateOptionsMenu(menu);
+	}
+
+}

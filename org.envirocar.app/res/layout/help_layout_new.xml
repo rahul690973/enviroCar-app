@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    
+ 
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/help_text_border"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/about_envirocar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/close_arrow"
+            android:text="@string/help_head_1"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/about_envirocar_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:text="@string/help_text_1" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/help_text_border"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/getting_started"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/close_arrow"
+            android:text="@string/help_head_2"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/getting_started_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:text="@string/help_text_2" />
+        
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawableRight="@drawable/close_arrow_small"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_head_2_1" />
+        
+         <TextView
+            android:id="@+id/register_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_text_2_1" />
+         
+         <TextView
+            android:id="@+id/car_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawableRight="@drawable/close_arrow_small"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_head_2_2" />
+        
+         <TextView
+            android:id="@+id/car_data_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_text_2_2" />
+         
+         <TextView
+            android:id="@+id/connect_to_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawableRight="@drawable/close_arrow_small"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_head_2_3" />
+        
+         <TextView
+            android:id="@+id/connect_to_car_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_text_2_3" />
+        
+         
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/help_text_border"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/record_track"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/close_arrow"
+            android:text="@string/help_head_3"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/record_track_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:text="@string/help_text_3" />
+    </LinearLayout>
+         
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/help_text_border"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/observe_track"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/close_arrow"
+            android:text="@string/help_head_4"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/observe_track_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:text="@string/help_text_4" />
+    </LinearLayout>
+    
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/help_text_border"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/upload_track"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/close_arrow"
+            android:text="@string/help_head_5"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/upload_track_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:text="@string/help_text_5" />
+    </LinearLayout>
+    
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/help_text_border"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/settings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/close_arrow"
+            android:text="@string/help_head_6"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/settings_part_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawableRight="@drawable/close_arrow_small"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_head_6_1" />
+        
+         <TextView
+            android:id="@+id/settings_part_1_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_text_6_1" />
+         
+         <TextView
+            android:id="@+id/settings_part_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawableRight="@drawable/close_arrow_small"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_head_6_2" />
+        
+         <TextView
+            android:id="@+id/settings_part_2_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_text_6_2" />
+         
+         <TextView
+            android:id="@+id/settings_part_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:drawableRight="@drawable/close_arrow_small"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_head_6_3" />
+        
+         <TextView
+            android:id="@+id/settings_part_3_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:layout_marginLeft="20dp"
+            android:text="@string/help_text_6_3" />
+        
+    </LinearLayout>
+    
+       <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/help_text_border"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/feedback"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableRight="@drawable/close_arrow"
+            android:text="@string/help_head_7"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/feedback_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:text="@string/help_text_7" />
+    </LinearLayout>
+
+</LinearLayout>
+
+   </ScrollView>

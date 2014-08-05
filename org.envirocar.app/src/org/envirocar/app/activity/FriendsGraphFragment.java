@@ -3,7 +3,6 @@ package org.envirocar.app.activity;
 
 
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -20,6 +19,8 @@ import java.util.TreeMap;
 
 
 
+
+
 import org.achartengine.ChartFactory;
 import org.achartengine.chart.BarChart.Type;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -29,10 +30,13 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.envirocar.app.R;
 import org.envirocar.app.application.UserManager;
+import org.envirocar.app.event.ProgressBarHideEvent;
 import org.envirocar.app.model.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+
 
 
 
@@ -41,6 +45,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.widget.ProgressBar;
 
 
 
@@ -69,6 +74,8 @@ public class FriendsGraphFragment
 	private String DOWNLOAD_TYPE;
 	private Context context;
 	
+	private ProgressBarHideEvent progressHide;
+	
 	
 	public FriendsGraphFragment(){
 		
@@ -76,10 +83,11 @@ public class FriendsGraphFragment
 		
 	}
 	
-	public FriendsGraphFragment(String friendName,Context c){
+	public FriendsGraphFragment(String friendName,Context c,ProgressBarHideEvent pbHide){
 		
 		this.friendName=friendName;
 		this.context=c;
+		progressHide=pbHide;
 	    downloadStatistics();
 	    
 		
@@ -87,7 +95,9 @@ public class FriendsGraphFragment
 	
 	public void downloadStatistics(){
 		
-		 //friendName = getArguments().getString("friend_name");  
+		 //friendName = getArguments().getString("friend_name");
+		 ProgressBar progressBar=new ProgressBar(context);
+		 //progressBar.
 		 user = UserManager.instance().getUser();			
 		 username=user.getUsername();
 		 //String url_select = FRIEND_URL+username+"/friends/"+friendName+"/statistics";
@@ -219,6 +229,7 @@ public class FriendsGraphFragment
 					}
 					
 				    friendStatisticsSorted= new TreeMap<String, Double>(statistics);
+				    progressHide.progressHideEvent();
 				    Intent i=execute(context);
 					context.startActivity(i);
 					

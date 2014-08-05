@@ -448,6 +448,7 @@ public abstract class BaseRemoteDAO {
 					username=user.getUsername();
 					
 					String url_select = "https://envirocar.org/api/stable/users/"+username+"/avatar?size=200";
+					//String url_select = "https://envirocar.org/api/stable/users/"+username+"/friends/matthes/avatar?size=200";
 				    DefaultHttpClient client = new DefaultHttpClient();
 			        HttpGet httpPost = new HttpGet(url_select);
 			      
