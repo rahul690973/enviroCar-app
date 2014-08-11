@@ -17,7 +17,7 @@
                 android:id="@+id/fuel_consumption" 
                 android:layout_width="fill_parent" 
                 android:layout_height="wrap_content" 
-                android:drawableRight="@drawable/help_icon_trans" 
+                android:drawableRight="@drawable/help_icon" 
                 android:text="@string/fuel_consumption"
                 android:textColor="#6B0000"
                 android:textSize="18sp"

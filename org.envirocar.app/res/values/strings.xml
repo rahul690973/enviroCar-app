@@ -4,8 +4,9 @@
     <string name="app_name">enviroCar</string>
     
     
-    <string name="your_tracks">Your Tracks</string>
-    <string name="total_tracks">Total Tracks</string>
+    <string name="your_tracks">Your Tracks :</string>
+    <string name="total_tracks">Total Tracks :</string>
+    <string name="loading">loading..</string>
     <string name="sustainability_rank">Sustainability Rank</string>
     <string name="view_statistics">View Statistics</string>
     <string name="compare_wid_friends">Compare With Friends</string>
@@ -14,6 +15,10 @@
     <string name="next">Next</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="loading_graphs">Loading Graphs</string>
+    <string name="getting_friends">Getting Friends</string>
+    <string name="error">Error</string>
+     
+    
     
     
     

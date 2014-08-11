@@ -30,7 +30,7 @@ import org.envirocar.app.dao.exception.UnauthorizedException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
 import org.envirocar.app.logging.Logger;
 import org.envirocar.app.model.User;
-import org.envirocar.app.util.ShowProgressBar;
+import org.envirocar.app.util.CommonUtils;
 import org.envirocar.app.views.TypefaceEC;
 
 import android.animation.Animator;
@@ -83,7 +83,7 @@ public class LoginFragment extends SherlockFragment {
 	private View mLoginFormView;
 	private View mProgressStatusView;
 	private TextView mProgressStatusMessageView;
-	ShowProgressBar progressBar;
+	CommonUtils progressBar;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,7 +93,7 @@ public class LoginFragment extends SherlockFragment {
 
 		View view = inflater.inflate(R.layout.login_layout, null);
 		
-	    progressBar=new ShowProgressBar();
+	    progressBar=new CommonUtils();
 		mUsernameView = (EditText) view.findViewById(R.id.login_username);
 		mPasswordView = (EditText) view.findViewById(R.id.login_password);
 		mPasswordView

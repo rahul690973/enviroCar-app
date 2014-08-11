@@ -20,14 +20,15 @@ import com.actionbarsherlock.app.SherlockFragment;
  * 
  */
 public class HelpFragment extends SherlockFragment {
+	
+	View view;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		
-		View view=inflater.inflate(R.layout.help_layout_new, container, false);
+	    view=inflater.inflate(R.layout.help_layout_new, container, false);
 		setListeners(view);
-		
 		
 		return view;
 
@@ -38,7 +39,48 @@ public class HelpFragment extends SherlockFragment {
 		@Override
 		public void onClick(View v) {
 
+			switch(v.getId()){
 			
+				case R.id.about_envirocar:
+					closeOrOpen(R.id.about_envirocar_text);
+					break;
+					
+				case R.id.getting_started:
+					closeOrOpen(R.id.getting_started_text);
+					break;
+				case R.id.register:
+					closeOrOpen(R.id.register_text);
+					break;
+				case R.id.car_data:
+					closeOrOpen(R.id.car_data_text);
+					break;
+				case R.id.connect_to_car:
+					closeOrOpen(R.id.connect_to_car_text);
+					break;
+				case R.id.record_track:
+					closeOrOpen(R.id.record_track_text);
+					break;
+				case R.id.observe_track:
+					closeOrOpen(R.id.observe_track_text);
+					break;
+				case R.id.upload_track:
+					closeOrOpen(R.id.upload_track_text);
+					break;
+				case R.id.settings_part_1:
+					closeOrOpen(R.id.settings_part_1_text);
+					break;
+				case R.id.settings_part_2:
+					closeOrOpen(R.id.settings_part_2_text);
+					break;
+				case R.id.settings_part_3:
+					closeOrOpen(R.id.settings_part_3_text);
+					break;
+				case R.id.feedback:
+					closeOrOpen(R.id.feedback_text);
+					break;
+				
+			
+			}
 			
 
 		}
@@ -47,7 +89,12 @@ public class HelpFragment extends SherlockFragment {
 	
 	private void closeOrOpen(int id){
 		
-		
+		TextView textView=(TextView)view.findViewById(id);
+		if(textView.getVisibility()==View.GONE)
+			textView.setVisibility(View.VISIBLE);
+		else
+			textView.setVisibility(View.GONE);
+			
 		
 		
 	}
@@ -120,13 +167,13 @@ public class HelpFragment extends SherlockFragment {
 //		}
 		
 		
-//	    TextView versionTextview = (TextView) getActivity().findViewById(R.id.textView22);
-//
-//	    CharSequence versionString = getActivity().getText(R.string.help_text_6_3);
-//	    
-//	    versionString = versionString + " " + Util.getVersionString(getActivity());
-//	    
-//	    versionTextview.setText(versionString);	    
+	    TextView versionTextview = (TextView) getActivity().findViewById(R.id.settings_part_3_text);
+
+	    CharSequence versionString = getActivity().getText(R.string.help_text_6_3);
+	    
+	    versionString = versionString + " " + Util.getVersionString(getActivity());
+	    
+	    versionTextview.setText("You are using version"+" "+versionString);	    
 	    
 	}
 }

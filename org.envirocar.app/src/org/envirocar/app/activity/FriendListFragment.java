@@ -1,38 +1,26 @@
 package org.envirocar.app.activity;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 
-import org.apache.http.HttpResponse;
 import org.envirocar.app.R;
 import org.envirocar.app.model.User;
-import org.envirocar.app.util.ShowProgressBar;
+import org.envirocar.app.util.CommonUtils;
 import org.envirocar.app.application.FriendsImageAdapter;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.DAOProvider;
 import org.envirocar.app.dao.exception.FriendsRetrievalException;
-import org.envirocar.app.dao.exception.NotConnectedException;
-import org.envirocar.app.dao.exception.TrackRetrievalException;
-import org.envirocar.app.dao.exception.UserRetrievalException;
-import org.envirocar.app.dao.remote.RemoteTrackDAO;
-import org.envirocar.app.dao.remote.RemoteUserDAO;
 import org.envirocar.app.event.ProgressBarHideEvent;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
+import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,28 +32,35 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FriendListFragment extends SherlockFragment implements
+public class FriendListFragment extends DialogFragment implements
 		ProgressBarHideEvent {
+
+	/**
+	 * 
+	 */
 
 	static ListView friendsList;
 	static ArrayAdapter adapter;
 	EditText searchView;
 	static Context c;
 
+	private static FriendsImageAdapter fia;
+
 	private static View progressStatusView;
 	private static View friendListView;
 	private static TextView progressStatusMessageView;
-	private static ShowProgressBar progressBar;
+	private static CommonUtils commonUtils;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		setHasOptionsMenu(true);
+		getDialog().setTitle(getString(R.string.compare_wid_friends));
 		View view = inflater.inflate(R.layout.friends_list, null);
 		c = getActivity();
 
-		progressBar = new ShowProgressBar();
+		commonUtils = new CommonUtils();
 		progressStatusView = view.findViewById(R.id.progress_status);
 		progressStatusMessageView = (TextView) view
 				.findViewById(R.id.progress_status_message);
@@ -81,6 +76,9 @@ public class FriendListFragment extends SherlockFragment implements
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
+		commonUtils.showProgress(c, progressStatusView, friendListView,
+				progressStatusMessageView,
+				c.getResources().getString(R.string.getting_friends), true);
 		User user = UserManager.instance().getUser();
 		try {
 			DAOProvider.instance().getUserDAO().getFriends(user);
@@ -95,7 +93,11 @@ public class FriendListFragment extends SherlockFragment implements
 			@Override
 			public void onTextChanged(CharSequence cs, int arg1, int arg2,
 					int arg3) {
-				FriendListFragment.this.adapter.getFilter().filter(cs);
+
+				String text = searchView.getText().toString()
+						.toLowerCase(Locale.getDefault());
+				fia.filter(text);
+
 			}
 
 			@Override
@@ -107,20 +109,19 @@ public class FriendListFragment extends SherlockFragment implements
 
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				// TODO Auto-generated method stub
 
 			}
 		});
 
 	}
 
-	public static void initializeList(String[] friends) {
+	public static void initializeList(ArrayList<String> friends) {
 
-		// adapter = new ArrayAdapter<String>(c, R.layout.friends_list_item,
-		// R.id.friends_name_list,friends);
-		List<String> al = Arrays.asList(friends);
-		FriendsImageAdapter fia = new FriendsImageAdapter(c, al);
+		fia = new FriendsImageAdapter(c, friends);
 		friendsList.setAdapter(fia);
+		commonUtils.showProgress(c, progressStatusView, friendListView,
+				progressStatusMessageView,
+				c.getResources().getString(R.string.getting_friends), false);
 		handleClickOnList();
 
 	}
@@ -131,17 +132,26 @@ public class FriendListFragment extends SherlockFragment implements
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-
+				
+				if(commonUtils.isNetworkAvailable(c)){
 				TextView tv = (TextView) view.findViewById(R.id.friends_name);
 				String friendName = tv.getText().toString();
 
 				// Bundle bundle = new Bundle();
 				// bundle.putString("friend_name", friendName);
-				ProgressBarHideEvent pbEvent=new FriendListFragment();
+				ProgressBarHideEvent pbEvent = new FriendListFragment();
 				FriendsGraphFragment fragobj = new FriendsGraphFragment(
-						friendName, c,pbEvent);
-				//progressStatusMessageView.setText(R.string.login_progress_signing_in);
-				progressBar.showProgress(c, progressStatusView, friendListView,progressStatusMessageView,c.getResources().getString(R.string.loading_graphs),true);
+						friendName, c, pbEvent);
+				// progressStatusMessageView.setText(R.string.login_progress_signing_in);
+				commonUtils.showProgress(c, progressStatusView, friendListView,
+						progressStatusMessageView,
+						c.getResources().getString(R.string.loading_graphs),
+						true);
+				
+				}
+				else
+					Toast.makeText(c,c.getResources().getString(R.string.error_host_not_found),Toast.LENGTH_LONG).show();
+				
 				// fragobj.setArguments(bundle);
 				// fragobj.downloadStatistics();
 
@@ -162,8 +172,10 @@ public class FriendListFragment extends SherlockFragment implements
 	@Override
 	public void progressHideEvent() {
 
-		progressBar.showProgress(c, progressStatusView, friendListView,progressStatusMessageView,c.getResources().getString(R.string.loading_graphs),false);
-		
+		commonUtils.showProgress(c, progressStatusView, friendListView,
+				progressStatusMessageView,
+				c.getResources().getString(R.string.loading_graphs), false);
+
 	}
 
 }

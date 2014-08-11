@@ -82,7 +82,7 @@ import android.widget.Toast;
 
 public abstract class BaseRemoteDAO {
 	
-	String friends[];
+	ArrayList<String>friends;
 	
 	
 	private void assertStatusCode(HttpResponse response) throws NotConnectedException, UnauthorizedException, ResourceConflictException {
@@ -407,10 +407,10 @@ public abstract class BaseRemoteDAO {
 					if(json!=null){
 						
 						JSONArray jsonFriends=json.getJSONArray("users");
-						friends=new String[jsonFriends.length()];
+						friends=new ArrayList<String>();
 						for(int i=0;i<jsonFriends.length();i++){
 							
-							friends[i]=jsonFriends.getJSONObject(i).getString("name");
+							friends.add(jsonFriends.getJSONObject(i).getString("name"));
 							
 						}
 						FriendListFragment.initializeList(friends);
@@ -493,11 +493,7 @@ public abstract class BaseRemoteDAO {
 
 	}
 	
-	public String[] returnFriends(){
-		
-		return friends;
-				
-	}
+	
 	
 	private void saveImage( Bitmap bitmap,User user){
 		

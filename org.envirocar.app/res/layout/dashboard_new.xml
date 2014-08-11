@@ -25,7 +25,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:drawableRight="@drawable/help_icon_trans"
+                android:drawableRight="@drawable/help_icon"
                 android:gravity="top"
                 android:text="@string/currentSpeed"
                 android:textColor="#6B0000"
@@ -111,7 +111,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="12dp"
             android:clickable="true"
-            android:drawableRight="@drawable/help_icon_trans"
+            android:drawableRight="@drawable/help_icon"
             android:text="@string/engine_load"
             android:textColor="#6B0000"
             android:textSize="18sp" />
@@ -142,7 +142,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="12dp"
             android:clickable="true"
-            android:drawableRight="@drawable/help_icon_trans"
+            android:drawableRight="@drawable/help_icon"
             android:text="@string/Co2emission"
             android:textColor="#6B0000"
             android:textSize="18sp" />

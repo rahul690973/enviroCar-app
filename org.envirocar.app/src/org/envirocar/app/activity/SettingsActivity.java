@@ -28,8 +28,10 @@ import java.util.Set;
 
 import org.envirocar.app.R;
 import org.envirocar.app.application.UserManager;
+import org.envirocar.app.util.CommonUtils;
 import org.envirocar.app.util.Util;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -45,6 +47,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -118,6 +121,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		
 		 languageList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
+			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				
@@ -130,20 +134,21 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(LANGUAGE_KEY, (String) languageList.getValue()).commit();
 				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(SettingsActivity.UNITS,null).commit();
 			    
+
 				
-				Locale locale = new Locale("de");  
-				Locale.setDefault(locale); 
-				Configuration config = new Configuration(); 
-				config.locale = locale; 
-				getBaseContext().getResources().updateConfiguration(config,  
-						getBaseContext().getResources().getDisplayMetrics());
+				CommonUtils cu=new CommonUtils();
+				cu.changeLanguage(SettingsActivity.this);
+				cu.restartActivity(SettingsActivity.this);
+
+		            
+		        
 											
-				Intent mStartActivity = new Intent(getApplicationContext(), MainActivity.class);
-				int mPendingIntentId = 123456;
-				PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-				AlarmManager mgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-				mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-				System.exit(0);
+//				Intent mStartActivity = new Intent(getApplicationContext(), MainActivity.class);
+//				int mPendingIntentId = 123456;
+//				PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+//				AlarmManager mgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//				mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+//				System.exit(0);
 							
 				return false;
 			}

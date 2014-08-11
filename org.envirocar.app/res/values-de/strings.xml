@@ -9,15 +9,19 @@
 	<string name="menu_garage">Meine Garage</string>    
     <string name="activity_checklist_title">Checkliste</string>
     <string name="menu_logout">Ausloggen</string>
+    <string name="language">Früher</string>
     
      <string name="previous">Früher</string>
      <string name="next">Nächste</string>
      <string name="profile_picture">Profil Bild</string>
      <string name="loading_graphs">Laden Graphs</string>
-    
-    
-    <string name="your_tracks">Ihre Spuren</string>
-    <string name="total_tracks">Gesamt Tracks</string>
+     <string name="getting_friends">Immer Freunde</string>
+     <string name="compare_with_friends">Comapre mit Freunde</string>
+     <string name="error">Fehler</string>
+         
+    <string name="loading">Lade..</string>
+    <string name="your_tracks">Ihre Spuren :</string>
+    <string name="total_tracks">Gesamt Tracks :</string>
     <string name="sustainability_rank">Nachhaltigkeit Rang</string>
     <string name="view_statistics">Statistiken anzeigen</string>
     <string name="compare_wid_friends">Vergleichen Mit Freunden</string>

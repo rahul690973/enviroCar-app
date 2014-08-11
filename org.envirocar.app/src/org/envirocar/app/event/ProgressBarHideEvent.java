@@ -1,6 +1,8 @@
 package org.envirocar.app.event;
 
-public interface ProgressBarHideEvent {
+import java.io.Serializable;
+
+public interface ProgressBarHideEvent{
 	
 	
 	public void progressHideEvent();

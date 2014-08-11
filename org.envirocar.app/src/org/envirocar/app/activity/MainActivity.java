@@ -395,7 +395,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 				TroubleshootingFragment.INTENT));
 
 		resolvePersistentSeenAnnouncements();
-		loadLanguage(preferences, getBaseContext());
+		//loadLanguage(preferences, getBaseContext());
 
 	}
 
@@ -1127,7 +1127,8 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 
 		// SubMenu overflowMenu = menu.addSubMenu("Action Item");
 		SubMenu overflowMenu = menu.addSubMenu(0, MENU_ID, 300, "Action Item");
-
+		
+		
 		overflowMenu.add(0, SUBMENU_HELP, 14, getString(R.string.menu_help));
 		overflowMenu.add(0, SUBMENU_REPORT, 14,
 				getString(R.string.menu_send_log));
@@ -1135,9 +1136,10 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 				getString(R.string.menu_logbook));
 
 		MenuItem subMenu1Item = overflowMenu.getItem();
-		subMenu1Item.setIcon(R.drawable.overflow_menu_trans);
+		subMenu1Item.setIcon(R.drawable.overflow_menu);
+		
 
-		// subMenu1Item.getActionView().setBackgroundColor(Color.RED);
+		///subMenu1Item.getActionView().setBackgroundColor(Color.RED);
 		subMenu1Item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
 				| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 

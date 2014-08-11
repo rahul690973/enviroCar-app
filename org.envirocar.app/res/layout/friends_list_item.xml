@@ -11,13 +11,13 @@
         android:layout_height="wrap_content"
         android:src="@drawable/person_trans"
         android:id="@+id/friends_image"
+        android:layout_marginTop="8dp"
         android:layout_marginLeft="20dp"/>"
     
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:id="@+id/friends_name"
-        android:text="Rahul Raja"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="8dp"
         android:textSize="18sp"

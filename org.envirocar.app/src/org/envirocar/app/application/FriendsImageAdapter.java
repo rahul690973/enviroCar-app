@@ -5,12 +5,16 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.client.methods.HttpGet;
 import org.envirocar.app.model.User;
+import org.envirocar.app.util.CommonUtils;
 
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
+
+
 
 
 
@@ -30,17 +34,21 @@ public class FriendsImageAdapter  extends BaseAdapter{
 	
 	 private  LayoutInflater inflater=null;
 	 private List<String>friends=null;
+	 private ArrayList<String>friendsClone;
 	 private Context context;
 	 private User user;
 	 private Object view;
+	 private CommonUtils cu;
 	
-	public FriendsImageAdapter( Context c,List<String> friendsNames) {
+	public FriendsImageAdapter( Context c,ArrayList<String> friendsNames) {
        
-        inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        friends=friendsNames;
-        context=c;
-        user=UserManager.instance().getUser();
-        
+        this.inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.friends=friendsNames;
+        this.friendsClone=new ArrayList<String>();
+        this.friendsClone.addAll(this.friends);
+        this.context=c;
+        this.user=UserManager.instance().getUser();
+        this.cu=new CommonUtils();
     }
 
 	@Override
@@ -73,29 +81,33 @@ public class FriendsImageAdapter  extends BaseAdapter{
 	        
 	        String friend=friends.get(position);
 	        tv.setText(friend);
-	        Uri absolute = Uri.parse(ECApplication.BASE_URL+"/users/"+user.getUsername()+"/avator?size=200");
-	        getImageLoader(context).load(absolute).into(image);
+	        Uri absolute = Uri.parse(ECApplication.BASE_URL+"/users/"+user.getUsername()+"/friends/"+friend+"/avatar?size=50");
+	        cu.setImageOnView(context, user, image,absolute,50);
 	        
 	        
 		return view;
 	}
 	
-	public Picasso getImageLoader(Context ctx) {
-	    Picasso.Builder builder = new Picasso.Builder(ctx);
-	    
-	    builder.downloader(new OkHttpDownloader(ctx) {
-	        @Override
-	        protected HttpURLConnection openConnection(Uri uri) throws IOException {
-	            HttpURLConnection connection = super.openConnection(uri);
-	           
-	            connection.setRequestProperty("X-User",user.getUsername());
-	            connection.setRequestProperty("X-Token",user.getToken());
-	            
-	            return connection;
-	        }
-	    });
-	    return builder.build();
-	}
+	public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        friends.clear();
+        if (charText.length() == 0) {
+            friends.addAll(friendsClone);
+        } 
+        else 
+        {
+            for (String s :friendsClone) 
+            {
+                if (s.toLowerCase(Locale.getDefault()).contains(charText)) 
+                {
+                    friends.add(s);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+	
+	
 	
 	
 

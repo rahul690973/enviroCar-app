@@ -17,7 +17,7 @@
                 android:id="@+id/speed" 
                 android:layout_width="fill_parent" 
                 android:layout_height="wrap_content" 
-                android:drawableRight="@drawable/help_icon_trans" 
+                android:drawableRight="@drawable/help_icon" 
                 android:text="@string/currentSpeed"
                 android:textColor="#6B0000"
                 android:textSize="18sp"

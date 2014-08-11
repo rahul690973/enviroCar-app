@@ -22,7 +22,6 @@
 package org.envirocar.app.activity;
 
 import java.text.DecimalFormat;
-
 import java.util.Locale;
 import java.util.Map;
 
@@ -53,6 +52,7 @@ import org.envirocar.app.logging.Logger;
 import org.envirocar.app.model.Car;
 import org.envirocar.app.model.Car.FuelType;
 import org.envirocar.app.model.UnitSelection;
+import org.envirocar.app.util.CommonUtils;
 import org.envirocar.app.views.LayeredImageRotateView;
 import org.envirocar.app.views.SizeRelatedTextView;
 import org.envirocar.app.views.TypefaceEC;
@@ -75,6 +75,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,8 +110,8 @@ public class DashboardFragment extends SherlockFragment {
 	private static final String CO2 = "co2";
 	private static final String ENGINE_LOAD = "engineLoad";
 	private static final String FUEL_CONSUMPTION = "fuelConsumption";
-	private static int CAR_PREFERANCE_CHANGED = 0;
-	private static int UNITS_PREFERENCE_CHANGED = 1;
+	
+	private static int LANGUAGE_PREFERENCE_CHANGED = 0;
 
 	
 	String speedUnit = null;
@@ -178,6 +180,8 @@ public class DashboardFragment extends SherlockFragment {
 	private ImageView connectionStateImage;
 
 	AlertDialog.Builder alert;
+	
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -230,7 +234,7 @@ public class DashboardFragment extends SherlockFragment {
 				.getDefaultSharedPreferences(getActivity()
 						.getApplicationContext());
 		
-		loadLanguage(preferences,getActivity().getBaseContext());
+		//loadLanguage(preferences,getActivity().getBaseContext());
 
 		if (preferences.getString(SettingsActivity.UNITS, null) == null) {
 
@@ -258,6 +262,8 @@ public class DashboardFragment extends SherlockFragment {
 		setupStatusImages();
 
 		updateStatusElements();
+		
+		calculateNewUnits();
 
 		TypefaceEC.applyCustomFont((ViewGroup) view,
 				TypefaceEC.Newscycle(getActivity()));
@@ -282,7 +288,7 @@ public class DashboardFragment extends SherlockFragment {
 				if (key.equals(SettingsActivity.CAR)
 						|| key.equals(SettingsActivity.CAR_HASH_CODE)) {
 
-					CAR_PREFERANCE_CHANGED = 1;
+				
 					units = UnitSelectionPreference.instantiateUnits(preferences.getString(
 							SettingsActivity.UNITS, null));
 					loadForGasolineOrDiesel();
@@ -299,14 +305,21 @@ public class DashboardFragment extends SherlockFragment {
 				} else if (key.equals(SettingsActivity.BLUETOOTH_KEY)) {
 					updateStatusElements();
 				}
-
+				else if (key.equals(SettingsActivity.LANGUAGE_KEY)) {
+					
+					LANGUAGE_PREFERENCE_CHANGED=1;
+				}
+				
+				
+				
+				
 				else if (key.equals(SettingsActivity.UNITS)) {
 					
 					units = UnitSelectionPreference.instantiateUnits(preferences.getString(
 							SettingsActivity.UNITS, null));
 					if(units!=null){
 						
-						Toast.makeText(getActivity(), "called", Toast.LENGTH_LONG).show();
+						
 						setUnitsOnTextViews();
 						setRangeInRotableViews();
 						calculateNewUnits();
@@ -426,6 +439,9 @@ public class DashboardFragment extends SherlockFragment {
 			}
 			
 			
+			
+			
+			//Toast.makeText(getActivity(), units.getCo2Emission(), Toast.LENGTH_LONG).show();
 			setValuesDependingOnCar(co2TextView,units.getCo2Emission());
 
 		
@@ -760,18 +776,18 @@ public class DashboardFragment extends SherlockFragment {
 		super.onResume();
 		
 		
-		loadLanguage(preferences,getActivity().getBaseContext());
-		if (CAR_PREFERANCE_CHANGED == 1) {
+		if(LANGUAGE_PREFERENCE_CHANGED==1){
 			
-			
-//			loadForGasolineOrDiesel();
-//			setUpUIElements();
-
-			CAR_PREFERANCE_CHANGED = 0;
+			LANGUAGE_PREFERENCE_CHANGED=0;
+			CommonUtils cu=new CommonUtils();
+			cu.changeLanguage(getActivity());
+			cu.restartActivity(getActivity());
 		}
+		
 		initializeEventListeners();
 		updateGpsStatus();
         updateCarStatus();
+
 
 		Car car = CarManager.instance().getCar();
 		if (car != null && car.getFuelType() == FuelType.DIESEL) {
@@ -981,9 +997,7 @@ public class DashboardFragment extends SherlockFragment {
 	protected void updateCo2Value() {
 
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
-		
-		
-
+	
 		co2TextView.setText(twoDForm.format(co2*conversion_factor_co2) + shortCo2Unit);
 		co2RotableView.submitScaleValue((float) co2);
 
