@@ -36,7 +36,9 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.LinearLayout.LayoutParams;
 
+import org.achartengine.GraphicalView;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.ResponseHandler;
@@ -48,6 +50,9 @@ import org.envirocar.app.R;
 import org.envirocar.app.application.ECApplication;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.dao.DAOProvider;
+import org.envirocar.app.dao.UserDAO;
+import org.envirocar.app.dao.DAOProvider.AsyncExecutionWithCallback;
+import org.envirocar.app.dao.exception.DAOException;
 import org.envirocar.app.dao.exception.NotConnectedException;
 import org.envirocar.app.dao.exception.TrackRetrievalException;
 import org.envirocar.app.dao.exception.UnauthorizedException;
@@ -63,6 +68,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.google.gson.Gson;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -73,7 +79,7 @@ ProgressBarHideEvent {
 	
 	
 	TextView totalTracksView, ownTracksView, compareWithFriendsView,
-			viewStatisticsView, leaderBoardView;
+			viewStatisticsView, leaderBoardView,userNameView;
 	static ImageView profilePicView;
 	String TOTAL_TRACK_NUMBER = "number_of_tracks";
 	String OWN_TRACK_NUMBER = "own-tracks";
@@ -91,6 +97,8 @@ ProgressBarHideEvent {
 	private static View progressStatusView;
 	private static View profileView;
 	private static TextView progressStatusMessageView;
+	
+	private ArrayList<LinkedHashMap<String, String>> stats;
 	
 	
 	
@@ -114,7 +122,7 @@ ProgressBarHideEvent {
 		progressStatusMessageView = (TextView) view
 				.findViewById(R.id.progress_status_message);
 		profileView = view.findViewById(R.id.user_info);
-		
+		userNameView=(TextView)view.findViewById(R.id.username);
 		
 		totalTracksView = (TextView) view.findViewById(R.id.total_tracks);
 		ownTracksView = (TextView) view.findViewById(R.id.your_tracks);
@@ -140,6 +148,7 @@ ProgressBarHideEvent {
 
 		user = UserManager.instance().getUser();
 		root = Environment.getExternalStorageDirectory().toString();
+		userNameView.setText(user.getUsername());
 		
 		setTracks(getString(R.string.loading),getString(R.string.loading));
 		
@@ -185,7 +194,7 @@ ProgressBarHideEvent {
 		if(commonUtils.isNetworkAvailable(getActivity()))
 			new displayNumberOfTracks().execute();
 		getLeaderBoardFromServer();
-		setUsersRank();
+		//setUsersRank();
 
 	}
 
@@ -199,8 +208,8 @@ ProgressBarHideEvent {
 				if(commonUtils.isNetworkAvailable(getActivity())){
 					
 
-					getActivity().getSupportFragmentManager().popBackStack(null,
-							FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//					getActivity().getSupportFragmentManager().popBackStack(null,
+//							FragmentManager.POP_BACK_STACK_INCLUSIVE);
 					
 					FriendListFragment friendsFragment = new FriendListFragment();
 				    FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -222,14 +231,18 @@ ProgressBarHideEvent {
 				
 				if(commonUtils.isNetworkAvailable(getActivity())){
 
-				getActivity().getSupportFragmentManager().popBackStack(null,
-						FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//				getActivity().getSupportFragmentManager().popBackStack(null,
+//						FragmentManager.POP_BACK_STACK_INCLUSIVE);
 				UserStatisticsFragment userStatisticsFragment = new UserStatisticsFragment();
-				getActivity()
-						.getSupportFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, userStatisticsFragment,
-								MainActivity.STATISTICS_TAG).commit();
+//				getActivity()
+//						.getSupportFragmentManager()
+//						.beginTransaction()
+//						.replace(R.id.content_frame, userStatisticsFragment,
+//								MainActivity.STATISTICS_TAG).commit();
+				
+				getActivity().getSupportFragmentManager().beginTransaction()
+				.replace(R.id.content_frame, userStatisticsFragment, MainActivity.STATISTICS_TAG)
+				.addToBackStack(null).commit();
 				
 				}
 				
@@ -243,17 +256,34 @@ ProgressBarHideEvent {
 
 			else if (v.getId() == R.id.view_leaderboard) {
 
-				getActivity().getSupportFragmentManager().popBackStack(null,
-						FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				LeaderboardFragment lbFragment = new LeaderboardFragment();
-				Bundle lbBundle = new Bundle();
-				lbBundle.putSerializable("rank_map", userAndScore);
-				lbFragment.setArguments(lbBundle);
-				getActivity()
-						.getSupportFragmentManager()
-						.beginTransaction()
-						.replace(R.id.content_frame, lbFragment,
-								MainActivity.LEADERBOARD_TAG).commit();
+//				getActivity().getSupportFragmentManager().popBackStack(null,
+//						FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				
+				
+//				LeaderboardFragment lbFragment = new LeaderboardFragment();
+//				Bundle lbBundle = new Bundle();
+//				lbBundle.putSerializable("rank_map", userAndScore);
+//				lbFragment.setArguments(lbBundle);
+				
+				
+				Intent i=new Intent(getActivity(),LeaderboardActivity.class);
+//				Bundle extras=new Bundle();
+//				extras.putSerializable("rank_map", stats);
+//			
+//				i.putExtras(extras);
+				//i.putExtra("rank_map", stats);
+				i.putExtra("rank_map", new Gson().toJson(stats));
+				startActivity(i);
+		
+//				getActivity()
+//						.getSupportFragmentManager()
+//						.beginTransaction()
+//						.replace(R.id.content_frame, lbFragment,
+//								MainActivity.LEADERBOARD_TAG).commit();
+				
+//				getActivity().getSupportFragmentManager().beginTransaction()
+//				.replace(R.id.content_frame, lbFragment, MainActivity.LEADERBOARD_TAG)
+//				.addToBackStack(null).commit();
 
 			}
 
@@ -269,83 +299,71 @@ ProgressBarHideEvent {
 	
 	protected void setUsersRank() {
 
-		int totalSize = userAndScore.size();
-		List<String> keys = new ArrayList<String>(userAndScore.keySet());
-		int userIndex = keys.indexOf(user.getUsername());
-		if (userIndex != -1)
-			leaderBoardView
-					.setText("" + userIndex + "out of" + " " + totalSize);
-		else
-			leaderBoardView.setText("Not Applicable");
-		leaderBoardView.setClickable(true);
+		
+		//leaderBoardView.setText("Not Applicable");
+		//new fetchLeaderboard().execute();
+		
 
 	}
 
 	protected void getLeaderBoardFromServer() {
 
-		for (int i = 0; i < 500; i++)
-			userAndScore.put(String.valueOf(i), "711");
+		DAOProvider.async(new AsyncExecutionWithCallback<Void>() {
+
+			@Override
+			public Void execute()
+					throws DAOException {
+				
+				UserDAO dao = DAOProvider.instance().getUserDAO();
+				stats=dao.getLeaderboard();
+				return null;
+			}
+
+			@Override
+			public Void onResult(Void result,
+					boolean fail, Exception ex) {
+				if (!fail) {
+					
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+												
+							
+							leaderBoardView.setText("NOT AVAILABLE");
+							leaderBoardView.setClickable(true);
+						}
+					});
+					
+					
+				}
+				else {
+					logger.warn(ex.getMessage(), ex);
+				}
+				return null;
+			}
+			
+		});
 
 	}
 
 	public static void setImageOnView() {
 
-		// Bitmap bitmap = BitmapFactory.decodeFile(root + "/enviroCar/images/"
-		// + user.getUsername() + ".jpg");
-		// Bitmap roundedBitmap = getRoundedBitmap(bitmap, 200);
-		// profilePicView.setImageBitmap(roundedBitmap);
-
-		// Uri absolute =
-		// Uri.parse(ECApplication.BASE_URL+"/users/"+user.getUsername()+"/avatar?size=200");
-		//
-		// getImageLoader(c).load(absolute).into(profilePicView);
-		
+	
 		Uri absolute = Uri.parse(ECApplication.BASE_URL + "/users/"
 				+ user.getUsername() + "/avatar?size=200");
 		CommonUtils cu=new CommonUtils();
 		cu.setImageOnView(c, user, profilePicView,absolute,200);
-//		new Thread() {
-//			@Override
-//			public void run() {
-//
-//				Uri absolute = Uri.parse(ECApplication.BASE_URL + "/users/"
-//						+ user.getUsername() + "/avatar?size=200");
-//				try {
-//
-//					final CommonUtils cu = new CommonUtils();
-//					m = cu.getImageLoader(c, user).load(absolute)
-//							.placeholder(R.drawable.profile_picture)
-//							.error(R.drawable.profile_picture).get();
-//
-//					((Activity) c).runOnUiThread(new Runnable() {
-//						@Override
-//						public void run() {
-//								
-//							Bitmap roundedBitmap = cu.getRoundedBitmap(m, 200);
-//							profilePicView.setImageBitmap(roundedBitmap);
-//						}
-//					});
-//
-//				} catch (IOException e) {
-//
-//					e.printStackTrace();
-//				}
-//
-//			}
-//		}.start();
+
 
 	}
 
 	
-
 	class displayNumberOfTracks extends AsyncTask<String, String, Void> {
 		InputStream is = null;
 		HttpResponse response;
 		int totalTracks, userTracks;
 
-		protected void onPreExecute() {
-
-		}
+		
 
 		@Override
 		protected Void doInBackground(String... params) {

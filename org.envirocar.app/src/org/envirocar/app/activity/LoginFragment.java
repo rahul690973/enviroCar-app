@@ -294,13 +294,17 @@ public class LoginFragment extends SherlockFragment {
 				
 				TermsOfUseManager.askForTermsOfUseAcceptance(newUser, getActivity(), null);
 				
-				getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				//getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 				//Intent i=new Intent(getActivity(),ProfileFragment.class);
 				//startActivity(i);
 				ProfileFragment profileFragment = new ProfileFragment();
+//				getActivity().getSupportFragmentManager().beginTransaction()
+//						.replace(R.id.content_frame, profileFragment,MainActivity.PROFILE_TAG)
+//						.commit();
+				
 				getActivity().getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, profileFragment,MainActivity.PROFILE_TAG)
-						.commit();
+				.replace(R.id.content_frame, profileFragment, MainActivity.PROFILE_TAG)
+				.addToBackStack(null).commit();
 				
 			} else {
 				if (mUsernameView.getError() != null) {

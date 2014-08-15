@@ -20,11 +20,16 @@
  */
 package org.envirocar.app.dao;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import org.envirocar.app.dao.exception.FriendsRetrievalException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
 import org.envirocar.app.dao.exception.UnauthorizedException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
 import org.envirocar.app.dao.exception.UserUpdateException;
+import org.envirocar.app.dao.exception.NotConnectedException;
+
 import org.envirocar.app.model.User;
 
 public interface UserDAO {
@@ -38,4 +43,8 @@ public interface UserDAO {
 	void getProfilePicture (User user) throws UserRetrievalException;
 	
 	void getFriends (User user) throws FriendsRetrievalException;
+	
+	ArrayList<LinkedHashMap<String,String>> getLeaderboard() throws NotConnectedException, UnauthorizedException;
+	
+	LinkedHashMap<String,String>[] getUserStatistics() throws NotConnectedException, UnauthorizedException;
 }

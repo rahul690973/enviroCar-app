@@ -160,12 +160,12 @@ public class CommonUtils {
 
 	}
 	
-	public void changeLanguage(Context context) {
+	public void changeLanguage(Context context,String language) {
 	    Resources res = context.getResources();
 	    DisplayMetrics dm = res.getDisplayMetrics();
 	    
 	    android.content.res.Configuration conf = res.getConfiguration();
-	    conf.locale = new Locale("de");
+	    conf.locale = new Locale(language);
 	    res.updateConfiguration(conf, dm);
 	    
 	}

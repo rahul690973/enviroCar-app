@@ -21,9 +21,15 @@
 package org.envirocar.app.dao.remote;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
+import org.apache.http.ParseException;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -36,9 +42,12 @@ import org.envirocar.app.dao.exception.ResourceConflictException;
 import org.envirocar.app.dao.exception.UnauthorizedException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
 import org.envirocar.app.dao.exception.UserUpdateException;
+import org.envirocar.app.json.CommonJSONDecoder;
 import org.envirocar.app.model.User;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.net.Uri;
 
 public class RemoteUserDAO extends BaseRemoteDAO implements UserDAO, AuthenticatedDAO {
 
@@ -108,6 +117,64 @@ public class RemoteUserDAO extends BaseRemoteDAO implements UserDAO, Authenticat
 		new fetchFriends().execute(user);
 		
 	}
+	
+	@Override
+	public ArrayList<LinkedHashMap<String,String>> getLeaderboard() throws NotConnectedException, UnauthorizedException {
+		
+		HttpGet get = new HttpGet(String.format("%s",
+				"http://envirocar.github.io/examples/leaderboards.json"));
+		
+		InputStream response;
+		ArrayList<LinkedHashMap<String,String>>leaderboard;
+		try {
+			response = super.retrieveHttpContent(get);
+		} catch (IOException e1) {
+			throw new NotConnectedException(e1);
+		}
+
+		try {
+			leaderboard=new CommonJSONDecoder().decodeLeaderboard(response);
+		} catch (ParseException e) {
+			throw new NotConnectedException(e);
+		} catch (IOException e) {
+			throw new NotConnectedException(e);
+		} catch (JSONException e) {
+			throw new NotConnectedException(e);
+		}
+		
+		return leaderboard;
+		
+	}
+
+	@Override
+	public LinkedHashMap<String, String>[] getUserStatistics()
+			throws NotConnectedException, UnauthorizedException {
+		
+		HttpGet get = new HttpGet(String.format("%s",
+				"http://envirocar.github.io/examples/user-statistics.json"));
+		
+		InputStream response;
+		LinkedHashMap<String,String>userStatistics[];
+		try {
+			response = super.retrieveHttpContent(get);
+		} catch (IOException e1) {
+			throw new NotConnectedException(e1);
+		}
+		
+		try {
+			userStatistics=new CommonJSONDecoder().decodeUserStatistics(response);
+		} catch (ParseException e) {
+			throw new NotConnectedException(e);
+		} catch (IOException e) {
+			throw new NotConnectedException(e);
+		} catch (JSONException e) {
+			throw new NotConnectedException(e);
+		}
+		
+		return userStatistics;
+	}
+	
+	
 	
 
 

@@ -133,11 +133,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				
 				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(LANGUAGE_KEY, (String) languageList.getValue()).commit();
 				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(SettingsActivity.UNITS,null).commit();
-			    
-
-				
+			    			
 				CommonUtils cu=new CommonUtils();
-				cu.changeLanguage(SettingsActivity.this);
+				cu.changeLanguage(SettingsActivity.this,(String)languageList.getValue());
 				cu.restartActivity(SettingsActivity.this);
 
 		            

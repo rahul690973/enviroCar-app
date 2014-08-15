@@ -87,6 +87,7 @@
     <string name="calculating">"Wird berechnet&#8230;"</string>
     <string name="error_calculating_fuel_costs">"Fehler bei der Berechnung."</string>
     <string name="title_activity_settings">Einstellungen</string>
+    <string name="title_activity_leaderboard">Rangliste</string>
     <string name="currentSpeed">Geschwindigkeit</string>
     <string name="currentPosition">Position</string>
     <string name="positioning_Info">Die Positionsermittlung wird durch GPS durchgeführt. Damit sind präzise Messpunkte sichergestellt. Bitte warten bis Position ermittelt wird.</string>

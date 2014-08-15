@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/envirocar_background"
-    android:padding="20dp" >
+    android:padding="15dp" >
 
 
         <RelativeLayout
@@ -30,13 +30,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="20dp" >
+                android:layout_toRightOf="@+id/user_picture"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rahul Raja"
+                    android:id="@+id/username"
                     android:textColor="#047CAC"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -45,7 +47,8 @@
                     android:id="@+id/your_tracks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
+                    android:layout_below="@+id/username"
+                    android:layout_marginTop="30dp"
                     android:text="@string/your_tracks"
                     android:textStyle="bold" />
 

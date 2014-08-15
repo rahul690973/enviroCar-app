@@ -49,6 +49,7 @@ import org.envirocar.app.logging.Logger;
 import org.envirocar.app.model.Announcement;
 import org.envirocar.app.model.User;
 import org.envirocar.app.storage.DbAdapterImpl;
+import org.envirocar.app.util.CommonUtils;
 import org.envirocar.app.util.Util;
 import org.envirocar.app.util.VersionRange.Version;
 import org.envirocar.app.views.TypefaceEC;
@@ -186,6 +187,8 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 	protected BackgroundServiceInteractor backgroundService;
 	protected DeviceInRangeServiceInteractor deviceInRangeService;
 	protected long discoveryTargetTime;
+	
+	private int LANGUAGE_PREFERENCE_CHANGED=0;
 
 	private void prepareNavDrawerItems() {
 		if (this.navDrawerItems == null) {
@@ -366,6 +369,11 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 					SharedPreferences sharedPreferences, String key) {
 				if (key.equals(SettingsActivity.BLUETOOTH_NAME)) {
 					updateStartStopButton();
+				}
+				
+				if(key.equals(SettingsActivity.LANGUAGE_KEY)){
+					
+					LANGUAGE_PREFERENCE_CHANGED=1;
 				}
 				if (key.equals(SettingsActivity.CAR)
 						|| key.equals(SettingsActivity.CAR_HASH_CODE)) {
@@ -660,11 +668,15 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 				if (profileFragment == null) {
 					profileFragment = new ProfileFragment();
 				}
-				manager.popBackStack(null,
-						FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//				manager.popBackStack(null,
+//						FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//				manager.beginTransaction()
+//						.replace(R.id.content_frame, profileFragment,
+//								PROFILE_TAG).commit();
+				
 				manager.beginTransaction()
-						.replace(R.id.content_frame, profileFragment,
-								PROFILE_TAG).commit();
+				.replace(R.id.content_frame, profileFragment,PROFILE_TAG)
+				.addToBackStack(null).commit();
 
 				// UserManager.instance().logOut();
 				// ListTracksFragment listMeasurementsFragment =
@@ -940,7 +952,19 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 		drawer.closeDrawer(drawerList);
 		// first init
 		firstInit();
-
+		
+		if(LANGUAGE_PREFERENCE_CHANGED==1){
+			
+			LANGUAGE_PREFERENCE_CHANGED=0;
+			String languageSaved=preferences.getString(SettingsActivity.LANGUAGE_KEY, "en");
+			CommonUtils cu=new CommonUtils();
+			cu.changeLanguage(this, languageSaved);
+			cu.restartActivity(this);
+			Locale current = getResources().getConfiguration().locale;
+			Toast.makeText(this, ""+current.toString(), Toast.LENGTH_LONG).show();
+		}
+		
+		
 		application.setActivity(this);
 
 		checkKeepScreenOn();

@@ -69,6 +69,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -77,6 +78,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -225,9 +227,9 @@ public class DashboardFragment extends SherlockFragment {
 		logger.info("onViewCreated. hash=" + System.identityHashCode(this));
 
 		dashboardView = getView();
-		
+			
 		// Setup UI elements
-
+		
 		setUpUIElements();
 
 		preferences = PreferenceManager
@@ -251,6 +253,8 @@ public class DashboardFragment extends SherlockFragment {
 		
 		units = UnitSelectionPreference.instantiateUnits(preferences.getString(
 				SettingsActivity.UNITS, null));
+		
+		
 				
 		setUnitsOnTextViews();
 		setRangeInRotableViews();
@@ -414,6 +418,7 @@ public class DashboardFragment extends SherlockFragment {
 		
 		Map<String, String> values_maps[] = UnitsParser.getHashMapResource(
 				getActivity(), R.xml.unit_values_final);
+		
 		
 		float conversion_factor = Float
 				.parseFloat(values_maps[pos].get(unit));       // 0 for speed, 1 for co2 and 2 for fuel
@@ -776,13 +781,13 @@ public class DashboardFragment extends SherlockFragment {
 		super.onResume();
 		
 		
-		if(LANGUAGE_PREFERENCE_CHANGED==1){
-			
-			LANGUAGE_PREFERENCE_CHANGED=0;
-			CommonUtils cu=new CommonUtils();
-			cu.changeLanguage(getActivity());
-			cu.restartActivity(getActivity());
-		}
+//		if(LANGUAGE_PREFERENCE_CHANGED==1){
+//			
+//			LANGUAGE_PREFERENCE_CHANGED=0;
+//			CommonUtils cu=new CommonUtils();
+//			cu.changeLanguage(getActivity(),preferences.getString(SettingsActivity.LANGUAGE_KEY, "en"));
+//			cu.restartActivity(getActivity());
+//		}
 		
 		initializeEventListeners();
 		updateGpsStatus();

@@ -20,11 +20,18 @@
  */
 package org.envirocar.app.dao.cache;
 
+
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import org.envirocar.app.dao.UserDAO;
 import org.envirocar.app.dao.exception.FriendsRetrievalException;
 import org.envirocar.app.dao.exception.ResourceConflictException;
+import org.envirocar.app.dao.exception.UnauthorizedException;
 import org.envirocar.app.dao.exception.UserRetrievalException;
 import org.envirocar.app.dao.exception.UserUpdateException;
+import org.envirocar.app.dao.exception.NotConnectedException;
 import org.envirocar.app.model.User;
 
 public class CacheUserDAO implements UserDAO {
@@ -56,5 +63,19 @@ public class CacheUserDAO implements UserDAO {
 		throw new FriendsRetrievalException("Not supported by Cache");
 		
 	}
+	
+	@Override
+	public ArrayList<LinkedHashMap<String,String>> getLeaderboard() throws NotConnectedException,UnauthorizedException{
+		throw new NotConnectedException("Not supported by Cache");
+		
+	}
+
+	@Override
+	public LinkedHashMap<String,String>[] getUserStatistics() throws NotConnectedException,UnauthorizedException{
+		throw new NotConnectedException("Not supported by Cache");
+		
+	}
+	
+	
 
 }
