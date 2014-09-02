@@ -1,18 +1,4 @@
-/**
- * Copyright (C) 2009, 2010 SC 4ViewSoft SRL
- *  
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- *      http://www.apache.org/licenses/LICENSE-2.0
- *  
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.envirocar.app.activity;
 
 import java.util.Date;
@@ -34,32 +20,10 @@ import android.util.Log;
 /**
  * An abstract class for the demo charts to extend.
  */
-public  class AbstractDemoChart {
+public class AbstractDemoChart {
 
-  /**
-   * Builds an XY multiple dataset using the provided values.
-   * 
-   * @param titles the series titles
-   * @param xValues the values for the X axis
-   * @param yValues the values for the Y axis
-   * @return the XY multiple dataset
-   */
-  protected XYMultipleSeriesDataset buildDataset(String[] titles, List<double[]> xValues,
-      List<double[]> yValues) {
-    XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-    int length = titles.length;
-    for (int i = 0; i < length; i++) {
-      XYSeries series = new XYSeries(titles[i]);
-      double[] xV = xValues.get(i);
-      double[] yV = yValues.get(i);
-      int seriesLength = xV.length;
-      for (int k = 0; k < seriesLength; k++) {
-        series.add(xV[k], yV[k]);
-      }
-      dataset.addSeries(series);
-    }
-    return dataset;
-  }
+ 
+
 
   /**
    * Builds an XY multiple series renderer.
@@ -139,59 +103,7 @@ public  class AbstractDemoChart {
     return dataset;
   }
 
-  /**
-   * Builds a category series using the provided values.
-   * 
-   * @param titles the series titles
-   * @param values the values
-   * @return the category series
-   */
-  protected CategorySeries buildCategoryDataset(String title, double[] values) {
-    CategorySeries series = new CategorySeries(title);
-    int k = 0;
-    for (double value : values) {
-      series.add("Project " + ++k, value);
-    }
 
-    return series;
-  }
-
-  /**
-   * Builds a multiple category series using the provided values.
-   * 
-   * @param titles the series titles
-   * @param values the values
-   * @return the category series
-   */
-  protected MultipleCategorySeries buildMultipleCategoryDataset(String title,
-      List<String[]> titles, List<double[]> values) {
-    MultipleCategorySeries series = new MultipleCategorySeries(title);
-    int k = 0;
-    for (double[] value : values) {
-      series.add(2007 + k + "", titles.get(k), value);
-      k++;
-    }
-    return series;
-  }
-
-  /**
-   * Builds a category renderer to use the provided colors.
-   * 
-   * @param colors the colors
-   * @return the category renderer
-   */
-  protected DefaultRenderer buildCategoryRenderer(int[] colors) {
-    DefaultRenderer renderer = new DefaultRenderer();
-    renderer.setLabelsTextSize(15);
-    renderer.setLegendTextSize(15);
-    renderer.setMargins(new int[] { 20, 30, 15, 0 });
-    for (int color : colors) {
-      SimpleSeriesRenderer r = new SimpleSeriesRenderer();
-      r.setColor(color);
-      renderer.addSeriesRenderer(r);
-    }
-    return renderer;
-  }
 
   /**
    * Builds a bar multiple series dataset using the provided values.

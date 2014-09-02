@@ -93,27 +93,7 @@ public class UnitSelectionPreference extends DialogPreference {
 				if (!units.equals(unitsPrevious))
 					persistUnits(units, c);
 
-				// UnitSelection units = new UnitSelection();
-				// units =
-				// UnitSelectionPreference.instantiateUnits(preferences.getString(SettingsActivity.UNITS,
-				// null));
-				// Map<String,String>
-				// values_maps[]=UnitsParser.getHashMapResource(c,
-				// R.xml.unit_values_final);
-				//
-				// String lengthUnit=units.getSpeed_first();
-				// String timeUnit=units.getSpeed_second();
-				//
-				// float
-				// conversion_length=Float.parseFloat(values_maps[0].get(lengthUnit));
-				// float
-				// conversion_time=Float.parseFloat(values_maps[1].get(timeUnit));
-				//
-				// Toast.makeText(c,lengthUnit+"hh"+timeUnit,
-				// Toast.LENGTH_LONG).show();
 
-				// shortLengthUnit=extractSmallUnit(lengthUnit);
-				// shortTimeUnit=extractSmallUnit(timeUnit);
 
 			}
 		}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

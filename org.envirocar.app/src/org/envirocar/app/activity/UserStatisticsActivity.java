@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -24,9 +25,11 @@ import org.envirocar.app.dao.DAOProvider.AsyncExecutionWithCallback;
 import org.envirocar.app.dao.UserDAO;
 import org.envirocar.app.dao.exception.DAOException;
 import org.envirocar.app.logging.Logger;
+import org.envirocar.app.util.CommonUtils;
 
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -43,33 +46,49 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class UserStatisticsFragment extends SherlockFragment {
+public class UserStatisticsActivity extends SherlockFragmentActivity {
 	
 	private LinearLayout chartCo2;
 	private LinearLayout chartFuel;
 	
+	private  View progressStatusView;
+	private  View graphView;
+	private  TextView progressStatusMessageView;
+	private  CommonUtils commonUtils;
+	
 	private LinkedHashMap<String,String>userStatistics[];
-	protected static final Logger logger = Logger.getLogger(UserStatisticsFragment.class);
+	protected static final Logger logger = Logger.getLogger(UserStatisticsActivity.class);
 	
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
-		 View view = inflater.inflate(R.layout.user_statistics,null);
+		 //View view = inflater.inflate(R.layout.user_statistics,null);
+		setContentView(R.layout.user_statistics);
 		
-		 chartCo2=(LinearLayout)view.findViewById(R.id.chart_co2_emission);
-		 chartFuel=(LinearLayout)view.findViewById(R.id.chart_fuel_consumption);
+		 chartCo2=(LinearLayout)findViewById(R.id.chart_co2_emission);
+		 chartFuel=(LinearLayout)findViewById(R.id.chart_fuel_consumption);
+		 
+		 progressStatusView = findViewById(R.id.progress_status);
+	     progressStatusMessageView = (TextView)
+					findViewById(R.id.progress_status_message);
+	     graphView=findViewById(R.id.chart_view);
+	     
+	     commonUtils = new CommonUtils();
+	     
+	     commonUtils.showProgress(this, progressStatusView, graphView,
+					progressStatusMessageView,
+					getResources().getString(R.string.loading_graphs), true);
+		 
+		 displayUserStatistics();
 		
-		return view;
+		//return view;
 		
 	}	
 	
 	
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		
+	protected void displayUserStatistics(){
 		
 		DAOProvider.async(new AsyncExecutionWithCallback<Void>() {
 
@@ -87,14 +106,18 @@ public class UserStatisticsFragment extends SherlockFragment {
 					boolean fail, Exception ex) {
 				if (!fail) {
 					
-					getActivity().runOnUiThread(new Runnable() {
+				      runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							GraphicalView chart1=UserStatisticsFragment.this.execute(getActivity(),getString(R.string.Co2emission),userStatistics[0]);
+							GraphicalView chart1=UserStatisticsActivity.this.execute(UserStatisticsActivity.this,getString(R.string.Co2emission),userStatistics[0],"kg/h");
 							chartCo2.addView(chart1, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 							
-							GraphicalView chart2=UserStatisticsFragment.this.execute(getActivity(),getString(R.string.fuel_consumption),userStatistics[1]);
-							chartFuel.addView(chart2, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));					
+							GraphicalView chart2=UserStatisticsActivity.this.execute(UserStatisticsActivity.this,getString(R.string.fuel_consumption),userStatistics[1],"l/h");
+							chartFuel.addView(chart2, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+							
+							commonUtils.showProgress(UserStatisticsActivity.this, progressStatusView, graphView,
+									progressStatusMessageView,
+									getResources().getString(R.string.getting_friends), false);
 						}
 					});
 					
@@ -108,24 +131,15 @@ public class UserStatisticsFragment extends SherlockFragment {
 			
 		});
 		
-		
-		
-		
 	}
 	
 	
 	
-	 public GraphicalView execute(Context context,String title,LinkedHashMap<String,String>map) {
+	
+	 public GraphicalView execute(Context context,String title,LinkedHashMap<String,String>map,String yTitle) {
 		    String[] titles = new String[] {title };
 		    List<Date[]> dates = new ArrayList<Date[]>();
 		    List<double[]> values = new ArrayList<double[]>();
-//		    Date[] dateValues = new Date[] { new Date(95, 0, 1), new Date(95, 3, 1), new Date(95, 6, 1),
-//		        new Date(95, 9, 1), new Date(96, 0, 1), new Date(96, 3, 1), new Date(96, 6, 1),
-//		        new Date(96, 9, 1), new Date(97, 0, 1), new Date(97, 3, 1), new Date(97, 6, 1),
-//		        new Date(97, 9, 1), new Date(98, 0, 1), new Date(98, 3, 1), new Date(98, 6, 1),
-//		        new Date(98, 9, 1), new Date(99, 0, 1), new Date(99, 3, 1), new Date(99, 6, 1),
-//		        new Date(99, 9, 1), new Date(100, 0, 1), new Date(100, 3, 1), new Date(100, 6, 1),
-//		        new Date(100, 9, 1), new Date(100, 11, 1) };
 		    
 		    Date[] dateValues=new Date[map.size()];
 		    double[] value=new double[map.size()];
@@ -164,14 +178,17 @@ public class UserStatisticsFragment extends SherlockFragment {
 		    renderer.setMarginsColor(Color.WHITE);
 		    renderer.setBackgroundColor(Color.WHITE);
 		    renderer.setXLabelsColor(Color.BLACK);
+		    
 		    renderer.setYLabelsColor(0, Color.BLACK);
 		    renderer.setDisplayChartValues(true);
 		    
+		    
 		    //set the value in place of 11 that you need to display in one screen for the graph
-		    chart.setChartSettings(renderer,title, "", "", dateValues[0].getTime(),
+		    chart.setChartSettings(renderer,title, "", yTitle, dateValues[0].getTime(),
 		        dateValues[dateValues.length - 1].getTime(), 0, 11, Color.BLACK, Color.BLACK
 		        );
 		    renderer.setYLabels(10);
+		    Arrays.fill(titles,"");
 		    return ChartFactory.getTimeChartView(context, chart.buildDateDataset(titles, dates, values),
 		        renderer, "dd-MM-yy");
 		    

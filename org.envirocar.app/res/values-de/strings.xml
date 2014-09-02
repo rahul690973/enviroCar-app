@@ -18,13 +18,17 @@
      <string name="getting_friends">Immer Freunde</string>
      <string name="compare_with_friends">Comapre mit Freunde</string>
      <string name="error">Fehler</string>
+     <string name="not_available">Nicht Verfügbar</string>
+     <string name="title_activity_user_statistics">Benutzerstatistik</string>
+     
          
     <string name="loading">Lade..</string>
     <string name="your_tracks">Ihre Spuren :</string>
-    <string name="total_tracks">Gesamt Tracks :</string>
+    <string name="total_tracks">Gesamt Spuren :</string>
     <string name="sustainability_rank">Nachhaltigkeit Rang</string>
     <string name="view_statistics">Statistiken anzeigen</string>
     <string name="compare_wid_friends">Vergleichen Mit Freunden</string>
+    <string name="calculating">Berechnung</string>
     
     <string name="checklist_item_bluetooth_enabled">Bluetooth aktiviert</string>
     <string name="checklist_item_bluetooth_disabled">Bluetooth deaktiviert</string>

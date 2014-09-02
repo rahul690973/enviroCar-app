@@ -108,7 +108,7 @@ public class RemoteUserDAO extends BaseRemoteDAO implements UserDAO, Authenticat
 	public void getProfilePicture(User user) throws UserRetrievalException {
 		
 		
-		new fetchImage().execute(user);
+		//new fetchImage().execute(user);
 	}
 
 	@Override

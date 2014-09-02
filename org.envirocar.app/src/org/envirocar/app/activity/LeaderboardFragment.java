@@ -46,13 +46,7 @@ public class LeaderboardFragment extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-//		if (getArguments() != null) {
-//			@SuppressWarnings("unchecked")
-//			HashMap<?,?>object = (HashMap<?,?>) getArguments()
-//					.getSerializable("map");
-//			userAndScore=(LinkedHashMap<String, String>)object;
-//
-//		}
+
 		
 		if (getArguments() != null) {	
 			String str=  getArguments().getString("map");
@@ -84,9 +78,6 @@ public class LeaderboardFragment extends SherlockFragment {
 		previousButton.setEnabled(false);
 		data = new ArrayList<String>();
 
-		//int val = TOTAL_LIST_ITEMS % NUM_ITEMS_PAGE;
-		//val = val == 0 ? 0 : 1;
-		//pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
 
 		data = new ArrayList<String>(userAndScore.keySet());
 		loadList(0);
@@ -97,7 +88,7 @@ public class LeaderboardFragment extends SherlockFragment {
 
 				increment++;
 				loadList(increment);
-				//CheckEnable();
+				
 			}
 		});
 
@@ -107,29 +98,12 @@ public class LeaderboardFragment extends SherlockFragment {
 
 				increment--;
 				loadList(increment);
-				//CheckEnable();
+				
 			}
 		});
 
 	}
 
-//	protected void getLeaderBoardFromServer() {
-//
-//		for (int i = 0; i < 500; i++)
-//			userAndScore.put(String.valueOf(i), "711");
-//
-//	}
-
-//	private void CheckEnable() {
-//		if (increment + 1 == pageCount) {
-//			nextButton.setEnabled(false);
-//		} else if (increment == 0) {
-//			previousButton.setEnabled(false);
-//		} else {
-//			previousButton.setEnabled(true);
-//			nextButton.setEnabled(true);
-//		}
-//	}
 
 	/**
 	 * Method for loading data in listview
@@ -157,12 +131,7 @@ public class LeaderboardFragment extends SherlockFragment {
 	}
 	
 	private void showPrevNextButtons(ArrayList<String>sort,int number){
-		
-//		if(TOTAL_LIST_ITEMS<=NUM_ITEMS_PAGE){
-//		
-//			buttonLayout.setVisibility(View.GONE);
-//			return;
-//		}
+
 		
 		if(sort.size()>NUM_ITEMS_PAGE){
 			

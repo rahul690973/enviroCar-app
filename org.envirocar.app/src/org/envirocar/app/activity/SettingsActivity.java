@@ -127,9 +127,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				
 				
 				languageList.setValue(newValue.toString());
-				preference.setSummary(languageList.getEntry());
-				
-				
+				preference.setSummary(languageList.getEntry());				
 				
 				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(LANGUAGE_KEY, (String) languageList.getValue()).commit();
 				PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString(SettingsActivity.UNITS,null).commit();
@@ -138,44 +136,15 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 				cu.changeLanguage(SettingsActivity.this,(String)languageList.getValue());
 				cu.restartActivity(SettingsActivity.this);
 
-		            
-		        
-											
-//				Intent mStartActivity = new Intent(getApplicationContext(), MainActivity.class);
-//				int mPendingIntentId = 123456;
-//				PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-//				AlarmManager mgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//				mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-//				System.exit(0);
-							
 				return false;
 			}
 		});
 		
-		
-		
-		// Get the default adapter
 
 		 bluetoothAdapter = BluetoothAdapter
 				.getDefaultAdapter();
 		
-		
-//		bluetoothDeviceList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-//			@Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                
-//            	
-//            	if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-//            		
-//            		bluetoothDeviceList.getDialog().dismiss();
-//            		 Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                     startActivityForResult(turnOn, 0);
-//          		
-//            	}
-//            	
-//            	return true;
-//            }
-//        });
+
 		
 		
 		 p=new OnPreferenceClickListener(){
@@ -207,21 +176,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		
 	
 
-		// No Bluetooth available...
-
-//		if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-//			//bluetoothDeviceList.setEnabled(false);
-//			bluetoothDeviceList.setEntries(possibleDevices
-//					.toArray(new CharSequence[0]));
-//			bluetoothDeviceList.setEntryValues(entryValues
-//					.toArray(new CharSequence[0]));
-//			
-//			
-//			//bluetoothDeviceList.setSummary(R.string.pref_bluetooth_disabled);
-//
-//			return;
-//		}
-
 		
 		
 		// Prepare getting the devices
@@ -230,22 +184,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		bluetoothDeviceList.setEntries(new CharSequence[1]);
 		bluetoothDeviceList.setEntryValues(new CharSequence[1]);
 
-		// Listen for clicks on the list
-
-//		bluetoothDeviceList
-//				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-//					public boolean onPreferenceClick(Preference preference) {
-//
-//						if (bluetoothAdapter == null
-//								|| !bluetoothAdapter.isEnabled()) {
-//							Toast.makeText(thisSettingsActivity,
-//									"No Bluetooth support. Is Bluetooth on?",
-//									Toast.LENGTH_SHORT).show();
-//							return false;
-//						}
-//						return true;
-//					}
-//				});
 		//change summary of preference accordingly
 		bluetoothDeviceList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			

@@ -35,17 +35,12 @@ import android.widget.Toast;
 public class FriendListFragment extends DialogFragment implements
 		ProgressBarHideEvent {
 
-	/**
-	 * 
-	 */
-
 	static ListView friendsList;
 	static ArrayAdapter adapter;
 	EditText searchView;
 	static Context c;
 
 	private static FriendsImageAdapter fia;
-
 	private static View progressStatusView;
 	private static View friendListView;
 	private static TextView progressStatusMessageView;
@@ -137,12 +132,9 @@ public class FriendListFragment extends DialogFragment implements
 				TextView tv = (TextView) view.findViewById(R.id.friends_name);
 				String friendName = tv.getText().toString();
 
-				// Bundle bundle = new Bundle();
-				// bundle.putString("friend_name", friendName);
 				ProgressBarHideEvent pbEvent = new FriendListFragment();
 				FriendsGraphFragment fragobj = new FriendsGraphFragment(
 						friendName, c, pbEvent);
-				// progressStatusMessageView.setText(R.string.login_progress_signing_in);
 				commonUtils.showProgress(c, progressStatusView, friendListView,
 						progressStatusMessageView,
 						c.getResources().getString(R.string.loading_graphs),
@@ -152,16 +144,7 @@ public class FriendListFragment extends DialogFragment implements
 				else
 					Toast.makeText(c,c.getResources().getString(R.string.error_host_not_found),Toast.LENGTH_LONG).show();
 				
-				// fragobj.setArguments(bundle);
-				// fragobj.downloadStatistics();
-
-				// ((FragmentActivity)
-				// c).getSupportFragmentManager().popBackStack(null,
-				// FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				// ((FragmentActivity)
-				// c).getSupportFragmentManager().beginTransaction()
-				// .replace(R.id.content_frame, fragobj)
-				// .commit();
+		
 
 			}
 

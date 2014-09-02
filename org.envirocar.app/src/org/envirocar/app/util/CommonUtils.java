@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -131,6 +132,9 @@ public class CommonUtils {
 	
 	public void setImageOnView(final Context c,final User user,final ImageView view,final Uri uri,final int pixels) {
 
+		
+		
+		
 		new Thread() {
 			@Override
 			public void run() {

@@ -27,14 +27,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:layout_marginTop="-33dp">
+                android:layout_gravity="center">
                 
                 <org.envirocar.app.views.LayeredImageRotateView
                     android:id="@+id/consumptionmeterView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    
+                    android:layout_marginTop="-2dp"
                     enviroCar:maximumDegree="170.0"
                     enviroCar:maximumScaleValue="250.0"
                     enviroCar:minimumDegree="10.0"
@@ -45,7 +44,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/speed"
-                        android:src="@drawable/new_phenometer_speed"
+                        android:src="@drawable/phenometer_speed"
                         enviroCar:widthRelatedPredecessingView="@+id/vehicle_view" />
 
                     <org.envirocar.app.views.HalfViewWidthImageView
@@ -55,8 +54,7 @@
                         android:layout_alignBottom="@+id/halfViewWidthImageView1"
                         android:contentDescription="@string/speed"
                         android:src="@drawable/phenometer_speed_arrow"
-                        android:layout_marginTop="23dp"
-                        android:layout_marginLeft="-4dp"
+                        
                          />
                     
                      <TextView

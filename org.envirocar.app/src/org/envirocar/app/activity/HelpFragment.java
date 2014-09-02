@@ -4,6 +4,7 @@ package org.envirocar.app.activity;
 import org.envirocar.app.R;
 import org.envirocar.app.util.Util;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,41 +43,41 @@ public class HelpFragment extends SherlockFragment {
 			switch(v.getId()){
 			
 				case R.id.about_envirocar:
-					closeOrOpen(R.id.about_envirocar_text);
+					closeOrOpen(R.id.about_envirocar_text,R.id.about_envirocar);
 					break;
 					
 				case R.id.getting_started:
-					closeOrOpen(R.id.getting_started_text);
+					closeOrOpen(R.id.getting_started_text,R.id.getting_started);
 					break;
 				case R.id.register:
-					closeOrOpen(R.id.register_text);
+					closeOrOpen(R.id.register_text,R.id.register);
 					break;
 				case R.id.car_data:
-					closeOrOpen(R.id.car_data_text);
+					closeOrOpen(R.id.car_data_text,R.id.car_data);
 					break;
 				case R.id.connect_to_car:
-					closeOrOpen(R.id.connect_to_car_text);
+					closeOrOpen(R.id.connect_to_car_text,R.id.connect_to_car);
 					break;
 				case R.id.record_track:
-					closeOrOpen(R.id.record_track_text);
+					closeOrOpen(R.id.record_track_text,R.id.record_track);
 					break;
 				case R.id.observe_track:
-					closeOrOpen(R.id.observe_track_text);
+					closeOrOpen(R.id.observe_track_text,R.id.observe_track);
 					break;
 				case R.id.upload_track:
-					closeOrOpen(R.id.upload_track_text);
+					closeOrOpen(R.id.upload_track_text,R.id.upload_track);
 					break;
 				case R.id.settings_part_1:
-					closeOrOpen(R.id.settings_part_1_text);
+					closeOrOpen(R.id.settings_part_1_text,R.id.settings_part_1);
 					break;
 				case R.id.settings_part_2:
-					closeOrOpen(R.id.settings_part_2_text);
+					closeOrOpen(R.id.settings_part_2_text,R.id.settings_part_2);
 					break;
 				case R.id.settings_part_3:
-					closeOrOpen(R.id.settings_part_3_text);
+					closeOrOpen(R.id.settings_part_3_text,R.id.settings_part_3);
 					break;
 				case R.id.feedback:
-					closeOrOpen(R.id.feedback_text);
+					closeOrOpen(R.id.feedback_text,R.id.feedback);
 					break;
 				
 			
@@ -87,17 +88,38 @@ public class HelpFragment extends SherlockFragment {
 	};
 	
 	
-	private void closeOrOpen(int id){
+	private void closeOrOpen(int id,int idSelf){
 		
 		TextView textView=(TextView)view.findViewById(id);
-		if(textView.getVisibility()==View.GONE)
+		TextView selfView=(TextView)view.findViewById(idSelf);
+		
+		if(textView.getVisibility()==View.GONE){
 			textView.setVisibility(View.VISIBLE);
-		else
+			setDownImage(selfView,R.drawable.close_arrow,R.drawable.arrow_down,R.drawable.arrow_down_small);
+			
+			//selfView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.arrow_down, 0);
+		}
+		else{
 			textView.setVisibility(View.GONE);
+			setDownImage(selfView,R.drawable.arrow_down,R.drawable.close_arrow,R.drawable.close_arrow_small);
+			
+		}
 			
 		
 		
 	}
+	
+	private void setDownImage(TextView tv,int arrow_one,int arrow_two,int arrow_three){
+		
+		Drawable[] drawables=tv.getCompoundDrawables();
+		if(drawables[2].getConstantState().equals(getResources().getDrawable(arrow_one).getConstantState()))
+			tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, arrow_two, 0);
+		else 
+			tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, arrow_three, 0);
+		
+	}
+	
+	
 	
 	private void setListeners(View view){
 		

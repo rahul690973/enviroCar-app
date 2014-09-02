@@ -29,6 +29,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.envirocar.app.R;
+import org.envirocar.app.application.ECApplication;
 import org.envirocar.app.application.UserManager;
 import org.envirocar.app.event.ProgressBarHideEvent;
 import org.envirocar.app.model.User;
@@ -55,15 +56,11 @@ public class FriendsGraphFragment
    
 
 	private String friendName;
-	private String FRIEND_URL="https://envirocar.org/api/stable/users/";
-	private String USER_URL="https://envirocar.org/api/stable/users/";
 	private HashMap<String, Double> friendStatistics;
 	private HashMap<String, Double> userStatistics;
 	
 	private TreeMap<String, Double> friendStatisticsSorted;
 	private TreeMap<String, Double> userStatisticsSorted;
-	
-	
 	
 	private User user;
 	private String response=null;
@@ -95,49 +92,15 @@ public class FriendsGraphFragment
 	
 	public void downloadStatistics(){
 		
-		 //friendName = getArguments().getString("friend_name");
+		
 		 ProgressBar progressBar=new ProgressBar(context);
-		 //progressBar.
 		 user = UserManager.instance().getUser();			
 		 username=user.getUsername();
-		 //String url_select = FRIEND_URL+username+"/friends/"+friendName+"/statistics";
-		 String url_select = FRIEND_URL+username+"/statistics";
+		 String url_select = ECApplication.BASE_URL+"/users/"+username+"/statistics";
 		 new downloadStatistics().execute(url_select,DOWNLOAD_USER);
 	}
 	
-	
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//			Bundle savedInstanceState) {
-//		
-//			friendName = getArguments().getString("friend_name"); 
-//			setHasOptionsMenu(true);
-//			View view = null;	
-//			
-//			user = UserManager.instance().getUser();			
-//			 username=user.getUsername();
-//			 //String url_select = FRIEND_URL+username+"/friends/"+friendName+"/statistics";
-//			 String url_select = FRIEND_URL+username+"/statistics";
-//			 new downloadStatistics().execute(url_select,DOWNLOAD_USER);
-//			
-//			
-//			
-//		return view;
-//	}
-	
-	
-//	@Override
-//	public void onViewCreated(View view, Bundle savedInstanceState) {
-//		super.onViewCreated(view, savedInstanceState);
-//		
-//		
-//		 user = UserManager.instance().getUser();			
-//		 username=user.getUsername();
-//		 //String url_select = FRIEND_URL+username+"/friends/"+friendName+"/statistics";
-//		 String url_select = FRIEND_URL+username+"/statistics";
-//		 new downloadStatistics().execute(url_select,DOWNLOAD_USER);
-//		
-//	}
+
 	
 	class downloadStatistics extends AsyncTask<String, String, Void>
 	{
@@ -180,7 +143,7 @@ public class FriendsGraphFragment
 	
 	private void notifyFriendsDownLoad(){
 		
-		String url_select = FRIEND_URL+username+"/friends/"+friendName+"/statistics";
+		String url_select = ECApplication.BASE_URL+"/users/"+username+"/friends/"+friendName+"/statistics";
 		new downloadStatistics().execute(url_select,DOWNLOAD_FRIEND);
 		
 	}
@@ -316,13 +279,7 @@ public class FriendsGraphFragment
 		    renderer.setMarginsColor(Color.WHITE);
 		    renderer.setBackgroundColor(Color.WHITE);
 		    
-		    
-		   
-		    
-		    //renderer.setDisplayChartValues(true);
-		    
-		    //renderer.setApplyBackgroundColor(true);
-		    //renderer.setBackgroundColor(Color.BLACK);
+
 		    renderer.setBarWidth(26);
 		    renderer.setBarSpacing(2);
 		   

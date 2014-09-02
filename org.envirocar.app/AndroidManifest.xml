@@ -58,6 +58,20 @@
             </intent-filter>
         </activity>
         
+        <activity
+            android:name="org.envirocar.app.activity.SuperMain"
+            android:label="@string/app_name"
+            android:parentActivityName="org.envirocar.app.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+          >
+            <intent-filter>
+                <action android:name="android.intent.action.MAINin" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
          <activity
             android:name="org.envirocar.app.activity.FriendListFragment"
             android:label="@string/app_name"
@@ -92,6 +106,19 @@
          <activity
             android:name="org.envirocar.app.activity.LeaderboardActivity"
             android:label="@string/title_activity_leaderboard"
+            android:parentActivityName="org.envirocar.app.activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="locale"
+        
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.envirocar.app.activity.MainActivity" />
+        </activity>
+        
+          <activity
+            android:name="org.envirocar.app.activity.UserStatisticsActivity"
+            android:label="@string/title_activity_user_statistics"
             android:parentActivityName="org.envirocar.app.activity.MainActivity"
             android:screenOrientation="portrait"
             android:configChanges="locale"

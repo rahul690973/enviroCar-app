@@ -9,7 +9,9 @@
     <string name="loading">loading..</string>
     <string name="sustainability_rank">Sustainability Rank</string>
     <string name="view_statistics">View Statistics</string>
+    <string name="title_activity_user_statistics">User Statistics</string>
     <string name="compare_wid_friends">Compare With Friends</string>
+    <string name="calculating_rank">Calculating...</string>
     
     <string name="previous">Previous</string>
     <string name="next">Next</string>
@@ -17,11 +19,9 @@
     <string name="loading_graphs">Loading Graphs</string>
     <string name="getting_friends">Getting Friends</string>
     <string name="error">Error</string>
-     
+    <string name="not_available">NOT AVAILABLE</string>
     
-    
-    
-    
+      
     
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help</string>
@@ -385,6 +385,7 @@ If you discover and problems, please send us an error log (-> report problem). T
        
       Wenn Kraftstoffverbrauch geht über den normalen Werten, wird es zu einer Erhöhung der Menge der CO2-Emissionen führen und damit die Umwelt zu belasten sehr. So regelmäßig Wartung des Fahrzeugs ist ein Workaround für sie.
    </string>
+  <string name="car_ok">car-ok</string>
 	
 	
 	

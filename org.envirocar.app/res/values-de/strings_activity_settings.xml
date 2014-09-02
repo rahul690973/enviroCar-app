@@ -13,7 +13,7 @@
 		 <item>Deutsch</item>
 	</string-array>
 	<string-array name="languages_value">
-		 <item>en</item>
+		 <item>en_US</item>
 		 <item>de</item>
 	</string-array>
     

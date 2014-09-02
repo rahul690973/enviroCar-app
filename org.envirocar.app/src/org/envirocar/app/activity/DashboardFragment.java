@@ -114,7 +114,6 @@ public class DashboardFragment extends SherlockFragment {
 	private static final String FUEL_CONSUMPTION = "fuelConsumption";
 	
 	private static int LANGUAGE_PREFERENCE_CHANGED = 0;
-
 	
 	String speedUnit = null;
 	String shortSpeedUnit = null;
@@ -190,7 +189,7 @@ public class DashboardFragment extends SherlockFragment {
 			Bundle savedInstanceState) {
 		logger.info("onCreateView. hash=" + System.identityHashCode(this));
 		
-		return inflater.inflate(R.layout.dashboard_new, container, false);
+		return inflater.inflate(R.layout.dashboard_try, container, false);
 
 	}
 
@@ -349,24 +348,7 @@ public class DashboardFragment extends SherlockFragment {
 	}
 	
 	
-	private  static void loadLanguage(SharedPreferences preferences,Context base){
-		 
-		 String languageToLoad=null;
-			//Toast.makeText(this, preferences.getString(SettingsActivity.LANGUAGE_KEY, null), Toast.LENGTH_LONG).show();
-			if ((languageToLoad=preferences.getString(SettingsActivity.LANGUAGE_KEY, null)) != null) {
-				
-				
-				Locale locale = new Locale(languageToLoad);  
-				Locale.setDefault(locale); 
-				Configuration config = new Configuration(); 
-				config.locale = locale; 
-				base.getResources().updateConfiguration(config,  
-				base.getResources().getDisplayMetrics());
-			
-			}
-			
-		 
-	 }
+	
 	
 	private void setRangeInRotableViews(){
 		
@@ -779,16 +761,7 @@ public class DashboardFragment extends SherlockFragment {
 	public void onResume() {
 		logger.info("onResume. hash=" + System.identityHashCode(this));
 		super.onResume();
-		
-		
-//		if(LANGUAGE_PREFERENCE_CHANGED==1){
-//			
-//			LANGUAGE_PREFERENCE_CHANGED=0;
-//			CommonUtils cu=new CommonUtils();
-//			cu.changeLanguage(getActivity(),preferences.getString(SettingsActivity.LANGUAGE_KEY, "en"));
-//			cu.restartActivity(getActivity());
-//		}
-		
+				
 		initializeEventListeners();
 		updateGpsStatus();
         updateCarStatus();
@@ -814,8 +787,7 @@ public class DashboardFragment extends SherlockFragment {
 		this.speedListener = new SpeedEventListener() {
 			@Override
 			public void receiveEvent(SpeedEvent event) {
-				// Toast.makeText(getActivity(), event.toString(),
-				// Toast.LENGTH_SHORT).show();
+
 				Car car = CarManager.instance().getCar();
 				if (car != null && car.getFuelType() == FuelType.DIESEL)
 					updateSpeed(event.getPayload());
@@ -826,8 +798,7 @@ public class DashboardFragment extends SherlockFragment {
 
 			@Override
 			public void receiveEvent(EngineLoadEvent event) {
-				// Toast.makeText(getActivity(), ""+event.getPayload(),
-				// Toast.LENGTH_SHORT).show();
+
 				updateEngineLoad(event.getPayload());
 
 			}
@@ -934,17 +905,9 @@ public class DashboardFragment extends SherlockFragment {
 			engineLoad = 0;
 			fuelConsumption = 0;
 
-			// Car car = CarManager.instance().getCar();
-			// if(car!=null)
-			// {
-			// if(car.getFuelType()==FuelType.GASOLINE)
-			// updateFuelConsumptionValue();
-			// else if(car.getFuelType()==FuelType.DIESEL)
-			// updateSpeedValue();
-			// }
-			updateCo2Value();
+			//updateCo2Value();
 
-			updateEngineLoadValue();
+			//updateEngineLoadValue();
 
 		}
 

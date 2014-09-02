@@ -152,13 +152,6 @@ ProgressBarHideEvent {
 		
 		setTracks(getString(R.string.loading),getString(R.string.loading));
 		
-		File file = new File(root + "/enviroCar/images/", user.getUsername()
-				+ ".jpg");
-
-		if (file.exists()) {
-
-			setImageOnView();
-		}
 
 		try {
 
@@ -206,11 +199,7 @@ ProgressBarHideEvent {
 			if (v.getId() == R.id.compare_friends) {
 				
 				if(commonUtils.isNetworkAvailable(getActivity())){
-					
-
-//					getActivity().getSupportFragmentManager().popBackStack(null,
-//							FragmentManager.POP_BACK_STACK_INCLUSIVE);
-					
+										
 					FriendListFragment friendsFragment = new FriendListFragment();
 				    FragmentManager fm = getActivity().getSupportFragmentManager();
 					friendsFragment.show(fm, getString(R.string.compare_wid_friends));
@@ -230,19 +219,9 @@ ProgressBarHideEvent {
 			else if (v.getId() == R.id.view_statistics) {
 				
 				if(commonUtils.isNetworkAvailable(getActivity())){
-
-//				getActivity().getSupportFragmentManager().popBackStack(null,
-//						FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				UserStatisticsFragment userStatisticsFragment = new UserStatisticsFragment();
-//				getActivity()
-//						.getSupportFragmentManager()
-//						.beginTransaction()
-//						.replace(R.id.content_frame, userStatisticsFragment,
-//								MainActivity.STATISTICS_TAG).commit();
-				
-				getActivity().getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, userStatisticsFragment, MainActivity.STATISTICS_TAG)
-				.addToBackStack(null).commit();
+					
+				Intent i=new Intent(getActivity(),UserStatisticsActivity.class);
+				startActivity(i);
 				
 				}
 				
@@ -255,35 +234,11 @@ ProgressBarHideEvent {
 			}
 
 			else if (v.getId() == R.id.view_leaderboard) {
-
-//				getActivity().getSupportFragmentManager().popBackStack(null,
-//						FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				
-				
-//				LeaderboardFragment lbFragment = new LeaderboardFragment();
-//				Bundle lbBundle = new Bundle();
-//				lbBundle.putSerializable("rank_map", userAndScore);
-//				lbFragment.setArguments(lbBundle);
-				
 				
 				Intent i=new Intent(getActivity(),LeaderboardActivity.class);
-//				Bundle extras=new Bundle();
-//				extras.putSerializable("rank_map", stats);
-//			
-//				i.putExtras(extras);
-				//i.putExtra("rank_map", stats);
 				i.putExtra("rank_map", new Gson().toJson(stats));
 				startActivity(i);
 		
-//				getActivity()
-//						.getSupportFragmentManager()
-//						.beginTransaction()
-//						.replace(R.id.content_frame, lbFragment,
-//								MainActivity.LEADERBOARD_TAG).commit();
-				
-//				getActivity().getSupportFragmentManager().beginTransaction()
-//				.replace(R.id.content_frame, lbFragment, MainActivity.LEADERBOARD_TAG)
-//				.addToBackStack(null).commit();
 
 			}
 
@@ -297,14 +252,7 @@ ProgressBarHideEvent {
 		ownTracksView.setText(getString(R.string.your_tracks)+text2);
 	}
 	
-	protected void setUsersRank() {
 
-		
-		//leaderBoardView.setText("Not Applicable");
-		//new fetchLeaderboard().execute();
-		
-
-	}
 
 	protected void getLeaderBoardFromServer() {
 
@@ -329,7 +277,7 @@ ProgressBarHideEvent {
 						public void run() {
 												
 							
-							leaderBoardView.setText("NOT AVAILABLE");
+							leaderBoardView.setText(getString(R.string.not_available));
 							leaderBoardView.setClickable(true);
 						}
 					});
@@ -346,11 +294,12 @@ ProgressBarHideEvent {
 
 	}
 
-	public static void setImageOnView() {
+	public  void setImageOnView() {
 
 	
 		Uri absolute = Uri.parse(ECApplication.BASE_URL + "/users/"
 				+ user.getUsername() + "/avatar?size=200");
+
 		CommonUtils cu=new CommonUtils();
 		cu.setImageOnView(c, user, profilePicView,absolute,200);
 

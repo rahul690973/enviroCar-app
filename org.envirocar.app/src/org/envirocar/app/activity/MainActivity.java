@@ -82,6 +82,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,6 +190,9 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 	protected long discoveryTargetTime;
 	
 	private int LANGUAGE_PREFERENCE_CHANGED=0;
+	private int SOURCE_ONCREATE=0;
+	private int SOURCE_ONRESUME=1;
+	
 
 	private void prepareNavDrawerItems() {
 		if (this.navDrawerItems == null) {
@@ -257,6 +261,10 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 		readSavedState(savedInstanceState);
 
 		this.setContentView(R.layout.main_layout);
+		
+		Locale current = getResources().getConfiguration().locale;
+		Log.d("rahulraja",""+current.toString());
+		//Toast.makeText(this, ""+current.toString(), Toast.LENGTH_LONG).show();
 
 		application = ((ECApplication) getApplication());
 
@@ -403,6 +411,7 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 				TroubleshootingFragment.INTENT));
 
 		resolvePersistentSeenAnnouncements();
+	    adjustLanguage(SOURCE_ONCREATE);
 		//loadLanguage(preferences, getBaseContext());
 
 	}
@@ -946,6 +955,29 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 		}
 	}
 
+	
+	protected void adjustLanguage(int source){
+		
+		String currentLocale=getResources().getConfiguration().locale.toString();
+		String languageSaved=preferences.getString(SettingsActivity.LANGUAGE_KEY, currentLocale);
+		if(source==SOURCE_ONCREATE){
+			
+			if(!languageSaved.equalsIgnoreCase(currentLocale)){
+				
+				changeLanguage(languageSaved);
+			}
+	   }
+		else
+			   changeLanguage(languageSaved);
+	}
+	
+	private void changeLanguage(String languageSaved){
+		
+		CommonUtils cu=new CommonUtils();
+		cu.changeLanguage(this, languageSaved);
+		cu.restartActivity(this);
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -956,12 +988,8 @@ public class MainActivity<AndroidAlarmService> extends SherlockFragmentActivity
 		if(LANGUAGE_PREFERENCE_CHANGED==1){
 			
 			LANGUAGE_PREFERENCE_CHANGED=0;
-			String languageSaved=preferences.getString(SettingsActivity.LANGUAGE_KEY, "en");
-			CommonUtils cu=new CommonUtils();
-			cu.changeLanguage(this, languageSaved);
-			cu.restartActivity(this);
-			Locale current = getResources().getConfiguration().locale;
-			Toast.makeText(this, ""+current.toString(), Toast.LENGTH_LONG).show();
+			adjustLanguage(SOURCE_ONRESUME);
+			
 		}
 		
 		
